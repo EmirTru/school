@@ -32,10 +32,10 @@
         <h1 class="text-2xl font-bold mb-6 text-blue-400">Cihaz Modunu Seçin</h1>
         <p class="text-gray-300 mb-8">Bu cihazı nasıl kullanmak istiyorsunuz?</p>
         <div class="space-y-4">
-            <button id="select-publisher" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration-300 transform hover:scale-105">
+            <button id="select-publisher" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration:300 transform hover:scale-105">
                 📣 Yayıncı (Duyuru Gönder)
             </button>
-            <button id="select-receiver" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration-300 transform hover:scale-105">
+            <button id="select-receiver" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration:300 transform hover:scale-105">
                 🎧 Alıcı (Sadece Duyuru Al)
             </button>
         </div>
@@ -56,7 +56,7 @@
             </div>
 
             <!-- Yayınla Butonu -->
-            <button id="publish-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105" disabled>
+            <button id="publish-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration:300 ease-in-out transform hover:scale-105" disabled>
                 Yayınla 🚀
             </button>
 
@@ -77,40 +77,47 @@
     <script type="module">
         // Firebase modüllerini import et
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Firebase hata ayıklama loglarını aç
         setLogLevel('Debug');
 
         // --- DOM Elementleri ---
-        // Rol Seçim Ekranı
         const roleScreen = document.getElementById('role-selection-screen');
         const selectPublisherBtn = document.getElementById('select-publisher');
         const selectReceiverBtn = document.getElementById('select-receiver');
-
-        // Ana Uygulama Ekranı
         const mainAppScreen = document.getElementById('main-app-screen');
         const appTitle = document.getElementById('app-title');
         const publisherControls = document.getElementById('publisher-controls');
-        
-        // Ana Uygulama İçerikleri
         const inputArea = document.getElementById('announcement-input');
         const publishButton = document.getElementById('publish-button');
         const displayArea = document.getElementById('announcement-display');
         const loadingText = document.getElementById('loading-text');
 
-        // --- Canvas Ortam Değişkenleri ---
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-duyuru-app';
-        const firebaseConfigStr = typeof __firebase_config !== 'undefined' ? __firebase_config : '{}';
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // BURAYI KENDİ FIREBASE KONSOLUNDAN ALDIĞIN BİLGİLERLE DOLDUR
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        const firebaseConfig = {
+            apiKey: "AIzaSyCEFhB9MfxQwR155xyieDR-XvH-okrNwmY", // BU SENİN ANAHTARIN (DOĞRU)
+            authDomain: "SENIN_PROJEN.firebaseapp.com", // DOLDURMAN LAZIM
+            projectId: "SENIN_PROJE-ID", // DOLDURMAN LAZIM
+            storageBucket: "SENIN_PROJEN.appspot.com", // DOLDURMAN LAZIM
+            messagingSenderId: "1234567890", // DOLDURMAN LAZIM
+            appId: "1:1234567890:web:abcdef123456" // DOLDURMAN LAZIM
+        };
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
         // --- Firebase Değişkenleri ---
         let db;
         let auth;
         let userId;
 
-        // Herkesin erişebileceği tek bir dokümanın referansı
+        // Bu, Firestore'da verinin saklanacağı yolu belirler.
+        // Basit ve sabit bir yol kullanıyoruz.
+        const appId = 'genel-duyuru-odasi';
         const broadcastDocRef = () => doc(db, 'artifacts', appId, 'public/data', 'announcements', 'latest');
 
         // --- Rol Seçim Olayları ---
@@ -134,7 +141,6 @@
                 publisherControls.classList.remove('hidden'); // Yayıncı kontrollerini göster
             } else {
                 appTitle.textContent = "🎧 Duyuru Alıcısı";
-                // publisherControls zaten gizli
             }
 
             // Firebase'i başlat ve kimlik doğrula
@@ -144,12 +150,7 @@
         // --- Firebase Başlatma ve Kimlik Doğrulama ---
         function initializeAppAndAuth() {
             try {
-                const firebaseConfig = JSON.parse(firebaseConfigStr);
-                if (!firebaseConfig.apiKey) {
-                    throw new Error("Firebase yapılandırması yüklenemedi.");
-                }
-
-                // Firebase'i başlat
+                // Manuel olarak girdiğimiz 'firebaseConfig' objesini kullanarak başlat
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
@@ -166,18 +167,14 @@
 
         async function setupAuth() {
             try {
-                // Ortam tarafından sağlanan token ile giriş yapmayı dene, yoksa anonim giriş yap
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
+                // Bu ortamın dışında olduğumuz için SADECE anonim giriş kullanıyoruz
+                await signInAnonymously(auth);
 
                 // Kullanıcı durumunu dinle
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
                         userId = user.uid;
-                        console.log("Kimlik doğrulandı. Kullanıcı ID:", userId);
+                        console.log("Kimlik doğrulandı (Anonim). Kullanıcı ID:", userId);
                         
                         // 2. Kimlik doğrulandıktan sonra Firestore dinleyicisini başlat
                         setupRealtimeListener();
@@ -210,13 +207,11 @@
                 
                 if (doc.exists()) {
                     const data = doc.data();
-                    // Gelen veriyi ekrana yazdır
                     displayArea.innerHTML = `
                         <p class="text-white text-lg">${data.text}</p>
                         <p class="text-gray-400 text-xs mt-2 text-right">Yayınlanma: ${data.timestamp}</p>
                     `;
                 } else {
-                    // Doküman (henüz) yoksa
                     displayArea.innerHTML = `<p class="text-gray-400 italic">Henüz bir duyuru yayınlanmadı.</p>`;
                 }
             }, (error) => {
@@ -230,36 +225,29 @@
             const text = inputArea.value.trim();
 
             if (!text) {
-                // alert yerine basit bir hata mesajı gösterelim (ama alert daha basitti)
-                // Şimdilik alert'ü özel bir modal ile değiştirmeyelim
                 console.warn("Boş mesaj gönderilemez.");
                 inputArea.classList.add('border-red-500');
                 setTimeout(() => inputArea.classList.remove('border-red-500'), 2000);
                 return;
             }
 
-            // Butonu geçici olarak devre dışı bırak
             publishButton.disabled = true;
             publishButton.textContent = "Yayınlanıyor...";
 
             try {
-                // Veriyi Firestore'a yaz (setDoc ile üzerine yaz)
                 await setDoc(broadcastDocRef(), {
                     text: text,
                     timestamp: new Date().toLocaleString('tr-TR'),
-                    publishedBy: userId // İsteğe bağlı: kimin yayınladığını ekle
+                    publishedBy: userId 
                 });
 
-                // Başarılı olunca giriş alanını temizle
                 inputArea.value = "";
                 console.log("Duyuru başarıyla yayınlandı!");
 
             } catch (error) {
                 console.error("Duyuru yayınlama hatası (setDoc):", error);
-                // Hata mesajı göster
                 displayArea.innerHTML += `<p class="text-red-500 text-sm mt-2">Hata: Duyuru gönderilemedi.</p>`;
             } finally {
-                // Butonu tekrar aktif et
                 publishButton.disabled = false;
                 publishButton.textContent = "Duyuruyu Yayınla 🚀";
             }
