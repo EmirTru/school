@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Darıca Uğur Okulu - Gerçek Zamanlı Duyuru 📢</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind CSS CDN --><script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Ekstra stil ve pürüzsüz geçişler */
         body {
             font-family: 'Inter', sans-serif;
+            overflow-x: hidden; /* Yatay kaydırmayı engelle */
         }
         #announcement-display {
             transition: all 0.3s ease;
             word-wrap: break-word;
         }
-        /* Basit animasyon için */
+        /* Basit animasyonlar */
         .fade-in {
-            animation: fadeIn 0.5s ease-in-out;
+            animation: fadeIn 0.5s ease-in-out forwards;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -33,12 +33,45 @@
             30%, 50%, 70% { transform: translateX(-4px); }
             40%, 60% { transform: translateX(4px); }
         }
+
+        /* Yeni Duyuru Geldiğinde Animasyon (pulse effect) */
+        .announcement-pulse {
+            animation: pulse-border 1.5s infinite;
+        }
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0px rgba(59, 130, 246, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0px rgba(59, 130, 246, 0); }
+        }
+
+        /* Büyük Zil Animasyonu */
+        .bell-animation {
+            font-size: 8rem; /* Çok büyük zil */
+            animation: bellRing 1.5s infinite ease-in-out;
+            transform-origin: top center; /* Üstten sallanma */
+            display: inline-block; /* sallanması için gerekli */
+        }
+        @keyframes bellRing {
+            0% { transform: rotate(0deg); }
+            15% { transform: rotate(15deg); }
+            30% { transform: rotate(-15deg); }
+            45% { transform: rotate(10deg); }
+            60% { transform: rotate(-10deg); }
+            75% { transform: rotate(5deg); }
+            100% { transform: rotate(0deg); }
+        }
+        
+        /* Türk Bayrağı Emoji Boyutu */
+        .turkish-flag {
+            font-size: 1.5em; /* Başlıkta normalden biraz büyük */
+            vertical-align: middle;
+            margin-left: 8px;
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
 
-    <!-- 1. Rol Seçim Ekranı (Başlangıçta görünür) -->
-    <div id="role-selection-screen" class="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-sm text-center fade-in">
+    <!-- 1. Rol Seçim Ekranı (Başlangıçta görünür) --><div id="role-selection-screen" class="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-sm text-center fade-in">
         <h1 class="text-2xl font-bold mb-6 text-blue-400">Darıca Uğur Okulu Duyuru Sistemi</h1>
         <p class="text-gray-300 mb-8">Bu cihazı nasıl kullanmak istiyorsunuz?</p>
         <div class="space-y-4">
@@ -51,8 +84,7 @@
         </div>
     </div>
 
-    <!-- 2. Şifre Ekranı (Gizli) -->
-    <div id="password-screen" class="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-sm text-center hidden fade-in">
+    <!-- 2. Şifre Ekranı (Gizli) --><div id="password-screen" class="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-sm text-center hidden fade-in">
         <h1 class="text-2xl font-bold mb-6 text-blue-400">Yayıncı Girişi</h1>
         <p class="text-gray-300 mb-4">Duyuru yayınlamak için şifreyi girin.</p>
         <input id="password-input" type="password" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:outline-none mb-4" placeholder="••••••••">
@@ -65,23 +97,18 @@
     </div>
 
 
-    <!-- 3. Ana Uygulama Ekranı (Gizli) -->
-    <div id="main-app-screen" class="bg-gray-800 p-6 md:p-8 rounded-2xl shadow-2xl w-full max-w-lg hidden fade-in">
+    <!-- 3. Ana Uygulama Ekranı (Gizli) --><div id="main-app-screen" class="bg-gray-800 p-6 md:p-8 rounded-2xl shadow-2xl w-full max-w-lg hidden fade-in">
         <h1 id="app-title" class="text-2xl md:text-3xl font-bold text-center mb-6 text-blue-400">
-            <!-- Başlık JS ile ayarlanacak -->
-        </h1>
+            <!-- Başlık JS ile ayarlanacak --></h1>
 
-        <!-- Sadece Yayıncının Göreceği Alan -->
-        <div id="publisher-controls" class="hidden space-y-4">
+        <!-- Sadece Yayıncının Göreceği Alan --><div id="publisher-controls" class="hidden space-y-4">
             
-            <!-- Duyuru Başlığı -->
-            <div>
+            <!-- Duyuru Başlığı --><div>
                 <label for="title-input" class="block text-sm font-medium text-gray-300 mb-2">Duyuru Başlığı:</label>
                 <input id="title-input" type="text" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Örn: Acil Toplantı">
             </div>
 
-            <!-- Önem Derecesi -->
-            <div>
+            <!-- Önem Derecesi --><div>
                 <label for="urgency-select" class="block text-sm font-medium text-gray-300 mb-2">Önem Derecesi:</label>
                 <select id="urgency-select" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
                     <option value="normal" class="text-white">Normal</option>
@@ -90,8 +117,7 @@
                 </select>
             </div>
 
-            <!-- Kime -->
-            <div>
+            <!-- Kime --><div>
                 <label for="audience-select" class="block text-sm font-medium text-gray-300 mb-2">Kime:</label>
                 <select id="audience-select" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
                     <option value="tum-okul">Tüm Okul</option>
@@ -101,14 +127,12 @@
                 </select>
             </div>
 
-            <!-- Duyuru Detayı -->
-            <div>
+            <!-- Duyuru Detayı --><div>
                 <label for="announcement-input" class="block text-sm font-medium text-gray-300 mb-2">Duyuru Detayı:</label>
                 <textarea id="announcement-input" rows="4" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Duyuru ile ilgili detayları buraya yazın..."></textarea>
             </div>
             
-            <!-- Kantin Hızlı Şablonları -->
-            <div class="border-t border-gray-700 pt-4">
+            <!-- Kantin Hızlı Şablonları --><div class="border-t border-gray-700 pt-4">
                  <label class="block text-sm font-medium text-gray-300 mb-2">Kantin Hızlı Şablonları:</label>
                  <div class="flex flex-wrap gap-2">
                     <button data-template="menu" class="template-btn bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-2 px-3 rounded-lg transition duration-300">
@@ -126,26 +150,24 @@
                  </div>
             </div>
 
-            <!-- Yayınla Butonu -->
-            <button id="publish-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration:300 ease-in-out transform hover:scale-105 mt-4" disabled>
+            <!-- Yayınla Butonu --><button id="publish-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration:300 ease-in-out transform hover:scale-105 mt-4" disabled>
                 Yayınla 🚀
             </button>
 
-            <!-- Ayırıcı -->
-            <hr class="border-gray-700 my-6">
+            <!-- Ayırıcı --><hr class="border-gray-700 my-6">
         </div>
         
-        <!-- Son Duyuru Görüntüleme Alanı (Herkes görür) -->
-        <div>
+        <!-- Son Duyuru Görüntüleme Alanı (Herkes görür) --><div>
             <h2 class="text-xl font-semibold mb-3 text-gray-300">Son Gelen Duyuru:</h2>
+            <!-- Animasyonlu Görsel Etki Alanı --><div id="visual-effect-area" class="text-center mb-4 min-h-[50px] flex items-center justify-center">
+                <!-- Buraya animasyonlu emojiler gelecek --></div>
             <div id="announcement-display" class="w-full min-h-[100px] p-4 bg-gray-700 rounded-lg border border-gray-600">
                 <p id="loading-text" class="text-gray-400 italic">Duyurular bekleniyor...</p>
             </div>
         </div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script type="module">
+    <!-- Firebase SDK --><script type="module">
         // Firebase modüllerini import et
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -178,6 +200,7 @@
         const publishButton = document.getElementById('publish-button');
         const displayArea = document.getElementById('announcement-display');
         const loadingText = document.getElementById('loading-text');
+        const visualEffectArea = document.getElementById('visual-effect-area'); // Yeni eklenen görsel etki alanı
 
 
         // --- YENİ VE TAM FIREBASE YAPILANDIRMASI ---
@@ -245,10 +268,10 @@
             mainAppScreen.classList.remove('hidden');
 
             if (role === 'publisher') {
-                appTitle.textContent = "📢 Yayıncı Paneli (Darıca Uğur Okulu)";
+                appTitle.innerHTML = `📢 Yayıncı Paneli <span class="text-blue-300">(Darıca Uğur Okulu)</span>`;
                 publisherControls.classList.remove('hidden'); 
             } else {
-                appTitle.textContent = "🎧 Duyuru Alıcısı (Darıca Uğur Okulu)";
+                appTitle.innerHTML = `🎧 Duyuru Alıcısı <span class="text-blue-300">(Darıca Uğur Okulu)</span>`;
             }
 
             initializeAppAndAuth();
@@ -307,7 +330,7 @@
                     switch(template) {
                         case 'menu':
                             titleInput.value = "Bugünün Menüsü 🍽️";
-                            inputArea.value = "Afiyet olsun! Bugünkü yemek listesi:\n1. ...\n2. ...\n3. ...";
+                            inputArea.value = "Afiyet olsun! Bugünkü yemek listesi:\n1. Mercimek Çorbası\n2. Ana Yemek (Örn: Tavuk Sote)\n3. Pilav/Makarna\n4. Salata/Tatlı";
                             break;
                         case 'tost':
                             titleInput.value = "🎉 Sürpriz Tost Günü! 🎉";
@@ -316,11 +339,11 @@
                             break;
                         case 'muzik':
                             titleInput.value = "🎶 Müzik İsteği 🎶";
-                            inputArea.value = "Öğle arasında çalmasını istediğiniz şarkıları bu postun altına yorum olarak yazabilirsiniz! (Not: Bu özellik eklenmedi, sadece şablon)";
+                            inputArea.value = "Öğle arasında kantinde çalmasını istediğiniz şarkıları duyuru panosuna (veya özel bir listeye) not bırakabilirsiniz. En çok istenenler çalacak!";
                             break;
                         case 'kapanis':
                             titleInput.value = "🔔 Kantin Kapanıyor 🔔";
-                            inputArea.value = "Kantinimiz 10 dakika içinde kapanacaktır. Lütfen ihtiyaçlarınızı giderin.";
+                            inputArea.value = "Kantinimiz 10 dakika içinde kapanacaktır. Lütfen ihtiyaçlarınızı giderin. Yarın görüşmek üzere!";
                             urgencySelect.value = 'acil';
                             break;
                     }
@@ -354,6 +377,7 @@
         }
 
         // 2. Firestore'daki değişiklikleri gerçek zamanlı dinle (GÜNCELLENDİ)
+        let lastAnnouncementTimestamp = 0; // Son duyurunun zaman damgasını tutmak için
         function setupRealtimeListener() {
             console.log("Duyuru dinleyicisi kuruluyor...");
             const docRef = broadcastDocRef();
@@ -365,12 +389,34 @@
                 
                 if (doc.exists()) {
                     const data = doc.data();
-                    
+                    const currentTimestamp = new Date(data.timestamp).getTime();
+
+                    // Sadece yeni duyurular için animasyon tetikle
+                    if (currentTimestamp > lastAnnouncementTimestamp) {
+                        displayArea.classList.remove('announcement-pulse'); // Önceki animasyonu kaldır
+                        void displayArea.offsetWidth; // Reflow tetikle
+                        displayArea.classList.add('announcement-pulse'); // Yeni animasyonu ekle
+                        lastAnnouncementTimestamp = currentTimestamp;
+                        
+                        // Ek görsel efektler (Zil, Bayrak vb.)
+                        visualEffectArea.innerHTML = ''; // Önceki efektleri temizle
+                        if (data.urgency === 'acil') {
+                            visualEffectArea.innerHTML = '<span class="bell-animation">🔔</span>';
+                        } else if (data.title.includes('bayrak') || data.text.includes('bayrak')) { // Başlık veya metinde "bayrak" geçiyorsa
+                            visualEffectArea.innerHTML = '<span class="turkish-flag">🇹🇷</span>';
+                        }
+                        // Diğer animasyonlar buraya eklenebilir
+                        // Örn: if (data.audience === 'ogrenciler') visualEffectArea.innerHTML += '🎓';
+                        
+                        // Duyuru panosunun kendisini de yukarı kaydır (opsiyonel)
+                        mainAppScreen.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+
                     // Veri eski formatta mı (sadece text) yoksa yeni formatta mı (title vb.)
                     if (data.text && !data.title) {
                         // Eski format uyumluluğu
                         displayArea.innerHTML = `
-                            <div class="p-4 rounded-lg bg-gray-700 border border-gray-600">
+                            <div class="p-4 rounded-lg bg-gray-700 border border-gray-600 fade-in">
                                 <p class="text-white text-lg">${data.text}</p>
                                 <p class="text-gray-400 text-xs mt-2 text-right">Yayınlanma: ${data.timestamp}</p>
                             </div>
@@ -381,28 +427,25 @@
                         const urgencyLabel = getUrgencyLabel(data.urgency);
 
                         displayArea.innerHTML = `
-                            <div class="p-4 rounded-lg ${urgencyClass} border">
-                                <!-- Üst Bilgi Satırı -->
-                                <div class="flex justify-between items-center mb-2">
+                            <div class="p-4 rounded-lg ${urgencyClass} border fade-in">
+                                <!-- Üst Bilgi Satırı --><div class="flex justify-between items-center mb-2">
                                     <span class="px-3 py-1 text-sm font-semibold rounded-full ${data.urgency === 'acil' ? 'bg-red-200 text-red-900' : (data.urgency === 'onemli' ? 'bg-yellow-200 text-yellow-900' : 'bg-gray-200 text-gray-900')}">
                                         ${urgencyLabel}
                                     </span>
                                     <span class="text-sm text-gray-300 font-medium">Kime: ${data.audience}</span>
                                 </div>
                                 
-                                <!-- Başlık -->
-                                <h3 class="text-2xl font-bold text-white mb-2">${data.title}</h3>
+                                <!-- Başlık --><h3 class="text-2xl font-bold text-white mb-2">${data.title}</h3>
                                 
-                                <!-- Detay (Boşlukları korumak için whitespace-pre-wrap) -->
-                                <p class="text-white text-lg whitespace-pre-wrap">${data.text}</p>
+                                <!-- Detay (Boşlukları korumak için whitespace-pre-wrap) --><p class="text-white text-lg whitespace-pre-wrap">${data.text}</p>
                                 
-                                <!-- Zaman Damgası -->
-                                <p class="text-gray-400 text-xs mt-4 text-right">Yayınlanma: ${data.timestamp}</p>
+                                <!-- Zaman Damgası --><p class="text-gray-400 text-xs mt-4 text-right">Yayınlanma: ${data.timestamp}</p>
                             </div>
                         `;
                     }
                 } else {
                     displayArea.innerHTML = `<p class="text-gray-400 italic">Henüz bir duyuru yayınlanmadı.</p>`;
+                    visualEffectArea.innerHTML = ''; // Duyuru yoksa efekti de temizle
                 }
             }, (error) => {
                 console.error("Veri dinleme hatası (onSnapshot):", error);
