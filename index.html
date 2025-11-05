@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerçek Zamanlı Duyuru 📢</title>
+    <title>Darıca Uğur Okulu - Gerçek Zamanlı Duyuru 📢</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -23,13 +23,23 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        /* Hata animasyonu */
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        @keyframes shake {
+            10%, 90% { transform: translateX(-1px); }
+            20%, 80% { transform: translateX(2px); }
+            30%, 50%, 70% { transform: translateX(-4px); }
+            40%, 60% { transform: translateX(4px); }
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
 
-    <!-- Rol Seçim Ekranı (Başlangıçta görünür) -->
+    <!-- 1. Rol Seçim Ekranı (Başlangıçta görünür) -->
     <div id="role-selection-screen" class="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-sm text-center fade-in">
-        <h1 class="text-2xl font-bold mb-6 text-blue-400">Cihaz Modunu Seçin</h1>
+        <h1 class="text-2xl font-bold mb-6 text-blue-400">Darıca Uğur Okulu Duyuru Sistemi</h1>
         <p class="text-gray-300 mb-8">Bu cihazı nasıl kullanmak istiyorsunuz?</p>
         <div class="space-y-4">
             <button id="select-publisher" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration:300 transform hover:scale-105">
@@ -41,22 +51,83 @@
         </div>
     </div>
 
-    <!-- Ana Uygulama Ekranı (Başlangıçta gizli) -->
+    <!-- 2. Şifre Ekranı (Gizli) -->
+    <div id="password-screen" class="bg-gray-800 p-8 rounded-2xl shadow-2xl w-full max-w-sm text-center hidden fade-in">
+        <h1 class="text-2xl font-bold mb-6 text-blue-400">Yayıncı Girişi</h1>
+        <p class="text-gray-300 mb-4">Duyuru yayınlamak için şifreyi girin.</p>
+        <input id="password-input" type="password" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:outline-none mb-4" placeholder="••••••••">
+        <button id="login-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration:300 transform hover:scale-105">
+            Giriş Yap
+        </button>
+        <p id="password-hint" class="text-gray-500 text-sm mt-4">İpucu: şifre 1234</p>
+        <p id="password-error" class="text-red-400 text-sm mt-2 hidden">Hatalı şifre!</p>
+        <button id="back-to-roles" class="text-gray-400 hover:text-white text-sm mt-6">Geri</button>
+    </div>
+
+
+    <!-- 3. Ana Uygulama Ekranı (Gizli) -->
     <div id="main-app-screen" class="bg-gray-800 p-6 md:p-8 rounded-2xl shadow-2xl w-full max-w-lg hidden fade-in">
         <h1 id="app-title" class="text-2xl md:text-3xl font-bold text-center mb-6 text-blue-400">
             <!-- Başlık JS ile ayarlanacak -->
         </h1>
 
         <!-- Sadece Yayıncının Göreceği Alan -->
-        <div id="publisher-controls" class="hidden">
-            <!-- Duyuru Giriş Alanı -->
-            <div class="mb-4">
-                <label for="announcement-input" class="block text-sm font-medium text-gray-300 mb-2">Yeni Duyuru Metni:</label>
-                <textarea id="announcement-input" rows="4" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Buraya bir mesaj yazın..."></textarea>
+        <div id="publisher-controls" class="hidden space-y-4">
+            
+            <!-- Duyuru Başlığı -->
+            <div>
+                <label for="title-input" class="block text-sm font-medium text-gray-300 mb-2">Duyuru Başlığı:</label>
+                <input id="title-input" type="text" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Örn: Acil Toplantı">
+            </div>
+
+            <!-- Önem Derecesi -->
+            <div>
+                <label for="urgency-select" class="block text-sm font-medium text-gray-300 mb-2">Önem Derecesi:</label>
+                <select id="urgency-select" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <option value="normal" class="text-white">Normal</option>
+                    <option value="onemli" class="text-yellow-400">Önemli</option>
+                    <option value="acil" class="text-red-400">🚨 ACİL 🚨</option>
+                </select>
+            </div>
+
+            <!-- Kime -->
+            <div>
+                <label for="audience-select" class="block text-sm font-medium text-gray-300 mb-2">Kime:</label>
+                <select id="audience-select" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <option value="tum-okul">Tüm Okul</option>
+                    <option value="ogrenciler">Öğrenciler</option>
+                    <option value="ogretmenler">Öğretmenler</option>
+                    <option value="veliler">Veliler</option>
+                </select>
+            </div>
+
+            <!-- Duyuru Detayı -->
+            <div>
+                <label for="announcement-input" class="block text-sm font-medium text-gray-300 mb-2">Duyuru Detayı:</label>
+                <textarea id="announcement-input" rows="4" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Duyuru ile ilgili detayları buraya yazın..."></textarea>
+            </div>
+            
+            <!-- Kantin Hızlı Şablonları -->
+            <div class="border-t border-gray-700 pt-4">
+                 <label class="block text-sm font-medium text-gray-300 mb-2">Kantin Hızlı Şablonları:</label>
+                 <div class="flex flex-wrap gap-2">
+                    <button data-template="menu" class="template-btn bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-2 px-3 rounded-lg transition duration-300">
+                        🍽️ Menü
+                    </button>
+                    <button data-template="tost" class="template-btn bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-bold py-2 px-3 rounded-lg transition duration-300">
+                        🎉 Tost Günü
+                    </button>
+                    <button data-template="muzik" class="template-btn bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold py-2 px-3 rounded-lg transition duration-300">
+                        🎶 Müzik İsteği
+                    </button>
+                    <button data-template="kapanis" class="template-btn bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-2 px-3 rounded-lg transition duration-300">
+                        🔔 Kapanış
+                    </button>
+                 </div>
             </div>
 
             <!-- Yayınla Butonu -->
-            <button id="publish-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration:300 ease-in-out transform hover:scale-105" disabled>
+            <button id="publish-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration:300 ease-in-out transform hover:scale-105 mt-4" disabled>
                 Yayınla 🚀
             </button>
 
@@ -87,17 +158,29 @@
         const roleScreen = document.getElementById('role-selection-screen');
         const selectPublisherBtn = document.getElementById('select-publisher');
         const selectReceiverBtn = document.getElementById('select-receiver');
+        
+        const passwordScreen = document.getElementById('password-screen');
+        const passwordInput = document.getElementById('password-input');
+        const loginButton = document.getElementById('login-button');
+        const passwordError = document.getElementById('password-error');
+        const backToRolesBtn = document.getElementById('back-to-roles');
+
         const mainAppScreen = document.getElementById('main-app-screen');
         const appTitle = document.getElementById('app-title');
         const publisherControls = document.getElementById('publisher-controls');
-        const inputArea = document.getElementById('announcement-input');
+        
+        // Yeni yayıncı alanları
+        const titleInput = document.getElementById('title-input');
+        const urgencySelect = document.getElementById('urgency-select');
+        const audienceSelect = document.getElementById('audience-select');
+        const inputArea = document.getElementById('announcement-input'); // Bu artık "detay"
+        
         const publishButton = document.getElementById('publish-button');
         const displayArea = document.getElementById('announcement-display');
         const loadingText = document.getElementById('loading-text');
 
 
         // --- YENİ VE TAM FIREBASE YAPILANDIRMASI ---
-        // Emir, buraya senin sağladığın tam bilgileri ekledim.
         const firebaseConfig = {
             apiKey: "AIzaSyBeQsh4Tp-YbLG8BcgoMDKXi5gJ0rBZ5pI",
             authDomain: "emirokuldeneme.firebaseapp.com",
@@ -108,56 +191,76 @@
         };
         // -------------------------------------------
 
-
         // --- Firebase Değişkenleri ---
         let db;
         let auth;
         let userId;
-
-        // Bu, Firestore'da verinin saklanacağı yolu belirler.
-        // Basit ve sabit bir yol kullanıyoruz.
-        // Proje ID'sini buradan da alabiliriz.
         const appId = firebaseConfig.projectId || 'genel-duyuru-odasi';
         const broadcastDocRef = () => doc(db, 'artifacts', appId, 'public/data', 'announcements', 'latest');
 
         // --- Rol Seçim Olayları ---
         selectPublisherBtn.addEventListener('click', () => {
-            startAppAs('publisher');
+            roleScreen.classList.add('hidden');
+            passwordScreen.classList.remove('hidden'); // Şifre ekranını göster
+            passwordInput.focus();
         });
 
         selectReceiverBtn.addEventListener('click', () => {
-            startAppAs('receiver');
+            startAppAs('receiver'); // Alıcı doğrudan başlar
         });
+
+        backToRolesBtn.addEventListener('click', () => {
+            passwordScreen.classList.add('hidden');
+            roleScreen.classList.remove('hidden');
+            passwordError.classList.add('hidden');
+            passwordInput.value = "";
+        });
+
+        // --- ŞİFRE KONTROLÜ ---
+        loginButton.addEventListener('click', () => {
+            if (passwordInput.value === "1234") {
+                passwordScreen.classList.add('hidden');
+                passwordInput.value = "";
+                passwordError.classList.add('hidden');
+                startAppAs('publisher'); // Şifre doğru, yayıncı olarak başlat
+            } else {
+                // Hata göster ve salla
+                passwordError.classList.remove('hidden');
+                passwordInput.classList.add('shake');
+                setTimeout(() => {
+                    passwordInput.classList.remove('shake');
+                    passwordError.classList.add('hidden');
+                }, 1000);
+            }
+        });
+        // Enter tuşu ile giriş
+        passwordInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') loginButton.click();
+        });
+
 
         // --- Uygulama Başlatma Fonksiyonu ---
         function startAppAs(role) {
-            // Ekranları değiştir
-            roleScreen.classList.add('hidden');
+            roleScreen.classList.add('hidden'); // Rol ekranını gizle (zaten gizli olabilir)
             mainAppScreen.classList.remove('hidden');
 
-            // Role göre arayüzü ayarla
             if (role === 'publisher') {
-                appTitle.textContent = "📢 Yayıncı Paneli";
-                publisherControls.classList.remove('hidden'); // Yayıncı kontrollerini göster
+                appTitle.textContent = "📢 Yayıncı Paneli (Darıca Uğur Okulu)";
+                publisherControls.classList.remove('hidden'); 
             } else {
-                appTitle.textContent = "🎧 Duyuru Alıcısı";
+                appTitle.textContent = "🎧 Duyuru Alıcısı (Darıca Uğur Okulu)";
             }
 
-            // Firebase'i başlat ve kimlik doğrula
             initializeAppAndAuth();
         }
 
         // --- Firebase Başlatma ve Kimlik Doğrulama ---
         function initializeAppAndAuth() {
             try {
-                // Manuel olarak girdiğimiz 'firebaseConfig' objesini kullanarak başlat
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
-
-                // 1. Firebase ile Kimlik Doğrulama
                 setupAuth();
-
             } catch (error) {
                 console.error("Firebase başlatma hatası:", error);
                 displayArea.innerHTML = `<p class="text-red-500">Hata: Firebase bağlantısı kurulamadı. ${error.message}</p>`;
@@ -167,41 +270,93 @@
 
         async function setupAuth() {
             try {
-                // Bu ortamın dışında olduğumuz için SADECE anonim giriş kullanıyoruz
                 await signInAnonymously(auth);
-
-                // Kullanıcı durumunu dinle
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
                         userId = user.uid;
                         console.log("Kimlik doğrulandı (Anonim). Kullanıcı ID:", userId);
-                        
-                        // 2. Kimlik doğrulandıktan sonra Firestore dinleyicisini başlat
-                        setupRealtimeListener();
+                        setupRealtimeListener(); // Dinleyiciyi başlat
 
-                        // 3. Buton olay dinleyicisini ayarla (sadece yayıncıda)
                         if (publisherControls.classList.contains('hidden') === false) {
                             publishButton.addEventListener('click', publishAnnouncement);
-                            publishButton.disabled = false; // Butonu aktif et
+                            publishButton.disabled = false;
+                            setupTemplateButtons(); // Şablon butonlarını ayarla
                         }
                     } else {
                         console.log("Kullanıcı oturumu kapattı.");
-                        publishButton.disabled = true;
+                        if(publishButton) publishButton.disabled = true;
                     }
                 });
-
             } catch (error) {
                 console.error("Kimlik doğrulama hatası:", error);
                 displayArea.innerHTML = `<p class="text-red-500">Hata: Kimlik doğrulanamadı. ${error.message}</p>`;
                 if(loadingText) loadingText.remove();
             }
         }
+        
+        // --- Kantin Şablonlarını Ayarla ---
+        function setupTemplateButtons() {
+            document.querySelectorAll('.template-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const template = e.target.dataset.template;
+                    
+                    // Önce formu temizle
+                    urgencySelect.value = 'normal';
+                    audienceSelect.value = 'ogrenciler'; // Kantin genelde öğrencilere yöneliktir
+                    
+                    switch(template) {
+                        case 'menu':
+                            titleInput.value = "Bugünün Menüsü 🍽️";
+                            inputArea.value = "Afiyet olsun! Bugünkü yemek listesi:\n1. ...\n2. ...\n3. ...";
+                            break;
+                        case 'tost':
+                            titleInput.value = "🎉 Sürpriz Tost Günü! 🎉";
+                            inputArea.value = "Bugün kantinde sıcak ve lezzetli tostlar sizleri bekliyor! Kaçırmayın!";
+                            urgencySelect.value = 'onemli';
+                            break;
+                        case 'muzik':
+                            titleInput.value = "🎶 Müzik İsteği 🎶";
+                            inputArea.value = "Öğle arasında çalmasını istediğiniz şarkıları bu postun altına yorum olarak yazabilirsiniz! (Not: Bu özellik eklenmedi, sadece şablon)";
+                            break;
+                        case 'kapanis':
+                            titleInput.value = "🔔 Kantin Kapanıyor 🔔";
+                            inputArea.value = "Kantinimiz 10 dakika içinde kapanacaktır. Lütfen ihtiyaçlarınızı giderin.";
+                            urgencySelect.value = 'acil';
+                            break;
+                    }
+                    
+                    // Kullanıcının hemen görmesi için alanlara odaklan
+                    titleInput.focus();
+                });
+            });
+        }
 
-        // 2. Firestore'daki değişiklikleri gerçek zamanlı dinle
+        // --- Önem Derecesine Göre Stil Veren Yardımcı Fonksiyon ---
+        function getUrgencyStyles(urgency) {
+            switch (urgency) {
+                case 'acil':
+                    return 'bg-red-800 border-red-500';
+                case 'onemli':
+                    return 'bg-yellow-800 border-yellow-500';
+                default:
+                    return 'bg-gray-700 border-gray-600';
+            }
+        }
+        function getUrgencyLabel(urgency) {
+            switch (urgency) {
+                case 'acil':
+                    return '🚨 ACİL';
+                case 'onemli':
+                    return 'ÖNEMLİ';
+                default:
+                    return 'Normal';
+            }
+        }
+
+        // 2. Firestore'daki değişiklikleri gerçek zamanlı dinle (GÜNCELLENDİ)
         function setupRealtimeListener() {
             console.log("Duyuru dinleyicisi kuruluyor...");
             const docRef = broadcastDocRef();
-            console.log("Dinlenen belge yolu:", docRef.path);
             
             onSnapshot(docRef, (doc) => {
                 if (loadingText) {
@@ -210,10 +365,42 @@
                 
                 if (doc.exists()) {
                     const data = doc.data();
-                    displayArea.innerHTML = `
-                        <p class="text-white text-lg">${data.text}</p>
-                        <p class="text-gray-400 text-xs mt-2 text-right">Yayınlanma: ${data.timestamp}</p>
-                    `;
+                    
+                    // Veri eski formatta mı (sadece text) yoksa yeni formatta mı (title vb.)
+                    if (data.text && !data.title) {
+                        // Eski format uyumluluğu
+                        displayArea.innerHTML = `
+                            <div class="p-4 rounded-lg bg-gray-700 border border-gray-600">
+                                <p class="text-white text-lg">${data.text}</p>
+                                <p class="text-gray-400 text-xs mt-2 text-right">Yayınlanma: ${data.timestamp}</p>
+                            </div>
+                        `;
+                    } else {
+                        // Yeni Zengin Duyuru Formatı
+                        const urgencyClass = getUrgencyStyles(data.urgency);
+                        const urgencyLabel = getUrgencyLabel(data.urgency);
+
+                        displayArea.innerHTML = `
+                            <div class="p-4 rounded-lg ${urgencyClass} border">
+                                <!-- Üst Bilgi Satırı -->
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="px-3 py-1 text-sm font-semibold rounded-full ${data.urgency === 'acil' ? 'bg-red-200 text-red-900' : (data.urgency === 'onemli' ? 'bg-yellow-200 text-yellow-900' : 'bg-gray-200 text-gray-900')}">
+                                        ${urgencyLabel}
+                                    </span>
+                                    <span class="text-sm text-gray-300 font-medium">Kime: ${data.audience}</span>
+                                </div>
+                                
+                                <!-- Başlık -->
+                                <h3 class="text-2xl font-bold text-white mb-2">${data.title}</h3>
+                                
+                                <!-- Detay (Boşlukları korumak için whitespace-pre-wrap) -->
+                                <p class="text-white text-lg whitespace-pre-wrap">${data.text}</p>
+                                
+                                <!-- Zaman Damgası -->
+                                <p class="text-gray-400 text-xs mt-4 text-right">Yayınlanma: ${data.timestamp}</p>
+                            </div>
+                        `;
+                    }
                 } else {
                     displayArea.innerHTML = `<p class="text-gray-400 italic">Henüz bir duyuru yayınlanmadı.</p>`;
                 }
@@ -223,14 +410,16 @@
             });
         }
 
-        // 3. Yeni duyuru yayınla
+        // 3. Yeni duyuru yayınla (GÜNCELLENDİ)
         async function publishAnnouncement() {
+            const title = titleInput.value.trim();
             const text = inputArea.value.trim();
+            const urgency = urgencySelect.value;
+            const audience = audienceSelect.value;
 
-            if (!text) {
-                console.warn("Boş mesaj gönderilemez.");
-                inputArea.classList.add('border-red-500');
-                setTimeout(() => inputArea.classList.remove('border-red-500'), 2000);
+            if (!title || !text) {
+                console.warn("Başlık ve Detay alanları boş bırakılamaz.");
+                // Hata mesajı veya stil ekleyebilirsin
                 return;
             }
 
@@ -239,13 +428,21 @@
 
             try {
                 await setDoc(broadcastDocRef(), {
+                    title: title,
                     text: text,
+                    urgency: urgency,
+                    audience: audience,
                     timestamp: new Date().toLocaleString('tr-TR'),
                     publishedBy: userId 
                 });
 
+                // Formu temizle
+                titleInput.value = "";
                 inputArea.value = "";
-                console.log("Duyuru başarıyla yayınlandı!");
+                urgencySelect.value = "normal";
+                audienceSelect.value = "tum-okul";
+                
+                console.log("Yeni duyuru başarıyla yayınlandı!");
 
             } catch (error) {
                 console.error("Duyuru yayınlama hatası (setDoc):", error);
