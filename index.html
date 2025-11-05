@@ -96,28 +96,17 @@
         const loadingText = document.getElementById('loading-text');
 
 
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // !!!!!!!!!!!!!!! ÇOK ÖNEMLİ / VERY IMPORTANT !!!!!!!!!!!!!!!
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //
-        // Sadece 'apiKey' yetmez! Hata almamak için aşağıdaki
-        // TÜM "SENIN_PROJE..." alanlarını kendi Firebase konsolundan
-        // kopyaladığın bilgilerle DOLDURMAN GEREKİYOR.
-        //
-        // (Go to Firebase Console -> Project Settings -> General ->
-        //  Find 'Your apps' -> 'Web app' -> 'SDK setup and configuration'
-        //  and copy the config object here.)
-        //
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // --- YENİ VE TAM FIREBASE YAPILANDIRMASI ---
+        // Emir, buraya senin sağladığın tam bilgileri ekledim.
         const firebaseConfig = {
-            apiKey: "AIzaSyCEFhB9MfxQwR155xyieDR-XvH-okrNwmY", // BU SENİN ANAHTARIN (DOĞRU)
-            authDomain: "SENIN_PROJEN.firebaseapp.com", // DOLDURMAN LAZIM
-            projectId: "SENIN_PROJE-ID", // DOLDURMAN LAZIM
-            storageBucket: "SENIN_PROJEN.appspot.com", // DOLDURMAN LAZIM
-            messagingSenderId: "1234567890", // DOLDURMAN LAZIM
-            appId: "1:1234567890:web:abcdef123456" // DOLDURMAN LAZIM
+            apiKey: "AIzaSyBeQsh4Tp-YbLG8BcgoMDKXi5gJ0rBZ5pI",
+            authDomain: "emirokuldeneme.firebaseapp.com",
+            projectId: "emirokuldeneme",
+            storageBucket: "emirokuldeneme.firebasestorage.app",
+            messagingSenderId: "821824749207",
+            appId: "1:821824749207:web:164b0ea4c79bf9636f33d2"
         };
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // -------------------------------------------
 
 
         // --- Firebase Değişkenleri ---
@@ -127,7 +116,8 @@
 
         // Bu, Firestore'da verinin saklanacağı yolu belirler.
         // Basit ve sabit bir yol kullanıyoruz.
-        const appId = 'genel-duyuru-odasi';
+        // Proje ID'sini buradan da alabiliriz.
+        const appId = firebaseConfig.projectId || 'genel-duyuru-odasi';
         const broadcastDocRef = () => doc(db, 'artifacts', appId, 'public/data', 'announcements', 'latest');
 
         // --- Rol Seçim Olayları ---
@@ -210,7 +200,10 @@
         // 2. Firestore'daki değişiklikleri gerçek zamanlı dinle
         function setupRealtimeListener() {
             console.log("Duyuru dinleyicisi kuruluyor...");
-            onSnapshot(broadcastDocRef(), (doc) => {
+            const docRef = broadcastDocRef();
+            console.log("Dinlenen belge yolu:", docRef.path);
+            
+            onSnapshot(docRef, (doc) => {
                 if (loadingText) {
                     loadingText.style.display = 'none'; // Yükleniyor yazısını gizle
                 }
