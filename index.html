@@ -19,7 +19,6 @@
             font-family: 'Inter', sans-serif;
             overflow-x: hidden; /* Yatay kaydırmayı engelle */
             
-            /* --- YENİ GÖRSEL EFEKT --- */
             /* Canlı bir arka plan gradienti */
             background: linear-gradient(120deg, #1e3a8a 0%, #312e81 50%, #0c0a09 100%);
             background-size: 200% 200%;
@@ -32,7 +31,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* --- YENİ CAM EFEKTİ (Glassmorphism) KARTI --- */
+        /* CAM EFEKTİ (Glassmorphism) KARTI */
         .glass-card {
             background: rgba(23, 37, 84, 0.4); /* Yarı saydam koyu mavi */
             backdrop-filter: blur(12px); /* Arka planı bulanıklaştır */
@@ -75,6 +74,7 @@
             100% { box-shadow: 0 0 0 0px rgba(96, 165, 250, 0); }
         }
 
+        /* --- ZİL ANİMASYONU --- */
         .bell-animation {
             font-size: 8rem; /* Çok büyük zil */
             animation: bellRing 1.5s infinite ease-in-out;
@@ -91,6 +91,65 @@
             75% { transform: rotate(5deg); }
             100% { transform: rotate(0deg); }
         }
+
+        /* --- 5 YENİ ANİMASYON --- */
+        
+        /* 1. Alkış */
+        .effect-animation.clap {
+            font-size: 7rem;
+            animation: clapBurst 1s ease-out forwards;
+        }
+        @keyframes clapBurst {
+            0% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0; transform: scale(1.5); }
+        }
+
+        /* 2. Kupa */
+        .effect-animation.trophy {
+            font-size: 8rem;
+            animation: trophyRise 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            text-shadow: 0 0 30px #fde047; /* gold */
+        }
+        @keyframes trophyRise {
+            0% { opacity: 0; transform: translateY(50px) scale(0.8); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        /* 3. Hediye */
+        .effect-animation.gift {
+            font-size: 8rem;
+            animation: giftShake 0.8s 2; /* 2 kez salla */
+        }
+        @keyframes giftShake {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(10deg); }
+            75% { transform: rotate(-10deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        /* 4. Konfeti */
+        .effect-animation.confetti {
+            font-size: 7rem;
+            animation: confettiPop 1s ease-out forwards;
+        }
+        @keyframes confettiPop {
+            0% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1.1) rotate(20deg); }
+            100% { opacity: 0; transform: scale(1.3) rotate(40deg); }
+        }
+        
+        /* 5. Parıltı */
+        .effect-animation.sparkles {
+            font-size: 8rem;
+            animation: sparklesShine 1.5s infinite;
+            color: #fef08a; /* açık sarı */
+        }
+        @keyframes sparklesShine {
+            0%, 100% { opacity: 0.8; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+        
     </style>
 </head>
 <body class="text-gray-100 min-h-screen flex items-center justify-center p-4">
@@ -165,10 +224,35 @@
                 <textarea id="announcement-input" rows="4" class="w-full p-3 bg-gray-900/50 border border-gray-400/30 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Duyuru ile ilgili detayları buraya yazın..."></textarea>
             </div>
 
-            <!-- YENİ: Manuel Zil Animasyonu Checkbox'ı -->
-            <div class="flex items-center">
-                <input id="manual-bell-check" type="checkbox" class="h-4 w-4 rounded bg-gray-900/50 border-gray-400/30 text-blue-600 focus:ring-blue-500">
-                <label for="manual-bell-check" class="ml-2 block text-sm text-gray-300">🔔 Manuel Zil Animasyonu Ekle</label>
+            <!-- YENİ ANİMASYON SEÇENEKLERİ -->
+            <div class="border-t border-gray-400/30 pt-4">
+                <label class="block text-sm font-medium text-gray-300 mb-2">Animasyon Ekle (Sadece 1 tane seçin):</label>
+                <div class="grid grid-cols-2 gap-x-4 gap-y-2">
+                    <div class="flex items-center">
+                        <input id="anim-bell" name="animation-select" type="radio" class="effect-check h-4 w-4 rounded bg-gray-900/50 border-gray-400/30 text-blue-600 focus:ring-blue-500">
+                        <label for="anim-bell" class="ml-2 block text-sm text-gray-300">🔔 Zil</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="anim-clap" name="animation-select" type="radio" class="effect-check h-4 w-4 rounded bg-gray-900/50 border-gray-400/30 text-blue-600 focus:ring-blue-500">
+                        <label for="anim-clap" class="ml-2 block text-sm text-gray-300">👏 Alkış</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="anim-trophy" name="animation-select" type="radio" class="effect-check h-4 w-4 rounded bg-gray-900/50 border-gray-400/30 text-blue-600 focus:ring-blue-500">
+                        <label for="anim-trophy" class="ml-2 block text-sm text-gray-300">🏆 Kupa</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="anim-gift" name="animation-select" type="radio" class="effect-check h-4 w-4 rounded bg-gray-900/50 border-gray-400/30 text-blue-600 focus:ring-blue-500">
+                        <label for="anim-gift" class="ml-2 block text-sm text-gray-300">🎁 Hediye</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="anim-confetti" name="animation-select" type="radio" class="effect-check h-4 w-4 rounded bg-gray-900/50 border-gray-400/30 text-blue-600 focus:ring-blue-500">
+                        <label for="anim-confetti" class="ml-2 block text-sm text-gray-300">🎉 Konfeti</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="anim-sparkles" name="animation-select" type="radio" class="effect-check h-4 w-4 rounded bg-gray-900/50 border-gray-400/30 text-blue-600 focus:ring-blue-500">
+                        <label for="anim-sparkles" class="ml-2 block text-sm text-gray-300">✨ Parıltı</label>
+                    </div>
+                </div>
             </div>
             
             <!-- Kantin Hızlı Şablonları -->
@@ -204,8 +288,8 @@
             <h2 class="text-xl font-semibold mb-3 text-gray-200">Son Gelen Duyuru:</h2>
             
             <!-- Görsel Efekt Alanı (Zil vb.) -->
-            <div id="visual-effect-area" class="text-center mb-4 min-h-[50px] flex items-center justify-center">
-                <!-- Zil animasyonu buraya gelecek -->
+            <div id="visual-effect-area" class="text-center mb-4 min-h-[100px] flex items-center justify-center overflow-hidden">
+                <!-- Animasyonlar buraya gelecek -->
             </div>
             
             <!-- Duyurunun kendisi (içerik) -->
@@ -245,7 +329,7 @@
         const urgencySelect = document.getElementById('urgency-select');
         const audienceSelect = document.getElementById('audience-select');
         const inputArea = document.getElementById('announcement-input');
-        const manualBellCheck = document.getElementById('manual-bell-check'); // YENİ
+        const animationCheckboxes = document.querySelectorAll('input[name="animation-select"]'); // YENİ
         
         const publishButton = document.getElementById('publish-button');
         const displayContent = document.getElementById('announcement-display-content'); // İçerik alanı
@@ -376,7 +460,7 @@
                     // Formu temizle
                     urgencySelect.value = 'normal';
                     audienceSelect.value = 'ogrenciler'; 
-                    manualBellCheck.checked = false;
+                    uncheckAllAnimations();
                     
                     switch(template) {
                         case 'menu':
@@ -387,6 +471,7 @@
                             titleInput.value = "🎉 Sürpriz Tost Günü! 🎉";
                             inputArea.value = "Bugün kantinde sıcak ve lezzetli tostlar sizleri bekliyor! Kaçırmayın!";
                             urgencySelect.value = 'onemli';
+                            document.getElementById('anim-confetti').checked = true; // Otomatik konfeti
                             break;
                         case 'muzik':
                             titleInput.value = "🎶 Müzik İsteği 🎶";
@@ -396,12 +481,16 @@
                             titleInput.value = "🔔 Kantin Kapanıyor 🔔";
                             inputArea.value = "Kantinimiz 10 dakika içinde kapanacaktır. Lütfen ihtiyaçlarınızı giderin. Yarın görüşmek üzere!";
                             urgencySelect.value = 'acil';
-                            manualBellCheck.checked = true; // Kapanış zili otomatk seçilsin
+                            document.getElementById('anim-bell').checked = true; // Kapanış zili otomatk seçilsin
                             break;
                     }
                     titleInput.focus();
                 });
             });
+        }
+        
+        function uncheckAllAnimations() {
+            animationCheckboxes.forEach(cb => cb.checked = false);
         }
 
         // --- Önem Derecesine Göre Stil Veren Yardımcı Fonksiyon ---
@@ -423,6 +512,46 @@
                     return 'ÖNEMLİ';
                 default:
                     return 'Normal';
+            }
+        }
+        
+        // --- YENİ ANİMASYON OYNATMA FONKSİYONU ---
+        function playVisualEffect(effect) {
+            visualEffectArea.innerHTML = ''; // Önce temizle
+            if (!effect) return; // Efekt yoksa çık
+            
+            let emoji = '';
+            let cssClass = '';
+            
+            switch(effect) {
+                case 'bell':
+                    emoji = '🔔';
+                    cssClass = 'bell-animation'; // Bu sonsuz döngülü
+                    break;
+                case 'clap':
+                    emoji = '👏';
+                    cssClass = 'effect-animation clap';
+                    break;
+                case 'trophy':
+                    emoji = '🏆';
+                    cssClass = 'effect-animation trophy';
+                    break;
+                case 'gift':
+                    emoji = '🎁';
+                    cssClass = 'effect-animation gift';
+                    break;
+                case 'confetti':
+                    emoji = '🎉';
+                    cssClass = 'effect-animation confetti';
+                    break;
+                case 'sparkles':
+                    emoji = '✨';
+                    cssClass = 'effect-animation sparkles'; // Bu da sonsuz döngülü
+                    break;
+            }
+            
+            if(emoji) {
+                visualEffectArea.innerHTML = `<span class="${cssClass}">${emoji}</span>`;
             }
         }
 
@@ -449,11 +578,11 @@
                         lastAnnouncementTimestamp = currentTimestamp;
                         
                         // --- YENİ ANİMASYON MANTIĞI ---
-                        visualEffectArea.innerHTML = ''; // Önceki efektleri temizle
-                        // 1. Acil ise VEYA manuel zil seçildiyse zili çal
-                        if (data.urgency === 'acil' || data.playBell === true) {
-                            visualEffectArea.innerHTML = '<span class="bell-animation">🔔</span>';
+                        let effectToPlay = data.animation; // Varsayılan olarak seçileni al
+                        if (data.urgency === 'acil' && !effectToPlay) {
+                            effectToPlay = 'bell'; // Eğer ACİL seçilmişse ve başka animasyon yoksa, ZİL'i zorunlu kıl.
                         }
+                        playVisualEffect(effectToPlay); // Animasyonu oynat
                         
                         mainAppScreen.scrollTo({ top: 0, behavior: 'smooth' });
                     }
@@ -501,7 +630,14 @@
             const text = inputArea.value.trim();
             const urgency = urgencySelect.value;
             const audience = audienceSelect.value;
-            const playBell = manualBellCheck.checked; // YENİ
+            
+            // Seçili animasyonu bul
+            let selectedAnimation = null;
+            animationCheckboxes.forEach(cb => {
+                if(cb.checked) {
+                    selectedAnimation = cb.id.split('-')[1]; // Örn: "anim-bell" -> "bell"
+                }
+            });
 
             if (!title || !text) {
                 console.warn("Başlık ve Detay alanları boş bırakılamaz.");
@@ -524,7 +660,7 @@
                     text: text,
                     urgency: urgency,
                     audience: audience,
-                    playBell: playBell, // YENİ: Zil durumunu kaydet
+                    animation: selectedAnimation, // YENİ: Seçilen animasyonu kaydet (null olabilir)
                     timestamp: new Date().toLocaleString('tr-TR'),
                     publishedBy: userId 
                 });
@@ -534,7 +670,7 @@
                 inputArea.value = "";
                 urgencySelect.value = "normal";
                 audienceSelect.value = "tum-okul";
-                manualBellCheck.checked = false; // Checkbox'ı temizle
+                uncheckAllAnimations(); // Checkbox'ları temizle
                 
                 console.log("Yeni duyuru başarıyla yayınlandı!");
 
