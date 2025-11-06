@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Darıca Uğur Okulu - Gerçek Zamanlı Duyuru 📢</title>
+    <title>Darıca Uğur Okulu - Bilgi Ekranı 🖥️</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,50 +11,117 @@
     <!-- Google Fonts (Inter) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
     
     <style>
-        /* Ana Font */
+        /* Ana font ailesi */
         body {
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden; /* Yatay kaydırmayı engelle */
-            
-            /* Canlı bir arka plan gradienti */
-            background: linear-gradient(120deg, #1e3a8a 0%, #312e81 50%, #0c0a09 100%);
-            background-size: 200% 200%;
-            animation: backgroundGradient 15s ease infinite;
         }
 
-        @keyframes backgroundGradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        /* --- Yayıncı Ekranı (Windows Stili) Stilleri --- */
+        
+        /* Windows stili gölgeli buton */
+        .btn-windows {
+            background-color: #f0f0f0;
+            border: 1px solid #a0a0a0;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.6);
+            transition: all 0.1s ease-in-out;
         }
-
-        /* CAM EFEKTİ (Glassmorphism) KARTI */
-        .glass-card {
-            background: rgba(23, 37, 84, 0.4); /* Yarı saydam koyu mavi */
-            backdrop-filter: blur(12px); /* Arka planı bulanıklaştır */
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: 1.25rem; /* 20px */
-            border: 1px solid rgba(255, 255, 255, 0.1); /* İnce beyaz çerçeve */
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); /* Yumuşak gölge */
+        .btn-windows:hover {
+            background-color: #e8e8e8;
+            border-color: #888;
+        }
+        .btn-windows:active {
+            background-color: #d0d0d0;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
         }
         
-        #announcement-display-content {
-            transition: all 0.3s ease;
-            word-wrap: break-word;
+        /* Ana uygulama penceresi */
+        .app-window {
+            border: 1px solid #a0a0a0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        /* Mavi başlık çubuğu */
+        .title-bar {
+            background-color: #005a9e; /* Klasik Windows mavisi */
+            padding: 4px 8px;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* Grup kutusu (fieldset) stili */
+        .group-box {
+            border: 1px solid #c0c0c0;
+            padding: 1rem;
+            margin-top: 1rem;
+            background-color: #f5f5f5; /* Hafif gri arka plan */
+        }
+        .group-box-legend {
+            font-weight: bold;
+            color: #333;
+            margin-left: 0.5rem;
+            padding: 0 0.25rem;
+            background-color: #f5f5f5; /* Efsanenin arka planı */
+            position: relative;
+            top: -0.7rem; /* Çizginin üstüne çıkar */
+            display: inline-block;
         }
 
-        /* --- Animasyon Keyframes --- */
-        .fade-in {
-            animation: fadeIn 0.5s ease-in-out forwards;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
 
+        /* --- Alıcı Ekranı (Masaüstü Stili) Stilleri --- */
+        
+        /* "Eğlenceli ama resmi" masaüstü arka planı */
+        .desktop-background {
+            background-color: #f0f4f8; /* Açık mavi-gri */
+            background-image:
+                linear-gradient(rgba(255, 255, 255, .05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, .05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            overflow: hidden; /* Sürüklenen pencereler taşmasın */
+        }
+        
+        /* Sürükle-bırak pencereleri */
+        .draggable-window {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.85); /* Hafif şeffaf "cam" efekti */
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px; /* Resmi ama modern köşeler */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            min-width: 300px;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease-in-out; /* Düzen değişimi için animasyon */
+        }
+        
+        /* Pencere başlık çubuğu (sürükleme alanı) */
+        .window-header {
+            padding: 0.5rem 0.75rem;
+            font-weight: bold;
+            color: #333;
+            background-color: rgba(255, 255, 255, 0.5); /* Başlık çubuğu da yarı şeffaf */
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 8px 8px 0 0;
+            cursor: move; /* Sürükleme imleci */
+            user-select: none; /* Metin seçmeyi engelle */
+        }
+        
+        /* Pencere içeriği */
+        .window-content {
+            padding: 0.75rem;
+            flex-grow: 1; /* Esne, alanı doldur */
+            overflow-y: auto; /* İçerik taşarsa kaydır */
+            max-height: 400px; /* Çok uzun olmasın */
+        }
+        
+        /* Hata animasyonu (şifre vb.) */
         .shake {
             animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
         }
@@ -64,242 +131,200 @@
             30%, 50%, 70% { transform: translateX(-4px); }
             40%, 60% { transform: translateX(4px); }
         }
-
-        .announcement-pulse {
-            animation: pulse-border 1.5s infinite;
+        
+        /* Yeni duyuru vurgulama animasyonu */
+        .highlight-pulse {
+            animation: highlight-pulse 1.5s ease-out;
         }
-        @keyframes pulse-border {
-            0% { box-shadow: 0 0 0 0px rgba(96, 165, 250, 0.7); } /* blue-400 */
-            70% { box-shadow: 0 0 0 10px rgba(96, 165, 250, 0); }
-            100% { box-shadow: 0 0 0 0px rgba(96, 165, 250, 0); }
+        @keyframes highlight-pulse {
+            0% { box-shadow: 0 0 0 0px rgba(251, 191, 36, 0.7); } /* Sarı */
+            70% { box-shadow: 0 0 0 15px rgba(251, 191, 36, 0); }
+            100% { box-shadow: 0 0 0 0px rgba(251, 191, 36, 0); }
         }
-
-        /* --- ZİL ANİMASYONU --- */
-        .bell-animation {
-            font-size: 8rem; /* Çok büyük zil */
-            animation: bellRing 1.5s infinite ease-in-out;
-            transform-origin: top center; /* Üstten sallanma */
-            display: inline-block; /* sallanması için gerekli */
-            text-shadow: 0 0 20px rgba(250, 204, 21, 0.7); /* Zile sarı bir parlama ekle */
+        
+        /* API Yükleniyor Spinner'ı */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
         }
-        @keyframes bellRing {
+        @keyframes spin {
             0% { transform: rotate(0deg); }
-            15% { transform: rotate(15deg); }
-            30% { transform: rotate(-15deg); }
-            45% { transform: rotate(10deg); }
-            60% { transform: rotate(-10deg); }
-            75% { transform: rotate(5deg); }
-            100% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        /* --- 5 YENİ ANİMASYON --- */
-        
-        /* 1. Alkış */
-        .effect-animation.clap {
-            font-size: 7rem;
-            animation: clapBurst 1s ease-out forwards;
-        }
-        @keyframes clapBurst {
-            0% { opacity: 0; transform: scale(0.5); }
-            50% { opacity: 1; transform: scale(1.2); }
-            100% { opacity: 0; transform: scale(1.5); }
-        }
-
-        /* 2. Kupa */
-        .effect-animation.trophy {
-            font-size: 8rem;
-            animation: trophyRise 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-            text-shadow: 0 0 30px #fde047; /* gold */
-        }
-        @keyframes trophyRise {
-            0% { opacity: 0; transform: translateY(50px) scale(0.8); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        
-        /* 3. Hediye */
-        .effect-animation.gift {
-            font-size: 8rem;
-            animation: giftShake 0.8s 2; /* 2 kez salla */
-        }
-        @keyframes giftShake {
-            0% { transform: rotate(0deg); }
-            25% { transform: rotate(10deg); }
-            75% { transform: rotate(-10deg); }
-            100% { transform: rotate(0deg); }
-        }
-
-        /* 4. Konfeti */
-        .effect-animation.confetti {
-            font-size: 7rem;
-            animation: confettiPop 1s ease-out forwards;
-        }
-        @keyframes confettiPop {
-            0% { opacity: 0; transform: scale(0.5) rotate(0deg); }
-            50% { opacity: 1; transform: scale(1.1) rotate(20deg); }
-            100% { opacity: 0; transform: scale(1.3) rotate(40deg); }
-        }
-        
-        /* 5. Parıltı */
-        .effect-animation.sparkles {
-            font-size: 8rem;
-            animation: sparklesShine 1.5s infinite;
-            color: #fef08a; /* açık sarı */
-        }
-        @keyframes sparklesShine {
-            0%, 100% { opacity: 0.8; transform: scale(0.9); }
-            50% { opacity: 1; transform: scale(1.1); }
-        }
-        
     </style>
 </head>
-<body class="text-gray-100 min-h-screen flex items-center justify-center p-4">
+<body class="bg-gray-200 min-h-screen flex items-center justify-center p-4">
 
-    <!-- 1. Rol Seçim Ekranı (Başlangıçta görünür) -->
-    <div id="role-selection-screen" class="glass-card p-8 w-full max-w-sm text-center fade-in">
-        <h1 class="text-3xl font-bold mb-6 text-white">Darıca Uğur Okulu 🇹🇷</h1>
-        <p class="text-gray-300 mb-8 text-lg">Duyuru Sistemine Hoş Geldiniz!</p>
-        <div class="space-y-4">
-            <button id="select-publisher" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration:300 transform hover:scale-105">
-                📣 Yayıncı (Duyuru Gönder)
-            </button>
-            <button id="select-receiver" class="w-full bg-gray-600 hover:bg-gray-500 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration:300 transform hover:scale-105">
-                🎧 Alıcı (Sadece Duyuru Al)
-            </button>
+    <!-- 1. Rol Seçim Ekranı -->
+    <div id="role-selection-screen" class="app-window bg-white w-full max-w-md">
+        <div class="title-bar">
+            <span>Darıca Uğur Okulu - Bilgi Ekranı 🖥️</span>
+        </div>
+        <div class="p-8 text-center">
+            <h1 class="text-xl font-bold mb-6 text-gray-800">Cihaz Modu Seçimi</h1>
+            <p class="text-gray-600 mb-8">Bu cihazı nasıl kullanmak istiyorsunuz?</p>
+            <div class="space-y-4">
+                <button id="select-publisher" class="w-full btn-windows font-bold py-3 px-4 shadow-sm text-gray-800">
+                    👨‍💻 Yayıncı (Yönetim Paneli)
+                </button>
+                <button id="select-receiver" class="w-full btn-windows font-bold py-3 px-4 shadow-sm text-gray-800">
+                    📺 Alıcı (TV Ekranı)
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- 2. Şifre Ekranı (Gizli) -->
-    <div id="password-screen" class="glass-card p-8 w-full max-w-sm text-center hidden fade-in">
-        <h1 class="text-2xl font-bold mb-6 text-white">Yayıncı Girişi</h1>
-        <p class="text-gray-300 mb-4">Duyuru yayınlamak için şifreyi girin.</p>
-        <input id="password-input" type="password" class="w-full p-3 bg-gray-900/50 border border-gray-400/30 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-4" placeholder="••••••••">
-        <button id="login-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration:300 transform hover:scale-105">
-            Giriş Yap
-        </button>
-        <p id="password-hint" class="text-gray-400 text-sm mt-4">İpucu: şifre 1234</p>
-        <p id="password-error" class="text-red-400 text-sm mt-2 hidden">Hatalı şifre!</p>
-        <button id="back-to-roles" class="text-gray-300 hover:text-white text-sm mt-6">Geri</button>
+    <!-- 2. Şifre Ekranı (Yayıncı için) -->
+    <div id="password-screen" class="app-window bg-white w-full max-w-md hidden">
+        <div class="title-bar">
+            <span>Yayıncı Girişi</span>
+        </div>
+        <div class="p-8 text-center">
+            <h1 class="text-xl font-bold mb-6 text-gray-800">Yönetici Paneli Girişi</h1>
+            <p class="text-gray-600 mb-4">Lütfen şifreyi girin.</p>
+            <input id="password-input" type="password" class="w-full p-2 bg-white border border-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-4" placeholder="••••••••">
+            <button id="login-button" class="w-full btn-windows bg-blue-600 text-white font-bold py-3 px-4 shadow-sm border-blue-700">
+                Giriş Yap
+            </button>
+            <p id="password-hint" class="text-gray-500 text-sm mt-4">İpucu: şifre 1234</p>
+            <p id="password-error" class="text-red-500 text-sm mt-2 hidden">Hatalı şifre!</p>
+            <button id="back-to-roles" class="text-gray-600 hover:text-blue-600 text-sm mt-6">Geri</button>
+        </div>
     </div>
 
+    <!-- 3. Ana Uygulama - Yayıncı Paneli (Windows Stili) -->
+    <div id="publisher-screen" class="app-window bg-gray-200 w-full max-w-3xl hidden">
+        <div class="title-bar">
+            <span>👨‍💻 Yayıncı Paneli (Darıca Uğur Okulu)</span>
+            <span id="publisher-clock" class="text-sm">00:00:00</span>
+        </div>
+        
+        <!-- Araç Çubuğu (Kantin Şablonları) -->
+        <div class="p-2 bg-gray-100 border-b border-gray-300 flex flex-wrap gap-2 items-center">
+            <span class="text-sm font-semibold mr-2">Hızlı Şablonlar:</span>
+            <button data-template="menu" class="template-btn btn-windows text-sm py-1 px-2">🍽️ Menü</button>
+            <button data-template="tost" class="template-btn btn-windows text-sm py-1 px-2">🎉 Tost Günü</button>
+            <button data-template="muzik" class="template-btn btn-windows text-sm py-1 px-2">🎶 Müzik İsteği</button>
+            <button data-template="kapanis" class="template-btn btn-windows text-sm py-1 px-2">🔔 Kapanış</button>
+        </div>
 
-    <!-- 3. Ana Uygulama Ekranı (Gizli) -->
-    <div id="main-app-screen" class="glass-card p-6 md:p-8 w-full max-w-lg hidden fade-in">
-        <h1 id="app-title" class="text-2xl md:text-3xl font-bold text-center mb-6 text-white">
-            <!-- Başlık JS ile ayarlanacak -->
-        </h1>
-
-        <!-- Sadece Yayıncının Göreceği Alan -->
-        <div id="publisher-controls" class="hidden space-y-4">
-            
-            <!-- Duyuru Başlığı -->
+        <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Sol Sütun: Formlar -->
             <div>
-                <label for="title-input" class="block text-sm font-medium text-gray-300 mb-2">Duyuru Başlığı:</label>
-                <input id="title-input" type="text" class="w-full p-3 bg-gray-900/50 border border-gray-400/30 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Örn: 29 Ekim Tören Provası 🇹🇷">
-            </div>
-
-            <!-- Önem Derecesi -->
-            <div>
-                <label for="urgency-select" class="block text-sm font-medium text-gray-300 mb-2">Önem Derecesi:</label>
-                <select id="urgency-select" class="w-full p-3 bg-gray-900/50 border border-gray-400/30 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                    <option value="normal" class="text-black">Normal</option>
-                    <option value="onemli" class="text-black">Önemli</option>
-                    <option value="acil" class="text-black">🚨 ACİL 🚨</option>
-                </select>
-            </div>
-
-            <!-- Kime -->
-            <div>
-                <label for="audience-select" class="block text-sm font-medium text-gray-300 mb-2">Kime:</label>
-                <select id="audience-select" class="w-full p-3 bg-gray-900/50 border border-gray-400/30 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                    <option value="tum-okul" class="text-black">Tüm Okul</option>
-                    <option value="ogrenciler" class="text-black">Öğrenciler</option>
-                    <option value="ogretmenler" class="text-black">Öğretmenler</option>
-                    <option value="veliler" class="text-black">Veliler</option>
-                </select>
-            </div>
-
-            <!-- Duyuru Detayı -->
-            <div>
-                <label for="announcement-input" class="block text-sm font-medium text-gray-300 mb-2">Duyuru Detayı:</label>
-                <textarea id="announcement-input" rows="4" class="w-full p-3 bg-gray-900/50 border border-gray-400/30 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Duyuru ile ilgili detayları buraya yazın..."></textarea>
-            </div>
-
-            <!-- YENİ ANİMASYON SEÇENEKLERİ -->
-            <div class="border-t border-gray-400/30 pt-4">
-                <label class="block text-sm font-medium text-gray-300 mb-2">Animasyon Ekle (Sadece 1 tane seçin):</label>
-                <div class="grid grid-cols-2 gap-x-4 gap-y-2">
-                    <div class="flex items-center">
-                        <input id="anim-bell" name="animation-select" type="radio" class="effect-check h-4 w-4 rounded bg-gray-900/50 border-gray-400/30 text-blue-600 focus:ring-blue-500">
-                        <label for="anim-bell" class="ml-2 block text-sm text-gray-300">🔔 Zil</label>
-                    </div>
-                    <div class="flex items-center">
-                        <input id="anim-clap" name="animation-select" type="radio" class="effect-check h-4 w-4 rounded bg-gray-900/50 border-gray-400/30 text-blue-600 focus:ring-blue-500">
-                        <label for="anim-clap" class="ml-2 block text-sm text-gray-300">👏 Alkış</label>
-                    </div>
-                    <div class="flex items-center">
-                        <input id="anim-trophy" name="animation-select" type="radio" class="effect-check h-4 w-4 rounded bg-gray-900/50 border-gray-400/30 text-blue-600 focus:ring-blue-500">
-                        <label for="anim-trophy" class="ml-2 block text-sm text-gray-300">🏆 Kupa</label>
-                    </div>
-                    <div class="flex items-center">
-                        <input id="anim-gift" name="animation-select" type="radio" class="effect-check h-4 w-4 rounded bg-gray-900/50 border-gray-400/30 text-blue-600 focus:ring-blue-500">
-                        <label for="anim-gift" class="ml-2 block text-sm text-gray-300">🎁 Hediye</label>
-                    </div>
-                    <div class="flex items-center">
-                        <input id="anim-confetti" name="animation-select" type="radio" class="effect-check h-4 w-4 rounded bg-gray-900/50 border-gray-400/30 text-blue-600 focus:ring-blue-500">
-                        <label for="anim-confetti" class="ml-2 block text-sm text-gray-300">🎉 Konfeti</label>
-                    </div>
-                    <div class="flex items-center">
-                        <input id="anim-sparkles" name="animation-select" type="radio" class="effect-check h-4 w-4 rounded bg-gray-900/50 border-gray-400/30 text-blue-600 focus:ring-blue-500">
-                        <label for="anim-sparkles" class="ml-2 block text-sm text-gray-300">✨ Parıltı</label>
+                <!-- Grup 1: Normal Duyuru -->
+                <div class="group-box">
+                    <span class="group-box-legend">Yeni Duyuru Yayınla</span>
+                    <div class="space-y-3">
+                        <div>
+                            <label for="title-input" class="block text-sm font-medium text-gray-700">Başlık:</label>
+                            <input id="title-input" type="text" class="w-full p-2 bg-white border border-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Örn: Acil Toplantı">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                             <div>
+                                <label for="urgency-select" class="block text-sm font-medium text-gray-700">Önem:</label>
+                                <select id="urgency-select" class="w-full p-2 bg-white border border-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                    <option value="normal">Normal</option>
+                                    <option value="onemli">Önemli</option>
+                                    <option value="acil">🚨 ACİL</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="audience-select" class="block text-sm font-medium text-gray-700">Kime:</label>
+                                <select id="audience-select" class="w-full p-2 bg-white border border-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                    <option value="Tüm Okul">Tüm Okul</option>
+                                    <option value="Öğrenciler">Öğrenciler</option>
+                                    <option value="Öğretmenler">Öğretmenler</option>
+                                    <option value="Veliler">Veliler</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="announcement-input" class="block text-sm font-medium text-gray-700">Detay:</label>
+                            <textarea id="announcement-input" rows="3" class="w-full p-2 bg-white border border-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Duyuru detayları..."></textarea>
+                        </div>
+                        <button id="publish-button" class="w-full btn-windows bg-blue-600 text-white font-bold py-2 px-4 shadow-sm border-blue-700" disabled>
+                            Yayınla 🚀
+                        </button>
                     </div>
                 </div>
             </div>
             
-            <!-- Kantin Hızlı Şablonları -->
-            <div class="border-t border-gray-400/30 pt-4">
-                 <label class="block text-sm font-medium text-gray-300 mb-2">Kantin Hızlı Şablonları:</label>
-                 <div class="flex flex-wrap gap-2">
-                    <button data-template="menu" class="template-btn bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-2 px-3 rounded-lg transition duration-300">
-                        🍽️ Menü
-                    </button>
-                    <button data-template="tost" class="template-btn bg-yellow-600 hover:bg-yellow-700 text-gray-900 text-sm font-bold py-2 px-3 rounded-lg transition duration-300">
-                        🎉 Tost Günü
-                    </button>
-                    <button data-template="muzik" class="template-btn bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold py-2 px-3 rounded-lg transition duration-300">
-                        🎶 Müzik İsteği
-                    </button>
-                    <button data-template="kapanis" class="template-btn bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-2 px-3 rounded-lg transition duration-300">
-                        🔔 Kapanış
-                    </button>
-                 </div>
+            <!-- Sağ Sütun: Kontroller -->
+            <div>
+                <!-- Grup 2: Anlık İçerik Oluşturucular (AI) -->
+                <div class="group-box">
+                    <span class="group-box-legend">Anlık İçerik (AI)</span>
+                    <div class="space-y-2">
+                        <button id="publish-weather" class="w-full btn-windows py-2 px-4 text-gray-800">
+                            ☀️ Darıca Hava Durumunu Sun
+                        </button>
+                        <button id="publish-fact" class="w-full btn-windows py-2 px-4 text-gray-800">
+                            🧠 Eğlenceli Bilgi Ver
+                        </button>
+                        <div id="ai-loading-indicator" class="text-sm text-gray-600 flex items-center justify-center gap-2 hidden">
+                            <div class="loader !w-4 !h-4 !border-2"></div>
+                            <span>Gemini AI içerik üretiyor...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grup 3: Ekran Düzeni Kontrolü (YENİ) -->
+                <div class="group-box">
+                    <span class="group-box-legend">🖥️ TV Ekran Düzeni Kontrolü</span>
+                    <p class="text-xs text-gray-600 mb-2">TV'deki pencerelerin düzenini anında değiştir:</p>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button data-layout="left-right" class="layout-btn btn-windows text-sm py-2 px-1">Sol/Sağ</button>
+                        <button data-layout="fullscreen" class="layout-btn btn-windows text-sm py-2 px-1">Tam Ekran</button>
+                        <button data-layout="three-columns" class="layout-btn btn-windows text-sm py-2 px-1">Üç Sütun</button>
+                    </div>
+                </div>
             </div>
-
-            <!-- Yayınla Butonu -->
-            <button id="publish-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration:300 ease-in-out transform hover:scale-105 mt-4" disabled>
-                Yayınla 🚀
-            </button>
-
-            <!-- Ayırıcı -->
-            <hr class="border-gray-400/30 my-6">
         </div>
-        
-        <!-- Son Duyuru Görüntüleme Alanı (Herkes görür) -->
-        <div>
-            <h2 class="text-xl font-semibold mb-3 text-gray-200">Son Gelen Duyuru:</h2>
-            
-            <!-- Görsel Efekt Alanı (Zil vb.) -->
-            <div id="visual-effect-area" class="text-center mb-4 min-h-[100px] flex items-center justify-center overflow-hidden">
-                <!-- Animasyonlar buraya gelecek -->
-            </div>
-            
-            <!-- Duyurunun kendisi (içerik) -->
-            <div id="announcement-display-content" class="w-full min-h-[100px] p-4 bg-gray-900/50 rounded-lg border border-gray-400/30">
-                <p id="loading-text" class="text-gray-400 italic">Duyurular bekleniyor...</p>
-            </div>
+
+        <!-- Durum Çubuğu -->
+        <div class="p-1 bg-gray-100 border-t border-gray-300 text-xs text-gray-700">
+            Bağlantı Durumu: <span id="publisher-status" class="font-semibold text-green-700">Bağlandı (Anonim)</span>
         </div>
     </div>
 
-    <!-- Firebase SDK -->
+
+    <!-- 4. Ana Uygulama - Alıcı (TV) Ekranı (Masaüstü Stili) -->
+    <div id="receiver-screen" class="desktop-background w-full h-screen hidden">
+        
+        <!-- Sürükle-bırak Pencereler -->
+        <div id="announcement-window" class="draggable-window w-1/3" style="top: 20px; left: 20px;">
+            <div class="window-header">📢 Duyuru Panosu</div>
+            <div id="announcement-content" class="window-content">
+                <p class="text-gray-500 italic">Duyurular bekleniyor...</p>
+            </div>
+            <!-- Duyuru için durum çubuğu -->
+            <div id="announcement-status-bar" class="p-1 text-xs text-gray-700 bg-gray-100 border-t border-gray-200 rounded-b-lg">
+                Durum: Bekleniyor...
+            </div>
+        </div>
+
+        <div id="weather-window" class="draggable-window w-1/3" style="top: 20px; left: 36.66%;">
+            <div class="window-header">☀️ Hava Durumu</div>
+            <div id="weather-content" class="window-content">
+                <p class="text-gray-500 italic">Hava durumu bilgisi bekleniyor...</p>
+            </div>
+        </div>
+
+        <div id="fact-window" class="draggable-window w-1/3" style="top: 20px; left: 71.33%;">
+            <div class="window-header">🧠 Eğlenceli Bilgi</div>
+            <div id="fact-content" class="window-content">
+                <p class="text-gray-500 italic">Eğlenceli bilgi bekleniyor...</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Firebase ve Uygulama Scripti -->
     <script type="module">
         // Firebase modüllerini import et
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -320,22 +345,27 @@
         const passwordError = document.getElementById('password-error');
         const backToRolesBtn = document.getElementById('back-to-roles');
 
-        const mainAppScreen = document.getElementById('main-app-screen');
-        const appTitle = document.getElementById('app-title');
-        const publisherControls = document.getElementById('publisher-controls');
-        
-        // Yayıncı alanları
+        const publisherScreen = document.getElementById('publisher-screen');
+        const publisherClock = document.getElementById('publisher-clock');
+        const publisherStatus = document.getElementById('publisher-status');
         const titleInput = document.getElementById('title-input');
         const urgencySelect = document.getElementById('urgency-select');
         const audienceSelect = document.getElementById('audience-select');
         const inputArea = document.getElementById('announcement-input');
-        const animationCheckboxes = document.querySelectorAll('input[name="animation-select"]'); // YENİ
-        
         const publishButton = document.getElementById('publish-button');
-        const displayContent = document.getElementById('announcement-display-content'); // İçerik alanı
-        const loadingText = document.getElementById('loading-text');
-        const visualEffectArea = document.getElementById('visual-effect-area');
-
+        
+        const receiverScreen = document.getElementById('receiver-screen');
+        const announcementWindow = document.getElementById('announcement-window');
+        const announcementContent = document.getElementById('announcement-content');
+        const announcementStatusBar = document.getElementById('announcement-status-bar');
+        const weatherWindow = document.getElementById('weather-window');
+        const weatherContent = document.getElementById('weather-content');
+        const factWindow = document.getElementById('fact-window');
+        const factContent = document.getElementById('fact-content');
+        
+        const publishWeatherBtn = document.getElementById('publish-weather');
+        const publishFactBtn = document.getElementById('publish-fact');
+        const aiLoadingIndicator = document.getElementById('ai-loading-indicator');
 
         // --- YENİ VE TAM FIREBASE YAPILANDIRMASI ---
         const firebaseConfig = {
@@ -353,17 +383,106 @@
         let auth;
         let userId;
         const appId = firebaseConfig.projectId || 'genel-duyuru-odasi';
-        const broadcastDocRef = () => doc(db, 'artifacts', appId, 'public/data', 'announcements', 'latest');
+
+        // Pencerelerin Firebase'deki yolları
+        const docPaths = {
+            announcement: doc(db, 'artifacts', appId, 'public/data', 'windows', 'announcement'),
+            weather: doc(db, 'artifacts', appId, 'public/data', 'windows', 'weather'),
+            fact: doc(db, 'artifacts', appId, 'public/data', 'windows', 'fact'),
+            layout: doc(db, 'artifacts', appId, 'public/data', 'windows', 'layout') // YENİ: Düzen için
+        };
+        
+        // --- Gemini API (Hava Durumu ve Eğlenceli Bilgi) ---
+        // Gemini API'sine güvenli (retry'lı) istek atan fonksiyon
+        async function fetchWithRetry(url, payload, maxRetries = 3) {
+            let attempt = 0;
+            while (attempt < maxRetries) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const result = await response.json();
+                    const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text) {
+                        return text;
+                    } else {
+                        throw new Error("API'den beklenen formatta yanıt alınamadı.");
+                    }
+                } catch (error) {
+                    console.warn(`Gemini API isteği denemesi ${attempt + 1} başarısız oldu:`, error);
+                    attempt++;
+                    if (attempt >= maxRetries) {
+                        throw new Error(`API isteği ${maxRetries} denemeden sonra başarısız oldu: ${error.message}`);
+                    }
+                    // Exponential backoff
+                    await new Promise(res => setTimeout(res, 1000 * Math.pow(2, attempt - 1)));
+                }
+            }
+        }
+
+        // Gemini API için URL ve Anahtar (Anahtar Canvas tarafından sağlanır)
+        const GEMINI_API_KEY = ""; // Canvas ortamı bunu otomatik doldurur
+        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${GEMINI_API_KEY}`;
+        
+        // 1. Hava Durumu Getir
+        async function getWeatherData() {
+            aiLoadingIndicator.classList.remove('hidden');
+            publishWeatherBtn.disabled = true;
+            try {
+                const systemPrompt = "Kullanıcı Darıca, Kocaeli için hava durumunu istiyor. Hava durumunu Google Search ile bul. Cevabı SADECE şu formatta ver: 'Darıca: [Sıcaklık]°C, [Durum Açıklaması (örn: Parçalı Bulutlu)] ☀️/☁️/🌧️'. Başka hiçbir açıklama ekleme.";
+                const payload = {
+                    contents: [{ parts: [{ text: "Darıca, Kocaeli için hava durumu nedir?" }] }],
+                    tools: [{ "google_search": {} }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] }
+                };
+                const weatherText = await fetchWithRetry(GEMINI_API_URL, payload);
+                await publishContent(docPaths.weather, { content: weatherText });
+                console.log("Hava durumu yayınlandı:", weatherText);
+            } catch (error) {
+                console.error("Hava durumu alınamadı:", error);
+                // Kullanıcıya hata bildirimi (opsiyonel)
+            } finally {
+                aiLoadingIndicator.classList.add('hidden');
+                publishWeatherBtn.disabled = false;
+            }
+        }
+
+        // 2. Eğlenceli Bilgi Getir
+        async function getFunFact() {
+            aiLoadingIndicator.classList.remove('hidden');
+            publishFactBtn.disabled = true;
+            try {
+                const systemPrompt = "Okul çocukları için (ilkokul, ortaokul, lise seviyesi) uygun, bilim, tarih veya doğa hakkında ilginç, eğlenceli ve kısa (1-2 cümlelik) bir bilgi üret. Başka hiçbir açıklama ekleme. Sadece 'Biliyor muydunuz? ...' diye başla.";
+                const payload = {
+                    contents: [{ parts: [{ text: "Bana eğlenceli bir bilgi ver." }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] }
+                };
+                const factText = await fetchWithRetry(GEMINI_API_URL, payload);
+                await publishContent(docPaths.fact, { content: factText });
+                console.log("Eğlenceli bilgi yayınlandı:", factText);
+            } catch (error) {
+                console.error("Eğlenceli bilgi alınamadı:", error);
+                // Kullanıcıya hata bildirimi (opsiyonel)
+            } finally {
+                aiLoadingIndicator.classList.add('hidden');
+                publishFactBtn.disabled = false;
+            }
+        }
 
         // --- Rol Seçim Olayları ---
         selectPublisherBtn.addEventListener('click', () => {
             roleScreen.classList.add('hidden');
-            passwordScreen.classList.remove('hidden'); // Şifre ekranını göster
+            passwordScreen.classList.remove('hidden');
             passwordInput.focus();
         });
 
         selectReceiverBtn.addEventListener('click', () => {
-            startAppAs('receiver'); // Alıcı doğrudan başlar
+            startAppAs('receiver');
         });
 
         backToRolesBtn.addEventListener('click', () => {
@@ -373,15 +492,14 @@
             passwordInput.value = "";
         });
 
-        // --- ŞİFRE KONTROLÜ ---
+        // --- Şifre Kontrolü ---
         loginButton.addEventListener('click', () => {
             if (passwordInput.value === "1234") {
                 passwordScreen.classList.add('hidden');
                 passwordInput.value = "";
                 passwordError.classList.add('hidden');
-                startAppAs('publisher'); // Şifre doğru, yayıncı olarak başlat
+                startAppAs('publisher');
             } else {
-                // Hata göster ve salla
                 passwordError.classList.remove('hidden');
                 passwordInput.classList.add('shake');
                 setTimeout(() => {
@@ -390,296 +508,328 @@
                 }, 1000);
             }
         });
-        // Enter tuşu ile giriş
         passwordInput.addEventListener('keyup', (e) => {
             if (e.key === 'Enter') loginButton.click();
         });
 
-
         // --- Uygulama Başlatma Fonksiyonu ---
         function startAppAs(role) {
-            roleScreen.classList.add('hidden'); 
-            mainAppScreen.classList.remove('hidden');
-
+            roleScreen.classList.add('hidden');
+            
             if (role === 'publisher') {
-                appTitle.innerHTML = `📢 Yayıncı Paneli <span class="text-blue-300 block text-lg">(Darıca Uğur Okulu)</span>`;
-                publisherControls.classList.remove('hidden'); 
+                publisherScreen.classList.remove('hidden');
+                updatePublisherClock(); // Saati başlat
+                setInterval(updatePublisherClock, 1000);
             } else {
-                appTitle.innerHTML = `🎧 Duyuru Alıcısı <span class="text-blue-300 block text-lg">(Darıca Uğur Okulu)</span>`;
+                receiverScreen.classList.remove('hidden');
+                setupDraggableWindows(); // Sürükle-bırak özelliğini başlat
             }
 
-            initializeAppAndAuth();
+            initializeAppAndAuth(role); // Firebase'i başlat
         }
 
         // --- Firebase Başlatma ve Kimlik Doğrulama ---
-        function initializeAppAndAuth() {
+        function initializeAppAndAuth(role) {
             try {
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
-                setupAuth();
+                setupAuth(role);
             } catch (error) {
                 console.error("Firebase başlatma hatası:", error);
-                displayContent.innerHTML = `<p class="text-red-400">Hata: Firebase bağlantısı kurulamadı. ${error.message}</p>`;
-                if(loadingText) loadingText.remove();
+                if (role === 'publisher') publisherStatus.textContent = "Hata!";
             }
         }
 
-        async function setupAuth() {
+        async function setupAuth(role) {
             try {
                 await signInAnonymously(auth);
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
                         userId = user.uid;
-                        console.log("Kimlik doğrulandı (Anonim). Kullanıcı ID:", userId);
-                        setupRealtimeListener(); // Dinleyiciyi başlat
-
-                        if (publisherControls.classList.contains('hidden') === false) {
-                            publishButton.addEventListener('click', publishAnnouncement);
-                            publishButton.disabled = false;
-                            setupTemplateButtons(); // Şablon butonlarını ayarla
+                        console.log(`Kimlik doğrulandı (${role}). ID:`, userId);
+                        
+                        if (role === 'publisher') {
+                            publisherStatus.textContent = "Bağlandı (Anonim)";
+                            setupPublisherControls(); // Yayıncı butonlarını aktif et
+                        } else {
+                            setupReceiverListeners(); // Alıcı dinleyicilerini başlat
                         }
                     } else {
-                        console.log("Kullanıcı oturumu kapattı.");
-                        if(publishButton) publishButton.disabled = true;
+                        if (role === 'publisher') publisherStatus.textContent = "Bağlantı kesildi.";
                     }
                 });
             } catch (error) {
                 console.error("Kimlik doğrulama hatası:", error);
-                displayContent.innerHTML = `<p class="text-red-400">Hata: Kimlik doğrulanamadı. ${error.message}</p>`;
-                if(loadingText) loadingText.remove();
+                if (role === 'publisher') publisherStatus.textContent = "Kimlik Doğrulama Hatası!";
             }
         }
-        
-        // --- Kantin Şablonlarını Ayarla ---
-        function setupTemplateButtons() {
+
+        // --- Yayıncı (Publisher) Fonksiyonları ---
+        function setupPublisherControls() {
+            // Normal duyuru yayınla
+            publishButton.disabled = false;
+            publishButton.addEventListener('click', publishStandardAnnouncement);
+            
+            // AI içerik yayınla
+            publishWeatherBtn.addEventListener('click', getWeatherData);
+            publishFactBtn.addEventListener('click', getFunFact);
+
+            // Kantin Şablonları
             document.querySelectorAll('.template-btn').forEach(button => {
                 button.addEventListener('click', (e) => {
                     const template = e.target.dataset.template;
-                    
-                    // Formu temizle
                     urgencySelect.value = 'normal';
-                    audienceSelect.value = 'ogrenciler'; 
-                    uncheckAllAnimations();
-                    
+                    audienceSelect.value = 'Öğrenciler';
                     switch(template) {
                         case 'menu':
                             titleInput.value = "Bugünün Menüsü 🍽️";
-                            inputArea.value = "Afiyet olsun! Bugünkü yemek listesi:\n1. Mercimek Çorbası\n2. Ana Yemek (Örn: Tavuk Sote)\n3. Pilav/Makarna\n4. Salata/Tatlı";
+                            inputArea.value = "Afiyet olsun! Bugünkü yemek listesi:\n1. ...\n2. ...\n3. ...";
                             break;
                         case 'tost':
                             titleInput.value = "🎉 Sürpriz Tost Günü! 🎉";
-                            inputArea.value = "Bugün kantinde sıcak ve lezzetli tostlar sizleri bekliyor! Kaçırmayın!";
+                            inputArea.value = "Bugün kantinde sıcak ve lezzetli tostlar sizleri bekliyor!";
                             urgencySelect.value = 'onemli';
-                            document.getElementById('anim-confetti').checked = true; // Otomatik konfeti
                             break;
                         case 'muzik':
                             titleInput.value = "🎶 Müzik İsteği 🎶";
-                            inputArea.value = "Öğle arasında kantinde çalmasını istediğiniz şarkıları duyuru panosuna (veya özel bir listeye) not bırakabilirsiniz. En çok istenenler çalacak!";
+                            inputArea.value = "Öğle arasında çalmasını istediğiniz şarkıları belirtebilirsiniz.";
                             break;
                         case 'kapanis':
                             titleInput.value = "🔔 Kantin Kapanıyor 🔔";
-                            inputArea.value = "Kantinimiz 10 dakika içinde kapanacaktır. Lütfen ihtiyaçlarınızı giderin. Yarın görüşmek üzere!";
+                            inputArea.value = "Kantinimiz 10 dakika içinde kapanacaktır.";
                             urgencySelect.value = 'acil';
-                            document.getElementById('anim-bell').checked = true; // Kapanış zili otomatk seçilsin
                             break;
                     }
                     titleInput.focus();
                 });
             });
-        }
-        
-        function uncheckAllAnimations() {
-            animationCheckboxes.forEach(cb => cb.checked = false);
-        }
 
-        // --- Önem Derecesine Göre Stil Veren Yardımcı Fonksiyon ---
-        function getUrgencyStyles(urgency) {
-            switch (urgency) {
-                case 'acil':
-                    return 'bg-red-900/70 border-red-500';
-                case 'onemli':
-                    return 'bg-yellow-900/70 border-yellow-500';
-                default:
-                    return 'bg-gray-900/50 border-gray-400/30';
-            }
-        }
-        function getUrgencyLabel(urgency) {
-            switch (urgency) {
-                case 'acil':
-                    return '🚨 ACİL';
-                case 'onemli':
-                    return 'ÖNEMLİ';
-                default:
-                    return 'Normal';
-            }
-        }
-        
-        // --- YENİ ANİMASYON OYNATMA FONKSİYONU ---
-        function playVisualEffect(effect) {
-            visualEffectArea.innerHTML = ''; // Önce temizle
-            if (!effect) return; // Efekt yoksa çık
-            
-            let emoji = '';
-            let cssClass = '';
-            
-            switch(effect) {
-                case 'bell':
-                    emoji = '🔔';
-                    cssClass = 'bell-animation'; // Bu sonsuz döngülü
-                    break;
-                case 'clap':
-                    emoji = '👏';
-                    cssClass = 'effect-animation clap';
-                    break;
-                case 'trophy':
-                    emoji = '🏆';
-                    cssClass = 'effect-animation trophy';
-                    break;
-                case 'gift':
-                    emoji = '🎁';
-                    cssClass = 'effect-animation gift';
-                    break;
-                case 'confetti':
-                    emoji = '🎉';
-                    cssClass = 'effect-animation confetti';
-                    break;
-                case 'sparkles':
-                    emoji = '✨';
-                    cssClass = 'effect-animation sparkles'; // Bu da sonsuz döngülü
-                    break;
-            }
-            
-            if(emoji) {
-                visualEffectArea.innerHTML = `<span class="${cssClass}">${emoji}</span>`;
-            }
-        }
-
-        // --- Firestore'daki değişiklikleri gerçek zamanlı dinle ---
-        let lastAnnouncementTimestamp = 0; 
-        function setupRealtimeListener() {
-            console.log("Duyuru dinleyicisi kuruluyor...");
-            const docRef = broadcastDocRef();
-            
-            onSnapshot(docRef, (doc) => {
-                if (loadingText) {
-                    loadingText.style.display = 'none'; // Yükleniyor yazısını gizle
-                }
-                
-                if (doc.exists()) {
-                    const data = doc.data();
-                    const currentTimestamp = new Date(data.timestamp).getTime();
-
-                    // Sadece yeni duyurular için animasyon tetikle
-                    if (currentTimestamp > lastAnnouncementTimestamp) {
-                        displayContent.classList.remove('announcement-pulse'); 
-                        void displayContent.offsetWidth; // Reflow
-                        displayContent.classList.add('announcement-pulse'); 
-                        lastAnnouncementTimestamp = currentTimestamp;
-                        
-                        // --- YENİ ANİMASYON MANTIĞI ---
-                        let effectToPlay = data.animation; // Varsayılan olarak seçileni al
-                        if (data.urgency === 'acil' && !effectToPlay) {
-                            effectToPlay = 'bell'; // Eğer ACİL seçilmişse ve başka animasyon yoksa, ZİL'i zorunlu kıl.
-                        }
-                        playVisualEffect(effectToPlay); // Animasyonu oynat
-                        
-                        mainAppScreen.scrollTo({ top: 0, behavior: 'smooth' });
+            // Ekran Düzeni Kontrol Butonları
+            document.querySelectorAll('.layout-btn').forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    const layout = e.target.dataset.layout;
+                    try {
+                        await setDoc(docPaths.layout, { 
+                            layoutName: layout, 
+                            timestamp: new Date().toISOString() 
+                        });
+                        console.log(`Ekran düzeni "${layout}" olarak ayarlandı.`);
+                    } catch (error) {
+                        console.error("Düzen ayarlanırken hata:", error);
                     }
-
-                    // Zengin Duyuru Formatı
-                    const urgencyClass = getUrgencyStyles(data.urgency);
-                    const urgencyLabel = getUrgencyLabel(data.urgency);
-
-                    displayContent.innerHTML = `
-                        <div class="p-4 rounded-lg ${urgencyClass} border fade-in">
-                            <!-- Üst Bilgi Satırı -->
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="px-3 py-1 text-sm font-semibold rounded-full ${data.urgency === 'acil' ? 'bg-red-200 text-red-900' : (data.urgency === 'onemli' ? 'bg-yellow-200 text-yellow-900' : 'bg-gray-200 text-gray-900')}">
-                                    ${urgencyLabel}
-                                </span>
-                                <span class="text-sm text-gray-300 font-medium">Kime: ${data.audience}</span>
-                            </div>
-                            
-                            <!-- Başlık (Türk bayrağı kontrolü eklendi) -->
-                            <h3 class="text-2xl font-bold text-white mb-2">
-                                ${data.title.replace('🇹🇷', '<span class="inline-block ml-2 text-3xl">🇹🇷</span>')}
-                            </h3>
-                            
-                            <!-- Detay (Boşlukları korumak için whitespace-pre-wrap) -->
-                            <p class="text-gray-100 text-lg whitespace-pre-wrap">${data.text}</p>
-                            
-                            <!-- Zaman Damgası -->
-                            <p class="text-gray-400 text-xs mt-4 text-right">Yayınlanma: ${data.timestamp}</p>
-                        </div>
-                    `;
-                    
-                } else {
-                    displayContent.innerHTML = `<p class="text-gray-400 italic">Henüz bir duyuru yayınlanmadı.</p>`;
-                    visualEffectArea.innerHTML = ''; // Duyuru yoksa efekti de temizle
-                }
-            }, (error) => {
-                console.error("Veri dinleme hatası (onSnapshot):", error);
-                displayContent.innerHTML = `<p class="text-red-400">Hata: Veri alınamadı. ${error.message}</p>`;
+                });
+            });
+        }
+        
+        // Genel içerik yayınlama fonksiyonu
+        async function publishContent(docRef, data) {
+            await setDoc(docRef, {
+                ...data,
+                timestamp: new Date().toISOString(),
+                publishedBy: userId
             });
         }
 
-        // --- Yeni duyuru yayınla (GÜNCELLENDİ) ---
-        async function publishAnnouncement() {
+        // Normal duyuruyu yayınla
+        async function publishStandardAnnouncement() {
             const title = titleInput.value.trim();
             const text = inputArea.value.trim();
-            const urgency = urgencySelect.value;
-            const audience = audienceSelect.value;
-            
-            // Seçili animasyonu bul
-            let selectedAnimation = null;
-            animationCheckboxes.forEach(cb => {
-                if(cb.checked) {
-                    selectedAnimation = cb.id.split('-')[1]; // Örn: "anim-bell" -> "bell"
-                }
-            });
-
             if (!title || !text) {
-                console.warn("Başlık ve Detay alanları boş bırakılamaz.");
-                // Hata uyarısı
-                titleInput.classList.add('shake');
-                inputArea.classList.add('shake');
-                setTimeout(() => {
-                    titleInput.classList.remove('shake');
-                    inputArea.classList.remove('shake');
-                }, 500);
+                alert("Başlık ve Detay alanları boş bırakılamaz.");
                 return;
             }
-
+            
             publishButton.disabled = true;
             publishButton.textContent = "Yayınlanıyor...";
 
             try {
-                await setDoc(broadcastDocRef(), {
+                await publishContent(docPaths.announcement, {
                     title: title,
                     text: text,
-                    urgency: urgency,
-                    audience: audience,
-                    animation: selectedAnimation, // YENİ: Seçilen animasyonu kaydet (null olabilir)
-                    timestamp: new Date().toLocaleString('tr-TR'),
-                    publishedBy: userId 
+                    urgency: urgencySelect.value,
+                    audience: audienceSelect.value,
                 });
-
+                
                 // Formu temizle
                 titleInput.value = "";
                 inputArea.value = "";
                 urgencySelect.value = "normal";
-                audienceSelect.value = "tum-okul";
-                uncheckAllAnimations(); // Checkbox'ları temizle
-                
-                console.log("Yeni duyuru başarıyla yayınlandı!");
+                audienceSelect.value = "Tüm Okul";
+                console.log("Yeni duyuru yayınlandı!");
 
             } catch (error) {
-                console.error("Duyuru yayınlama hatası (setDoc):", error);
-                displayContent.innerHTML += `<p class="text-red-400 text-sm mt-2">Hata: Duyuru gönderilemedi.</p>`;
+                console.error("Duyuru yayınlama hatası:", error);
             } finally {
                 publishButton.disabled = false;
-                publishButton.textContent = "Duyuruyu Yayınla 🚀";
+                publishButton.textContent = "Yayınla 🚀";
+            }
+        }
+        
+        // Yayıncı saatini güncelle
+        function updatePublisherClock() {
+            publisherClock.textContent = new Date().toLocaleTimeString('tr-TR');
+        }
+
+        // --- Alıcı (Receiver) Fonksiyonları ---
+        function setupReceiverListeners() {
+            // 1. Duyuru Dinleyicisi
+            onSnapshot(docPaths.announcement, (doc) => {
+                if (doc.exists()) {
+                    const data = doc.data();
+                    const urgencyClass = data.urgency === 'acil' ? 'text-red-600' : (data.urgency === 'onemli' ? 'text-yellow-600' : 'text-gray-700');
+                    const urgencyLabel = data.urgency === 'acil' ? '🚨 ACİL' : (data.urgency === 'onemli' ? 'ÖNEMLİ' : 'Normal');
+
+                    announcementContent.innerHTML = `
+                        <h3 class="text-xl font-bold ${urgencyClass} mb-2">${data.title}</h3>
+                        <p class="text-gray-800 text-base whitespace-pre-wrap mb-2">${data.text}</p>
+                        <p class="text-xs text-gray-500 mt-2 border-t pt-1">
+                            <b>Kime:</b> ${data.audience} | <b>Zaman:</b> ${new Date(data.timestamp).toLocaleTimeString('tr-TR')}
+                        </p>
+                    `;
+                    announcementStatusBar.textContent = `Durum: ${urgencyLabel} (Yayınlandı: ${new Date(data.timestamp).toLocaleTimeString('tr-TR')})`;
+                    // Pencereyi vurgula
+                    announcementWindow.classList.add('highlight-pulse');
+                    setTimeout(() => announcementWindow.classList.remove('highlight-pulse'), 1500);
+                }
+            }, (error) => console.error("Duyuru dinleme hatası:", error));
+
+            // 2. Hava Durumu Dinleyicisi
+            onSnapshot(docPaths.weather, (doc) => {
+                if (doc.exists()) {
+                    weatherContent.innerHTML = `<p class="text-xl font-semibold text-blue-700">${doc.data().content}</p>`;
+                    weatherWindow.classList.add('highlight-pulse');
+                    setTimeout(() => weatherWindow.classList.remove('highlight-pulse'), 1500);
+                }
+            }, (error) => console.error("Hava durumu dinleme hatası:", error));
+
+            // 3. Eğlenceli Bilgi Dinleyicisi
+            onSnapshot(docPaths.fact, (doc) => {
+                if (doc.exists()) {
+                    factContent.innerHTML = `<p class="text-base text-purple-800">${doc.data().content}</p>`;
+                    factWindow.classList.add('highlight-pulse');
+                    setTimeout(() => factWindow.classList.remove('highlight-pulse'), 1500);
+                }
+            }, (error) => console.error("Bilgi dinleme hatası:", error));
+
+            // 4. Ekran Düzeni (Layout) Dinleyicisi
+            onSnapshot(docPaths.layout, (doc) => {
+                if (doc.exists()) {
+                    const layoutName = doc.data().layoutName;
+                    console.log(`Yeni düzen alındı: ${layoutName}`);
+                    applyLayout(layoutName);
+                }
+            }, (error) => console.error("Düzen dinleme hatası:", error));
+        }
+
+        // YENİ: TV Ekran Düzenini Uygula
+        function applyLayout(layoutName) {
+            // Tüm pencereleri önce görünür yap
+            [announcementWindow, weatherWindow, factWindow].forEach(win => {
+                win.style.opacity = '1';
+                win.style.pointerEvents = 'auto';
+            });
+            
+            const gap = "20px"; // Pencereler arası boşluk
+            const top = "20px"; // Üstten boşluk
+            const bottom = "20px"; // Alttan boşluk
+            
+            switch(layoutName) {
+                case 'left-right':
+                    // Duyuru solda (büyük), diğerleri sağda (küçük)
+                    announcementWindow.style.top = top;
+                    announcementWindow.style.left = gap;
+                    announcementWindow.style.width = `calc(66.66% - ${gap} - (${gap}/2))`;
+                    announcementWindow.style.height = `calc(100vh - ${top} - ${bottom})`;
+                    
+                    weatherWindow.style.top = top;
+                    weatherWindow.style.left = `calc(66.66% + (${gap}/2))`;
+                    weatherWindow.style.width = `calc(33.33% - ${gap} - (${gap}/2))`;
+                    weatherWindow.style.height = `calc(50vh - ${top} - (${gap}/2))`;
+                    
+                    factWindow.style.top = `calc(50vh + (${gap}/2))`;
+                    factWindow.style.left = `calc(66.66% + (${gap}/2))`;
+                    factWindow.style.width = `calc(33.33% - ${gap} - (${gap}/2))`;
+                    factWindow.style.height = `calc(50vh - ${bottom} - (${gap}/2))`;
+                    break;
+                    
+                case 'fullscreen':
+                    // Sadece duyuru tam ekran, diğerleri gizli
+                    announcementWindow.style.top = top;
+                    announcementWindow.style.left = gap;
+                    announcementWindow.style.width = `calc(100vw - ${gap} - ${gap})`;
+                    announcementWindow.style.height = `calc(100vh - ${top} - ${bottom})`;
+                    
+                    [weatherWindow, factWindow].forEach(win => {
+                        win.style.opacity = '0';
+                        win.style.pointerEvents = 'none';
+                    });
+                    break;
+                    
+                case 'three-columns':
+                    // Üç pencere eşit yan yana
+                    announcementWindow.style.top = top;
+                    announcementWindow.style.left = gap;
+                    announcementWindow.style.width = `calc(33.33% - ${gap} - (${gap}/3))`;
+                    announcementWindow.style.height = `calc(100vh - ${top} - ${bottom})`;
+                    
+                    weatherWindow.style.top = top;
+                    weatherWindow.style.left = `calc(33.33% + (${gap}/3))`;
+                    weatherWindow.style.width = `calc(33.33% - (${gap}/3) - (${gap}/3))`;
+                    weatherWindow.style.height = `calc(100vh - ${top} - ${bottom})`;
+                    
+                    factWindow.style.top = top;
+                    factWindow.style.left = `calc(66.66% + (${gap}/3))`;
+                    factWindow.style.width = `calc(33.33% - ${gap} - (${gap}/3))`;
+                    factWindow.style.height = `calc(100vh - ${top} - ${bottom})`;
+                    break;
+            }
+        }
+
+        // --- Alıcı (Receiver) Pencere Sürükleme Fonksiyonları ---
+        function setupDraggableWindows() {
+            document.querySelectorAll('.draggable-window').forEach(makeDraggable);
+        }
+        function makeDraggable(element) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            const header = element.querySelector('.window-header');
+
+            if (header) {
+                // Başlıktan tutarak sürükle
+                header.onmousedown = dragMouseDown;
+            }
+
+            function dragMouseDown(e) {
+                e = e || window.event;
+                e.preventDefault();
+                // Fare pozisyonunu al
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+                
+                // Sürüklerken en üste getir
+                document.querySelectorAll('.draggable-window').forEach(win => win.style.zIndex = 10);
+                element.style.zIndex = 20;
+            }
+
+            function elementDrag(e) {
+                e = e || window.event;
+                e.preventDefault();
+                // Yeni pozisyonu hesapla
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                // Elementin yeni pozisyonunu ayarla
+                element.style.top = (element.offsetTop - pos2) + "px";
+                element.style.left = (element.offsetLeft - pos1) + "px";
+            }
+
+            function closeDragElement() {
+                // Sürüklemeyi durdur
+                document.onmouseup = null;
+                document.onmousemove = null;
             }
         }
 
