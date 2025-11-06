@@ -50,9 +50,31 @@
         
         .window-content {
             padding: 20px;
-            overflow-y: auto; /* Gerektiğinde kaydırma çubuğu */
-            flex-grow: 1; /* Esnek büyüme */
+            /* overflow-y: auto; */ /* Otomatik kaydırma için bunu kaldırıyoruz */
+            flex-grow: 1;
+            overflow: hidden; /* Kaydırma efekti için gerekli */
+            position: relative; /* Kayan içerik için */
         }
+
+        /* --- Yavaş Otomatik Kaydırma (Marquee) Stili --- */
+        .scrolling-content {
+            position: relative;
+            animation: scroll-up-down 20s linear infinite; /* Animasyon süresi (20s) */
+        }
+        
+        @keyframes scroll-up-down {
+            0%, 10% { /* Başlangıçta 10% bekle */
+                transform: translateY(0%);
+            }
+            40%, 60% { /* %40'a kadar aşağı in, %60'a kadar bekle */
+                transform: translateY(var(--scroll-amount)); 
+            }
+            90%, 100% { /* %90'a kadar yukarı çık, %100'e kadar bekle */
+                transform: translateY(0%);
+            }
+        }
+        /* --- Kaydırma Stili Sonu --- */
+
 
         /* Hata animasyonu */
         .shake {
@@ -121,12 +143,6 @@
             padding: 4px 12px;
             font-size: 0.9em;
             color: #333;
-        }
-        .status-bar-panel {
-            border: 1px inset #b0b0b0;
-            padding: 2px 8px;
-            min-width: 100px;
-            text-align: center;
         }
 
     </style>
@@ -227,8 +243,9 @@
                     <!-- Anlık İçerik Oluşturucular -->
                     <div class="form-group">
                         <h2 class="text-xl font-semibold mb-3 text-gray-800">2. Anlık İçerik Gönder</h2>
+                        <p class="text-sm text-gray-600 mb-3">(Bu içerik "Günün Bilgisi" penceresinde yayınlanır)</p>
                         <div class="space-y-3">
-                            <button id="publish-weather" class="w-full toolbar-btn text-left">☀️ Darıca Hava Durumunu Sun</button>
+                            <!-- Hava Durumu butonu kaldırıldı -->
                             <button id="publish-fun-fact" class="w-full toolbar-btn text-left">🧠 Eğlenceli Bilgi Ver</button>
                             <button id="publish-quote" class="w-full toolbar-btn text-left">💡 Günün Sözünü Ver</button>
                             <button id="publish-word" class="w-full toolbar-btn text-left">🇬🇧 Günün İngilizce Kelimesini Ver</button>
@@ -236,13 +253,14 @@
                         </div>
                     </div>
 
-                    <!-- Ekran Düzeni Kontrolü -->
+                    <!-- Ekran Düzeni Kontrolü (GÜNCELLENDİ) -->
                     <div class="form-group">
                         <h2 class="text-xl font-semibold mb-3 text-gray-800">3. TV Ekran Düzeni Kontrolü</h2>
                         <div class="space-y-3">
-                            <button data-layout="default" class="layout-btn w-full toolbar-btn text-left">Varsayılan (Sol/Sağ)</button>
+                            <button data-layout="default" class="layout-btn w-full toolbar-btn text-left">Sol/Sağ (Duyuru / Bilgi)</button>
                             <button data-layout="full-announcement" class="layout-btn w-full toolbar-btn text-left">Tam Ekran (Sadece Duyuru)</button>
-                            <button data-layout="columns" class="layout-btn w-full toolbar-btn text-left">Üç Sütun (Tüm Pencereler)</button>
+                            <button data-layout="full-info" class="layout-btn w-full toolbar-btn text-left">Tam Ekran (Sadece Bilgi)</button>
+                            <button data-layout="top-bottom" class="layout-btn w-full toolbar-btn text-left">Üst/Alt (Duyuru / Bilgi)</button>
                         </div>
                     </div>
                 </div>
@@ -260,35 +278,26 @@
     <div id="receiver-desktop" class="hidden">
 
         <!-- Duyuru Penceresi -->
-        <div id="announcement-window" class="draggable-window" style="top: 20px; left: 20px; width: 40%;">
+        <div id="announcement-window" class="draggable-window" style="top: 20px; left: 20px; width: 55%; height: calc(100vh - 40px);">
             <div class="window-header">
                 <h2 class="text-xl font-bold text-gray-800">📢 Duyuru Panosu</h2>
             </div>
             <div id="announcement-content" class="window-content">
                 <p id="loading-text" class="text-gray-600 italic text-xl">Duyurular bekleniyor...</p>
-                <!-- Duyuru içeriği buraya gelecek -->
+                <!-- Kayan içerik buraya gelecek -->
             </div>
         </div>
 
-        <!-- Hava Durumu Penceresi -->
-        <div id="weather-window" class="draggable-window" style="top: 20px; right: 20px; width: 28%;">
-            <div class="window-header">
-                <h2 class="text-xl font-bold text-gray-800">☀️ Hava Durumu (Darıca)</h2>
-            </div>
-            <div id="weather-content" class="window-content">
-                <p class="text-gray-600 italic text-xl">Veri bekleniyor...</p>
-                <!-- Hava durumu içeriği buraya gelecek -->
-            </div>
-        </div>
+        <!-- Hava Durumu Penceresi (KALDIRILDI) -->
         
         <!-- Bilgi Penceresi (Eğlenceli Bilgi, Söz, Kelime) -->
-        <div id="info-window" class="draggable-window" style="top: 340px; right: 20px; width: 28%;">
+        <div id="info-window" class="draggable-window" style="top: 20px; right: 20px; width: 40%; height: calc(100vh - 40px);">
             <div class="window-header">
                 <h2 class="text-xl font-bold text-gray-800">💡 Günün Bilgisi</h2>
             </div>
             <div id="info-content" class="window-content">
                 <p class="text-gray-600 italic text-xl">Veri bekleniyor...</p>
-                <!-- Bilgi içeriği buraya gelecek -->
+                <!-- Kayan içerik buraya gelecek -->
             </div>
         </div>
 
@@ -338,10 +347,10 @@
         }
         // ----------------------------------------------------------------
 
-        // --- Doküman Yolları (Firebase başlatıldıktan sonra tanımlanmalı) ---
+        // --- Doküman Yolları (Hava durumu kaldırıldı) ---
         const docPaths = {
             announcement: doc(db, 'artifacts', appId, 'public/data', 'broadcast', 'latestAnnouncement'),
-            weather: doc(db, 'artifacts', appId, 'public/data', 'broadcast', 'latestWeather'),
+            // weather: doc(...) // Kaldırıldı
             info: doc(db, 'artifacts', appId, 'public/data', 'broadcast', 'latestInfo'),
             layout: doc(db, 'artifacts', appId, 'public/data', 'broadcast', 'layoutConfig')
         };
@@ -370,7 +379,7 @@
             const publishButton = document.getElementById('publish-button');
             
             const aiLoadingIndicator = document.getElementById('ai-loading-indicator');
-            const publishWeatherBtn = document.getElementById('publish-weather');
+            // const publishWeatherBtn = document.getElementById('publish-weather'); // Kaldırıldı
             const publishFunFactBtn = document.getElementById('publish-fun-fact');
             const publishQuoteBtn = document.getElementById('publish-quote');
             const publishWordBtn = document.getElementById('publish-word');
@@ -379,8 +388,7 @@
             const announcementWindow = document.getElementById('announcement-window');
             const announcementContent = document.getElementById('announcement-content');
             const loadingText = document.getElementById('loading-text');
-            const weatherWindow = document.getElementById('weather-window');
-            const weatherContent = document.getElementById('weather-content');
+            // const weatherWindow = document.getElementById('weather-window'); // Kaldırıldı
             const infoWindow = document.getElementById('info-window');
             const infoContent = document.getElementById('info-content');
             
@@ -529,9 +537,9 @@
                 });
             }
             
-            // Anlık İçerik (AI) Butonları
+            // Anlık İçerik (AI) Butonları (Hava durumu kaldırıldı)
             function setupAiButtons() {
-                publishWeatherBtn.addEventListener('click', () => callGeminiAndPublish('weather'));
+                // publishWeatherBtn.addEventListener('click', () => callGeminiAndPublish('weather')); // Kaldırıldı
                 publishFunFactBtn.addEventListener('click', () => callGeminiAndPublish('fun-fact'));
                 publishQuoteBtn.addEventListener('click', () => callGeminiAndPublish('quote'));
                 publishWordBtn.addEventListener('click', () => callGeminiAndPublish('word'));
@@ -588,16 +596,13 @@
                 }
             }
             
-            // Gemini AI Fonksiyonu
+            // Gemini AI Fonksiyonu (Hava durumu kaldırıldı)
             async function callGeminiAndPublish(type) {
                 let prompt = "";
                 let targetDoc = docPaths.info; // Varsayılan hedef "Günün Bilgisi" penceresi
 
                 switch(type) {
-                    case 'weather':
-                        prompt = "Darıca, Kocaeli için bugünün hava durumunu (sıcaklık, hissedilen, durum ve 3 saatlik tahmin) çok kısa ve net bir şekilde, TV ekranında görünecek formatta yaz.";
-                        targetDoc = docPaths.weather; // Hedef "Hava Durumu" penceresi
-                        break;
+                    // case 'weather': // Kaldırıldı
                     case 'fun-fact':
                         prompt = "İlkokul ve ortaokul öğrencileri için eğlenceli, şaşırtıcı ve kısa bir bilimsel bilgi ver (TV ekranı için).";
                         break;
@@ -605,7 +610,6 @@
                         prompt = "TV ekranında yayınlanmak üzere, öğrenciler için motive edici, kısa ve anlamlı bir söz söyle (ve kimin söylediğini yaz).";
                         break;
                     case 'word':
-                        // Gemini'den yapılandırılmış JSON isteme (HATA DÜZELTMESİ)
                         prompt = "Return a JSON object with keys 'word', 'meaning', and 'example' for a common English word for Turkish middle school students. Format: {\"word\": \"...\", \"meaning\": \"...\", \"example\": \"...\"}";
                         break;
                 }
@@ -616,7 +620,6 @@
                 try {
                     const payload = {
                         contents: [{ parts: [{ text: prompt }] }],
-                        // JSON İsteği (Günün Kelimesi için)
                         ...(type === 'word' && {
                             generationConfig: {
                                 responseMimeType: "application/json",
@@ -644,7 +647,6 @@
                     let contentToPublish;
 
                     if (type === 'word') {
-                        // Gelen JSON'u parse et (HATA DÜZELTMESİ)
                         try {
                             const wordData = JSON.parse(aiText);
                             contentToPublish = {
@@ -656,8 +658,8 @@
                             console.error("JSON parse hatası:", e, "Alınan metin:", aiText);
                             throw new Error("Günün kelimesi formatı anlaşılamadı.");
                         }
-                    } else if (type === 'weather') {
-                        contentToPublish = { type: 'weather', text: aiText };
+                    // } else if (type === 'weather') { // Kaldırıldı
+                    //    contentToPublish = { type: 'weather', text: aiText };
                     } else if (type === 'fun-fact') {
                         contentToPublish = { type: 'fun-fact', title: '🧠 Eğlenceli Bilgi', text: aiText };
                     } else if (type === 'quote') {
@@ -680,9 +682,11 @@
             }
             
             function setAiButtonsDisabled(disabled) {
-                [publishWeatherBtn, publishFunFactBtn, publishQuoteBtn, publishWordBtn].forEach(btn => {
-                    btn.disabled = disabled;
-                    btn.style.opacity = disabled ? 0.6 : 1;
+                [publishFunFactBtn, publishQuoteBtn, publishWordBtn].forEach(btn => {
+                    if (btn) { // Butonun varlığını kontrol et (önemli)
+                        btn.disabled = disabled;
+                        btn.style.opacity = disabled ? 0.6 : 1;
+                    }
                 });
             }
             
@@ -697,7 +701,7 @@
                         const urgencyClass = getUrgencyStyles(data.urgency);
                         const urgencyLabel = getUrgencyLabel(data.urgency);
                         
-                        announcementContent.innerHTML = `
+                        const contentHTML = `
                             <div class="p-1 rounded-lg ${urgencyClass} fade-in">
                                 <div class="flex justify-between items-center mb-4">
                                     <span class="px-4 py-2 text-2xl font-semibold rounded ${urgencyClass === 'bg-red-200' ? 'bg-red-600 text-white' : (urgencyClass === 'bg-yellow-100' ? 'bg-yellow-500 text-black' : 'bg-gray-200 text-gray-800')}">
@@ -710,21 +714,16 @@
                                 <p class="text-xl text-gray-600 mt-6 text-right">${data.timestamp}</p>
                             </div>
                         `;
+                        // Yeni içerik için kaydırma fonksiyonunu çağır
+                        updateScrollingContent(announcementContent, contentHTML);
+                        
                         // Pencereye parlama efekti ekle
                         announcementWindow.classList.add('highlight-flash');
                         setTimeout(() => announcementWindow.classList.remove('highlight-flash'), 1500);
                     }
                 }, (error) => showErrorToast(`Duyuru dinleme hatası: ${error.message}`));
                 
-                // 2. Hava Durumu Dinleyicisi
-                onSnapshot(docPaths.weather, (doc) => {
-                    if (doc.exists()) {
-                        const data = doc.data();
-                        weatherContent.innerHTML = `<p class="text-3xl text-gray-800 whitespace-pre-wrap">${data.text}</p><p class="text-xl text-gray-600 mt-6 text-right">${data.timestamp}</p>`;
-                        weatherWindow.classList.add('highlight-flash');
-                        setTimeout(() => weatherWindow.classList.remove('highlight-flash'), 1500);
-                    }
-                }, (error) => showErrorToast(`Hava durumu dinleme hatası: ${error.message}`));
+                // 2. Hava Durumu Dinleyicisi (KALDIRILDI)
                 
                 // 3. Bilgi (Söz, Kelime) Dinleyicisi
                 onSnapshot(docPaths.info, (doc) => {
@@ -732,7 +731,11 @@
                         const data = doc.data();
                         // Gelen 'type'a göre başlığı değiştir
                         document.querySelector('#info-window .window-header h2').textContent = data.title || "💡 Günün Bilgisi";
-                        infoContent.innerHTML = `<p class="text-3xl text-gray-800 whitespace-pre-wrap">${data.text}</p><p class="text-xl text-gray-600 mt-6 text-right">${data.timestamp}</p>`;
+                        
+                        const contentHTML = `<p class="text-3xl text-gray-800 whitespace-pre-wrap">${data.text}</p><p class="text-xl text-gray-600 mt-6 text-right">${data.timestamp}</p>`;
+                        // Yeni içerik için kaydırma fonksiyonunu çağır
+                        updateScrollingContent(infoContent, contentHTML);
+                        
                         infoWindow.classList.add('highlight-flash');
                         setTimeout(() => infoWindow.classList.remove('highlight-flash'), 1500);
                     }
@@ -750,28 +753,84 @@
                 // Pencereleri Sürüklenebilir Yap
                 makeWindowsDraggable();
             }
-            
-            // Düzen Uygulama Fonksiyonu
+
+            // --- YENİ: Otomatik Kaydırma Fonksiyonu ---
+            // Global değişken animasyon hızını (saniye) tutar
+            let scrollSpeedFactor = 20; // Varsayılan 20 saniye (Yavaş)
+
+            function updateScrollingContent(container, html) {
+                // 1. Mevcut animasyonu ve içeriği temizle
+                let oldScroller = container.querySelector('.scrolling-content');
+                if (oldScroller) {
+                    oldScroller.style.animation = 'none'; // Animasyonu durdur
+                    container.innerHTML = ''; // İçeriği temizle
+                }
+
+                // 2. Yeni içeriği ekle
+                const scroller = document.createElement('div');
+                scroller.className = 'scrolling-content';
+                scroller.innerHTML = html;
+                container.appendChild(scroller);
+
+                // 3. Gerekli olup olmadığını kontrol et
+                // (Kısa bir gecikme ile DOM'un güncellenmesini bekle)
+                setTimeout(() => {
+                    const containerHeight = container.clientHeight;
+                    const contentHeight = scroller.scrollHeight;
+                    
+                    if (contentHeight > containerHeight) {
+                        // 4. Evet, sığmıyor -> Animasyonu başlat
+                        const scrollAmount = containerHeight - contentHeight - 10; // 10px pay bırak
+                        // İçerik uzunluğuna göre hızı ayarla (örn: her 100px için 5 saniye)
+                        scrollSpeedFactor = Math.max(20, (contentHeight / 100) * 5); // Minimum 20 saniye
+                        
+                        scroller.style.setProperty('--scroll-amount', `${scrollAmount}px`);
+                        scroller.style.animation = `scroll-up-down ${scrollSpeedFactor}s linear infinite`;
+                        console.log(`Kaydırma aktif: Hız ${scrollSpeedFactor}s`);
+                    } else {
+                        // 5. Hayır, sığıyor -> Animasyona gerek yok
+                        scroller.style.animation = 'none';
+                        console.log("İçerik sığıyor, kaydırma durdu.");
+                    }
+                }, 100);
+            }
+
+            // Düzen Uygulama Fonksiyonu (GÜNCELLENDİ)
             function applyLayout(layout) {
                 // Önce tüm pencereleri görünür yap
-                [announcementWindow, weatherWindow, infoWindow].forEach(win => win.style.display = 'flex');
+                [announcementWindow, infoWindow].forEach(win => {
+                    if(win) win.style.display = 'flex';
+                });
+                // if (weatherWindow) weatherWindow.style.display = 'flex'; // Kaldırıldı
 
                 if (layout === 'default') {
                     // Sol / Sağ Düzeni
                     announcementWindow.style.cssText = 'top: 20px; left: 20px; width: 55%; height: calc(100vh - 40px);';
-                    weatherWindow.style.cssText = 'top: 20px; right: 20px; width: 40%; height: 48%;';
-                    infoWindow.style.cssText = 'bottom: 20px; right: 20px; width: 40%; height: 48%;';
+                    infoWindow.style.cssText = 'top: 20px; right: 20px; width: 40%; height: calc(100vh - 40px);';
+                    // weatherWindow.style.display = 'none'; // Kaldırıldı
                 } else if (layout === 'full-announcement') {
                     // Sadece Duyuru (Tam Ekran)
                     announcementWindow.style.cssText = 'top: 20px; left: 20px; width: calc(100vw - 40px); height: calc(100vh - 40px); z-index: 20;';
-                    weatherWindow.style.display = 'none';
                     infoWindow.style.display = 'none';
-                } else if (layout === 'columns') {
-                    // Üç Sütun
-                    announcementWindow.style.cssText = 'top: 20px; left: 20px; width: 32%; height: calc(100vh - 40px);';
-                    weatherWindow.style.cssText = 'top: 20px; left: 34%; width: 32%; height: calc(100vh - 40px);';
-                    infoWindow.style.cssText = 'top: 20px; right: 20px; width: 32%; height: calc(100vh - 40px);';
+                    // weatherWindow.style.display = 'none'; // Kaldırıldı
+                } else if (layout === 'full-info') {
+                    // YENİ: Sadece Bilgi (Tam Ekran)
+                    infoWindow.style.cssText = 'top: 20px; left: 20px; width: calc(100vw - 40px); height: calc(100vh - 40px); z-index: 20;';
+                    announcementWindow.style.display = 'none';
+                    // weatherWindow.style.display = 'none'; // Kaldırıldı
+                } else if (layout === 'top-bottom') {
+                    // YENİ: Üst/Alt Düzeni
+                    announcementWindow.style.cssText = 'top: 20px; left: 20px; width: calc(100vw - 40px); height: 48%;';
+                    infoWindow.style.cssText = 'bottom: 20px; left: 20px; width: calc(100vw - 40px); height: 48%;';
+                    // weatherWindow.style.display = 'none'; // Kaldırıldı
                 }
+
+                // Düzen değişiminden sonra kaydırmayı yeniden hesapla
+                // (Küçük bir gecikme ile geçiş animasyonunun bitmesini bekle)
+                setTimeout(() => {
+                    if (announcementContent.innerHTML) updateScrollingContent(announcementContent, announcementContent.querySelector('.scrolling-content')?.innerHTML);
+                    if (infoContent.innerHTML) updateScrollingContent(infoContent, infoContent.querySelector('.scrolling-content')?.innerHTML);
+                }, 500); // 0.5s CSS geçiş süresi
             }
 
             // --- Yardımcı Fonksiyonlar ---
