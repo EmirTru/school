@@ -36,6 +36,12 @@
             background-color: #d0d0d0;
             box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
         }
+        .btn-windows:disabled {
+            background-color: #f5f5f5;
+            border-color: #c0c0c0;
+            color: #a0a0a0;
+            cursor: not-allowed;
+        }
         
         /* Ana uygulama penceresi */
         .app-window {
@@ -260,11 +266,17 @@
                 <div class="group-box">
                     <span class="group-box-legend">Anlık İçerik (AI)</span>
                     <div class="space-y-2">
-                        <button id="publish-weather" class="w-full btn-windows py-2 px-4 text-gray-800">
+                        <button id="publish-weather" class="w-full btn-windows py-2 px-4 text-gray-800" disabled>
                             ☀️ Darıca Hava Durumunu Sun
                         </button>
-                        <button id="publish-fact" class="w-full btn-windows py-2 px-4 text-gray-800">
-                            🧠 Eğlenceli Bilgi Ver
+                        <button id="publish-fact" class="w-full btn-windows py-2 px-4 text-gray-800" disabled>
+                            🧠 Günün Bilgisi (Rastgele)
+                        </button>
+                        <button id="publish-quote" class="w-full btn-windows py-2 px-4 text-gray-800" disabled>
+                            💡 Günün Sözü
+                        </button>
+                        <button id="publish-word" class="w-full btn-windows py-2 px-4 text-gray-800" disabled>
+                            🇬🇧 Günün İngilizce Kelimesi
                         </button>
                         <div id="ai-loading-indicator" class="text-sm text-gray-600 flex items-center justify-center gap-2 hidden">
                             <div class="loader !w-4 !h-4 !border-2"></div>
@@ -273,14 +285,14 @@
                     </div>
                 </div>
 
-                <!-- Grup 3: Ekran Düzeni Kontrolü (YENİ) -->
+                <!-- Grup 3: Ekran Düzeni Kontrolü -->
                 <div class="group-box">
                     <span class="group-box-legend">🖥️ TV Ekran Düzeni Kontrolü</span>
                     <p class="text-xs text-gray-600 mb-2">TV'deki pencerelerin düzenini anında değiştir:</p>
                     <div class="grid grid-cols-3 gap-2">
-                        <button data-layout="left-right" class="layout-btn btn-windows text-sm py-2 px-1">Sol/Sağ</button>
-                        <button data-layout="fullscreen" class="layout-btn btn-windows text-sm py-2 px-1">Tam Ekran</button>
-                        <button data-layout="three-columns" class="layout-btn btn-windows text-sm py-2 px-1">Üç Sütun</button>
+                        <button data-layout="left-right" class="layout-btn btn-windows text-sm py-2 px-1" disabled>Sol/Sağ</button>
+                        <button data-layout="fullscreen" class="layout-btn btn-windows text-sm py-2 px-1" disabled>Tam Ekran</button>
+                        <button data-layout="three-columns" class="layout-btn btn-windows text-sm py-2 px-1" disabled>Üç Sütun</button>
                     </div>
                 </div>
             </div>
@@ -288,7 +300,7 @@
 
         <!-- Durum Çubuğu -->
         <div class="p-1 bg-gray-100 border-t border-gray-300 text-xs text-gray-700">
-            Bağlantı Durumu: <span id="publisher-status" class="font-semibold text-green-700">Bağlandı (Anonim)</span>
+            Bağlantı Durumu: <span id="publisher-status" class="font-semibold text-red-700">Bağlanıyor...</span>
         </div>
     </div>
 
@@ -316,7 +328,7 @@
         </div>
 
         <div id="fact-window" class="draggable-window w-1/3" style="top: 20px; left: 71.33%;">
-            <div class="window-header">🧠 Eğlenceli Bilgi</div>
+            <div class="window-header">💡 Günün Bilgisi</div>
             <div id="fact-content" class="window-content">
                 <p class="text-gray-500 italic">Eğlenceli bilgi bekleniyor...</p>
             </div>
@@ -365,7 +377,11 @@
         
         const publishWeatherBtn = document.getElementById('publish-weather');
         const publishFactBtn = document.getElementById('publish-fact');
+        const publishQuoteBtn = document.getElementById('publish-quote'); // YENİ
+        const publishWordBtn = document.getElementById('publish-word'); // YENİ
         const aiLoadingIndicator = document.getElementById('ai-loading-indicator');
+        
+        const layoutButtons = document.querySelectorAll('.layout-btn');
 
         // --- YENİ VE TAM FIREBASE YAPILANDIRMASI ---
         const firebaseConfig = {
@@ -378,22 +394,31 @@
         };
         // -------------------------------------------
 
-        // --- Firebase Değişkenleri ---
-        let db;
-        let auth;
-        let userId;
+        // --- Firebase Değişkenleri (DÜZELTME: Başlangıçta başlatıldı) ---
+        let db, auth, userId;
         const appId = firebaseConfig.projectId || 'genel-duyuru-odasi';
+        let app;
 
-        // Pencerelerin Firebase'deki yolları
+        // HATA DÜZELTMESİ: Firebase'i hemen başlat
+        try {
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+            console.log("Firebase (app, db, auth) başarıyla başlatıldı.");
+        } catch (error) {
+            console.error("Kritik Firebase başlatma hatası:", error);
+            alert("Firebase başlatılamadı! Lütfen sayfayı yenileyin.");
+        }
+
+        // Pencerelerin Firebase'deki yolları (Artık 'db' tanımlı)
         const docPaths = {
             announcement: doc(db, 'artifacts', appId, 'public/data', 'windows', 'announcement'),
             weather: doc(db, 'artifacts', appId, 'public/data', 'windows', 'weather'),
             fact: doc(db, 'artifacts', appId, 'public/data', 'windows', 'fact'),
-            layout: doc(db, 'artifacts', appId, 'public/data', 'windows', 'layout') // YENİ: Düzen için
+            layout: doc(db, 'artifacts', appId, 'public/data', 'windows', 'layout')
         };
         
         // --- Gemini API (Hava Durumu ve Eğlenceli Bilgi) ---
-        // Gemini API'sine güvenli (retry'lı) istek atan fonksiyon
         async function fetchWithRetry(url, payload, maxRetries = 3) {
             let attempt = 0;
             while (attempt < maxRetries) {
@@ -419,13 +444,11 @@
                     if (attempt >= maxRetries) {
                         throw new Error(`API isteği ${maxRetries} denemeden sonra başarısız oldu: ${error.message}`);
                     }
-                    // Exponential backoff
                     await new Promise(res => setTimeout(res, 1000 * Math.pow(2, attempt - 1)));
                 }
             }
         }
 
-        // Gemini API için URL ve Anahtar (Anahtar Canvas tarafından sağlanır)
         const GEMINI_API_KEY = ""; // Canvas ortamı bunu otomatik doldurur
         const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${GEMINI_API_KEY}`;
         
@@ -445,7 +468,7 @@
                 console.log("Hava durumu yayınlandı:", weatherText);
             } catch (error) {
                 console.error("Hava durumu alınamadı:", error);
-                // Kullanıcıya hata bildirimi (opsiyonel)
+                alert(`Hava durumu alınamadı: ${error.message}`);
             } finally {
                 aiLoadingIndicator.classList.add('hidden');
                 publishWeatherBtn.disabled = false;
@@ -463,18 +486,65 @@
                     systemInstruction: { parts: [{ text: systemPrompt }] }
                 };
                 const factText = await fetchWithRetry(GEMINI_API_URL, payload);
-                await publishContent(docPaths.fact, { content: factText });
+                await publishContent(docPaths.fact, { content: factText, type: 'fact' }); // 'type' eklendi
                 console.log("Eğlenceli bilgi yayınlandı:", factText);
             } catch (error) {
                 console.error("Eğlenceli bilgi alınamadı:", error);
-                // Kullanıcıya hata bildirimi (opsiyonel)
+                alert(`Eğlenceli bilgi alınamadı: ${error.message}`);
             } finally {
                 aiLoadingIndicator.classList.add('hidden');
                 publishFactBtn.disabled = false;
             }
         }
 
-        // --- Rol Seçim Olayları ---
+        // 3. YENİ: Günün Sözünü Getir
+        async function getQuoteOfTheDay() {
+            aiLoadingIndicator.classList.remove('hidden');
+            publishQuoteBtn.disabled = true;
+            try {
+                const systemPrompt = "Okul ortamına uygun, motive edici, ilham verici veya düşündürücü bir 'günün sözü' üret. Cevabı SADECE şu formatta ver: '[Söz] - [Kişi]'. Başka hiçbir açıklama ekleme.";
+                const payload = {
+                    contents: [{ parts: [{ text: "Bana ilham verici bir söz ver." }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] }
+                };
+                const quoteText = await fetchWithRetry(GEMINI_API_URL, payload);
+                // "fact" yolunu kullanarak aynı pencereye yayınla
+                await publishContent(docPaths.fact, { content: quoteText, type: 'quote' }); 
+                console.log("Günün sözü yayınlandı:", quoteText);
+            } catch (error) {
+                console.error("Günün sözü alınamadı:", error);
+                alert(`Günün sözü alınamadı: ${error.message}`);
+            } finally {
+                aiLoadingIndicator.classList.add('hidden');
+                publishQuoteBtn.disabled = false;
+            }
+        }
+
+        // 4. YENİ: Günün Kelimesini Getir
+        async function getWordOfTheDay() {
+            aiLoadingIndicator.classList.remove('hidden');
+            publishWordBtn.disabled = true;
+            try {
+                const systemPrompt = "Öğrenciler için 'günün İngilizce kelimesi' üret. Cevabı SADECE şu formatta ver: '[İngilizce Kelime] ([Okunuşu]): [Türkçe Anlamı]. Örnek Cümle: [İngilizce Örnek Cümle]'. Başka hiçbir açıklama ekleme.";
+                const payload = {
+                    contents: [{ parts: [{ text: "Bana günün İngilizce kelimesini ver." }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] }
+                };
+                const wordText = await fetchWithRetry(GEMINI_API_URL, payload);
+                // "fact" yolunu kullanarak aynı pencereye yayınla
+                await publishContent(docPaths.fact, { content: wordText, type: 'word' }); 
+                console.log("Günün kelimesi yayınlandı:", wordText);
+            } catch (error) {
+                console.error("Günün kelimesi alınamadı:", error);
+                alert(`Günün kelimesi alınamadı: ${error.message}`);
+            } finally {
+                aiLoadingIndicator.classList.add('hidden');
+                publishWordBtn.disabled = false;
+            }
+        }
+
+
+        // --- Rol Seçim Olayları (Artık Çalışmalı) ---
         selectPublisherBtn.addEventListener('click', () => {
             roleScreen.classList.add('hidden');
             passwordScreen.classList.remove('hidden');
@@ -525,25 +595,15 @@
                 setupDraggableWindows(); // Sürükle-bırak özelliğini başlat
             }
 
-            initializeAppAndAuth(role); // Firebase'i başlat
+            setupAuth(role); // Firebase kimlik doğrulamasını başlat
         }
 
-        // --- Firebase Başlatma ve Kimlik Doğrulama ---
-        function initializeAppAndAuth(role) {
-            try {
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-                setupAuth(role);
-            } catch (error) {
-                console.error("Firebase başlatma hatası:", error);
-                if (role === 'publisher') publisherStatus.textContent = "Hata!";
-            }
-        }
-
+        // --- Firebase Kimlik Doğrulama ---
         async function setupAuth(role) {
             try {
+                // Not: signInAnonymously birden fazla kez çağrılırsa mevcut oturumu kullanır
                 await signInAnonymously(auth);
+                
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
                         userId = user.uid;
@@ -551,29 +611,44 @@
                         
                         if (role === 'publisher') {
                             publisherStatus.textContent = "Bağlandı (Anonim)";
+                            publisherStatus.classList.remove('text-red-700');
+                            publisherStatus.classList.add('text-green-700');
                             setupPublisherControls(); // Yayıncı butonlarını aktif et
                         } else {
                             setupReceiverListeners(); // Alıcı dinleyicilerini başlat
                         }
                     } else {
-                        if (role === 'publisher') publisherStatus.textContent = "Bağlantı kesildi.";
+                        if (role === 'publisher') {
+                             publisherStatus.textContent = "Bağlantı kesildi.";
+                             publisherStatus.classList.add('text-red-700');
+                        }
                     }
                 });
             } catch (error) {
                 console.error("Kimlik doğrulama hatası:", error);
-                if (role === 'publisher') publisherStatus.textContent = "Kimlik Doğrulama Hatası!";
+                if (role === 'publisher') {
+                    publisherStatus.textContent = "Kimlik Doğrulama Hatası!";
+                    publisherStatus.classList.add('text-red-700');
+                }
             }
         }
 
         // --- Yayıncı (Publisher) Fonksiyonları ---
         function setupPublisherControls() {
-            // Normal duyuru yayınla
+            // Butonları aktif et
             publishButton.disabled = false;
+            publishWeatherBtn.disabled = false;
+            publishFactBtn.disabled = false;
+            publishQuoteBtn.disabled = false; // YENİ
+            publishWordBtn.disabled = false; // YENİ
+            layoutButtons.forEach(btn => btn.disabled = false);
+
+            // Olay dinleyicilerini ekle
             publishButton.addEventListener('click', publishStandardAnnouncement);
-            
-            // AI içerik yayınla
             publishWeatherBtn.addEventListener('click', getWeatherData);
             publishFactBtn.addEventListener('click', getFunFact);
+            publishQuoteBtn.addEventListener('click', getQuoteOfTheDay); // YENİ
+            publishWordBtn.addEventListener('click', getWordOfTheDay); // YENİ
 
             // Kantin Şablonları
             document.querySelectorAll('.template-btn').forEach(button => {
@@ -606,7 +681,7 @@
             });
 
             // Ekran Düzeni Kontrol Butonları
-            document.querySelectorAll('.layout-btn').forEach(button => {
+            layoutButtons.forEach(button => {
                 button.addEventListener('click', async (e) => {
                     const layout = e.target.dataset.layout;
                     try {
@@ -617,6 +692,7 @@
                         console.log(`Ekran düzeni "${layout}" olarak ayarlandı.`);
                     } catch (error) {
                         console.error("Düzen ayarlanırken hata:", error);
+                        alert(`Düzen ayarlanamadı: ${error.message}`);
                     }
                 });
             });
@@ -660,6 +736,7 @@
 
             } catch (error) {
                 console.error("Duyuru yayınlama hatası:", error);
+                alert(`Duyuru yayınlanamadı: ${error.message}`);
             } finally {
                 publishButton.disabled = false;
                 publishButton.textContent = "Yayınla 🚀";
@@ -688,7 +765,6 @@
                         </p>
                     `;
                     announcementStatusBar.textContent = `Durum: ${urgencyLabel} (Yayınlandı: ${new Date(data.timestamp).toLocaleTimeString('tr-TR')})`;
-                    // Pencereyi vurgula
                     announcementWindow.classList.add('highlight-pulse');
                     setTimeout(() => announcementWindow.classList.remove('highlight-pulse'), 1500);
                 }
@@ -703,10 +779,37 @@
                 }
             }, (error) => console.error("Hava durumu dinleme hatası:", error));
 
-            // 3. Eğlenceli Bilgi Dinleyicisi
+            // 3. Eğlenceli Bilgi / Günün Bilgisi Dinleyicisi (GÜNCELLENDİ)
             onSnapshot(docPaths.fact, (doc) => {
                 if (doc.exists()) {
-                    factContent.innerHTML = `<p class="text-base text-purple-800">${doc.data().content}</p>`;
+                    const data = doc.data();
+                    let contentHTML = '';
+
+                    // İçerik türüne göre farklı HTML oluştur
+                    if (data.type === 'quote') {
+                        const parts = data.content.split(' - ');
+                        const quote = parts[0] || data.content;
+                        const author = parts[1] || 'Bilinmiyor';
+                        contentHTML = `<p class="text-lg italic text-indigo-700">"${quote}"</p><p class="text-sm font-semibold text-right text-indigo-900 mt-2">- ${author}</p>`;
+                    
+                    } else if (data.type === 'word') {
+                        // Gelen formatı parçala: [Kelime] ([Okunuş]): [Anlam]. Örnek Cümle: [Cümle]
+                        const parts = data.content.match(/(.+?)\s\((.+?)\):\s(.+?)\.\sÖrnek Cümle:\s(.+)/);
+                        if (parts) {
+                            contentHTML = `
+                                <p class="text-xl font-bold text-teal-700">${parts[1]} <span class="text-lg font-normal">(${parts[2]})</span></p>
+                                <p class="text-md text-gray-800 font-medium">${parts[3]}</p>
+                                <p class="text-sm italic text-gray-600 mt-2">"${parts[4]}"</p>
+                            `;
+                        } else {
+                            contentHTML = `<p class="text-base text-teal-800">${data.content}</p>`; // Hata olursa düz metin
+                        }
+
+                    } else { // 'fact' (rastgele bilgi) veya tanımsızsa
+                        contentHTML = `<p class="text-base text-purple-800">${data.content}</p>`;
+                    }
+                    
+                    factContent.innerHTML = contentHTML;
                     factWindow.classList.add('highlight-pulse');
                     setTimeout(() => factWindow.classList.remove('highlight-pulse'), 1500);
                 }
@@ -722,21 +825,19 @@
             }, (error) => console.error("Düzen dinleme hatası:", error));
         }
 
-        // YENİ: TV Ekran Düzenini Uygula
+        // TV Ekran Düzenini Uygula
         function applyLayout(layoutName) {
-            // Tüm pencereleri önce görünür yap
             [announcementWindow, weatherWindow, factWindow].forEach(win => {
                 win.style.opacity = '1';
                 win.style.pointerEvents = 'auto';
             });
             
-            const gap = "20px"; // Pencereler arası boşluk
-            const top = "20px"; // Üstten boşluk
-            const bottom = "20px"; // Alttan boşluk
+            const gap = "20px";
+            const top = "20px";
+            const bottom = "20px";
             
             switch(layoutName) {
                 case 'left-right':
-                    // Duyuru solda (büyük), diğerleri sağda (küçük)
                     announcementWindow.style.top = top;
                     announcementWindow.style.left = gap;
                     announcementWindow.style.width = `calc(66.66% - ${gap} - (${gap}/2))`;
@@ -754,7 +855,6 @@
                     break;
                     
                 case 'fullscreen':
-                    // Sadece duyuru tam ekran, diğerleri gizli
                     announcementWindow.style.top = top;
                     announcementWindow.style.left = gap;
                     announcementWindow.style.width = `calc(100vw - ${gap} - ${gap})`;
@@ -767,7 +867,6 @@
                     break;
                     
                 case 'three-columns':
-                    // Üç pencere eşit yan yana
                     announcementWindow.style.top = top;
                     announcementWindow.style.left = gap;
                     announcementWindow.style.width = `calc(33.33% - ${gap} - (${gap}/3))`;
@@ -795,20 +894,16 @@
             const header = element.querySelector('.window-header');
 
             if (header) {
-                // Başlıktan tutarak sürükle
                 header.onmousedown = dragMouseDown;
             }
 
             function dragMouseDown(e) {
                 e = e || window.event;
                 e.preventDefault();
-                // Fare pozisyonunu al
                 pos3 = e.clientX;
                 pos4 = e.clientY;
                 document.onmouseup = closeDragElement;
                 document.onmousemove = elementDrag;
-                
-                // Sürüklerken en üste getir
                 document.querySelectorAll('.draggable-window').forEach(win => win.style.zIndex = 10);
                 element.style.zIndex = 20;
             }
@@ -816,18 +911,15 @@
             function elementDrag(e) {
                 e = e || window.event;
                 e.preventDefault();
-                // Yeni pozisyonu hesapla
                 pos1 = pos3 - e.clientX;
                 pos2 = pos4 - e.clientY;
                 pos3 = e.clientX;
                 pos4 = e.clientY;
-                // Elementin yeni pozisyonunu ayarla
                 element.style.top = (element.offsetTop - pos2) + "px";
                 element.style.left = (element.offsetLeft - pos1) + "px";
             }
 
             function closeDragElement() {
-                // Sürüklemeyi durdur
                 document.onmouseup = null;
                 document.onmousemove = null;
             }
