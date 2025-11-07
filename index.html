@@ -923,8 +923,13 @@
                 
                 // Düzen değişiminden sonra kaydırmayı yeniden ayarla
                 setTimeout(() => {
-                    setupMarquee(wAnnounce.querySelector('.window-body'), wAnnounce.querySelector('.scroll-content'));
-                    setupMarquee(wInfo.querySelector('.window-body'), wInfo.querySelector('.scroll-content'));
+                    const annBody = wAnnounce.querySelector('.window-body');
+                    const annContent = wAnnounce.querySelector('.scroll-content');
+                    if (annBody && annContent) setupMarquee(annBody, annContent);
+
+                    const infoBody = wInfo.querySelector('.window-body');
+                    const infoContent = wInfo.querySelector('.scroll-content');
+                    if (infoBody && infoContent) setupMarquee(infoBody, infoContent);
                 }, 500); // Animasyonun bitmesini bekle
             }
 
@@ -1002,7 +1007,10 @@
                     document.onmousemove = null;
                     
                     // Sürükleme bitince kaydırmayı yeniden ayarla (yeni boyuta göre)
-                    setupMarquee(element.querySelector('.window-body'), element.querySelector('.scroll-content'));
+                    const body = element.querySelector('.window-body');
+                    const content = element.querySelector('.scroll-content');
+                    if (body && content) setupMarquee(body, content);
+                    
                     // Animasyonları devam ettir
                     marqueeAnimations.forEach(a => a.animation.play());
                 }
