@@ -4,79 +4,183 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Darıca Uğur Okulu - Gerçek Zamanlı Duyuru 📢</title>
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Ekstra stil ve pürüzsüz geçişler */
-        body, html {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            overflow: hidden; /* Kaydırmayı engelle */
-            height: 100%;
+        /* Standart Windows Arayüz Stilleri */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            overflow-x: hidden;
+            /* TV Ekranı Arka Planı */
+            background-color: #f0f2f5; /* Açık gri, modern bir arka plan */
         }
         
-        /* Alıcı (TV) Ekranı Arka Planı */
-        #receiver-desktop {
-            background: linear-gradient(120deg, #f0f4f8 0%, #d9e2ec 100%);
-            width: 100vw;
+        /* Yayıncı Paneli (Windows Stili) */
+        .publisher-body {
+            background-color: #E0E0E0; /* Klasik Windows Gri */
             height: 100vh;
-            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .window-frame {
+            border: 1px solid #606060;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            background-color: #F0F0F0; /* Pencere içi gri */
+            width: 100%;
+            max-width: 48rem; /* 768px */
+        }
+        .title-bar {
+            background: linear-gradient(to right, #0058D0, #0078D7); /* Windows mavi gradient */
+            color: white;
+            padding: 4px 8px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        .window-content {
+            padding: 16px;
+        }
+        .form-group {
+            border: 1px solid #B0B0B0;
+            padding: 12px;
+            margin-bottom: 16px;
+            background: #FFFFFF; /* Form alanları beyaz */
+        }
+        .toolbar {
+            border-bottom: 1px solid #B0B0B0;
+            padding: 8px;
+            background: #F5F5F5;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .win-button {
+            background: #E1E1E1;
+            border: 1px solid #B0B0B0;
+            padding: 6px 12px;
+            box-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            transition: background 0.2s;
+            font-size: 0.9rem;
+        }
+        .win-button:hover {
+            background: #E5F1FB;
+            border-color: #0078D7;
+        }
+        .win-button:active {
+            background: #CCE4F7;
+            border-color: #005A9E;
+        }
+        .win-input, .win-select {
+            border: 1px solid #707070;
+            padding: 6px;
+            background: #FFFFFF;
+            width: 100%;
+        }
+        .win-input:focus, .win-select:focus {
+            outline: 1px solid #0078D7;
+            border-color: #0078D7;
+        }
+        .status-bar {
+            border-top: 1px solid #B0B0B0;
+            padding: 4px 8px;
+            background: #F5F5F5;
+            font-size: 0.8rem;
+            color: #404040;
+            margin-top: 8px;
+        }
+        
+        /* ACİL DURUM BUTONU */
+        .emergency-button {
+            background: #D9534F;
+            color: white;
+            border: 1px solid #A94442;
+            padding: 10px 16px;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 16px;
+        }
+        .emergency-button:hover {
+            background: #C9302C;
+        }
+        .emergency-button.armed {
+            background: #F0AD4E; /* Sarı - Teyit bekleniyor */
+            color: #333;
         }
 
-        /* Sürüklenebilir Pencereler */
+        /* --- Alıcı (TV) Stilleri --- */
+        .receiver-desktop {
+            height: 100vh;
+            width: 100vw;
+            background-image: url('https://placehold.co/1920x1080/f0f2f5/e0e2e5?text=Ugur+Okullari'); /* Sade arka plan */
+            background-size: cover;
+            position: relative;
+            overflow: hidden; /* Kaydırmayı engelle */
+            padding: 20px;
+            display: flex; /* Flexbox düzeni için */
+            gap: 20px; /* Pencereler arası boşluk */
+        }
         .draggable-window {
-            position: absolute;
-            z-index: 10;
-            background: rgba(255, 255, 255, 0.6); /* Yarı saydam 'cam' efekti */
-            border: 1px solid rgba(209, 213, 219, 0.8);
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
             min-width: 350px;
             min-height: 200px;
+            position: absolute; /* Sürükleme için */
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* İçeriğin köşelerden taşmasını engelle */
-            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); /* Yumuşak geçiş */
+            border-radius: 8px; /* Resmi ama modern */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            /* Cam Efekti */
+            background: rgba(255, 255, 255, 0.7); /* Yarı saydam beyaz */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            transition: all 0.5s ease; /* Pozisyon değişimi için animasyon */
         }
-
         .window-header {
-            background: rgba(0, 0, 0, 0.05);
             padding: 10px 16px;
             cursor: move; /* Sürükleme imleci */
-            border-bottom: 1px solid rgba(209, 213, 219, 0.5);
-            user-select: none; /* Metin seçmeyi engelle */
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid rgba(200, 200, 200, 0.5);
+            /* DEV YAZI */
+            font-size: 2rem; /* 32px */
+            color: #1a202c; /* Koyu renk */
+        }
+        .window-body {
+            padding: 16px;
+            flex-grow: 1; /* Esne, alanı doldur */
+            overflow: hidden; /* Kaydırma için */
+            /* DEV YAZI */
+            font-size: 1.8rem; /* 29px */
+            line-height: 1.6;
+            color: #2d3748; /* Biraz daha açık */
         }
         
-        .window-content {
-            padding: 20px;
-            /* overflow-y: auto; */ /* Otomatik kaydırma için bunu kaldırıyoruz */
-            flex-grow: 1;
-            overflow: hidden; /* Kaydırma efekti için gerekli */
-            position: relative; /* Kayan içerik için */
-        }
-
-        /* --- Yavaş Otomatik Kaydırma (Marquee) Stili --- */
-        .scrolling-content {
+        /* Otomatik Kaydırma (Marquee) Efekti */
+        .scroll-container {
+            overflow: hidden;
+            height: 100%;
             position: relative;
-            animation: scroll-up-down 20s linear infinite; /* Animasyon süresi (20s) */
+        }
+        .scroll-content {
+            position: absolute;
+            width: 100%;
+            /* Animasyon CSS'de tanımlanacak */
         }
         
-        @keyframes scroll-up-down {
-            0%, 10% { /* Başlangıçta 10% bekle */
-                transform: translateY(0%);
-            }
-            40%, 60% { /* %40'a kadar aşağı in, %60'a kadar bekle */
-                transform: translateY(var(--scroll-amount)); 
-            }
-            90%, 100% { /* %90'a kadar yukarı çık, %100'e kadar bekle */
-                transform: translateY(0%);
-            }
+        /* Yeni duyuru geldiğinde hafif parlama */
+        .window-pulse {
+            animation: pulse-yellow 1.5s 1;
         }
-        /* --- Kaydırma Stili Sonu --- */
+        @keyframes pulse-yellow {
+            0% { box-shadow: 0 0 0 0px rgba(236, 201, 75, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(236, 201, 75, 0); }
+            100% { box-shadow: 0 0 0 0px rgba(236, 201, 75, 0); }
+        }
 
-
-        /* Hata animasyonu */
+        /* Hata (Shake) Animasyonu */
         .shake {
             animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
         }
@@ -86,323 +190,278 @@
             30%, 50%, 70% { transform: translateX(-4px); }
             40%, 60% { transform: translateX(4px); }
         }
-
-        /* Yeni Duyuru Geldiğinde Animasyon (hafif parlama) */
-        .highlight-flash {
-            animation: flash-yellow 1.5s ease-out;
-        }
-        @keyframes flash-yellow {
-            0% { background-color: rgba(253, 230, 138, 0.8); }
-            70% { background-color: rgba(253, 230, 138, 0); }
-            100% { background-color: rgba(255, 255, 255, 0.6); } /* Normal 'cam' rengine dön */
-        }
-        
-        /* Yayıncı (Windows) Arayüzü */
-        #publisher-ui {
-            background-color: #f0f0f0; /* Klasik Windows grisi */
-            border: 1px solid #999;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        .window-title-bar {
-            background: linear-gradient(to right, #0058d0, #0078d7); /* Windows mavi başlık */
-            color: white;
-            padding: 6px 12px;
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .form-group {
-            border: 1px solid #b0b0b0;
-            padding: 16px;
-            margin-bottom: 16px;
-            background-color: #fdfdfd;
-        }
-        .toolbar {
-            background-color: #e9e9e9;
-            border-bottom: 1px solid #b0b0b0;
-            padding: 8px;
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .toolbar-btn {
-            background-color: #e1e1e1;
-            border: 1px solid #b0b0b0;
-            padding: 5px 10px;
-            border-radius: 3px;
-            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
-        }
-        .toolbar-btn:hover {
-            background-color: #e5f1ff;
-            border-color: #0078d7;
-        }
-        .status-bar {
-            background-color: #e9e9e9;
-            border-top: 1px solid #b0b0b0;
-            padding: 4px 12px;
-            font-size: 0.9em;
-            color: #333;
-        }
-
     </style>
 </head>
-<body class="bg-gray-300">
+<body id="body-container">
 
-    <!-- Rol Seçim Ekranı (Tüm vücudu kaplar) -->
-    <div id="role-selection-screen" class="flex items-center justify-center min-h-screen bg-gray-200 p-4">
-        <div class="bg-white p-8 md:p-12 shadow-2xl w-full max-w-md text-center">
-            <h1 class="text-3xl font-bold mb-8 text-gray-800">Darıca Uğur Okulu Duyuru Sistemi</h1>
-            <p class="text-gray-600 mb-10 text-lg">Bu cihazı nasıl kullanmak istiyorsunuz?</p>
-            <div class="space-y-5">
-                <button id="select-publisher" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 text-lg transition duration-300 transform hover:scale-105">
-                    📣 Yayıncı (Duyuru Gönder)
-                </button>
-                <button id="select-receiver" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-4 px-6 text-lg transition duration-300 transform hover:scale-105">
-                    📺 Alıcı (TV Ekranı)
-                </button>
+    <!-- 1. Rol Seçim Ekranı -->
+    <div id="role-selection-screen" class="publisher-body">
+        <div class="window-frame max-w-sm">
+            <div class="title-bar">
+                <span>Darıca Uğur Okulu Duyuru Sistemi</span>
+            </div>
+            <div class="window-content text-center">
+                <h1 class="text-xl font-bold mb-4">Cihaz Rolü Seçin</h1>
+                <p class="text-gray-700 mb-6">Bu cihaz nasıl kullanılacak?</p>
+                <div class="space-y-3">
+                    <button id="select-publisher" class="win-button w-full">
+                        👨‍💻 Yayıncı (Kontrol Merkezi)
+                    </button>
+                    <button id="select-receiver" class="win-button w-full">
+                        🖥️ Alıcı (TV Ekranı)
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Şifre Ekranı (Tüm vücudu kaplar) -->
-    <div id="password-screen" class="hidden flex items-center justify-center min-h-screen bg-gray-200 p-4">
-        <div class="bg-white p-8 md:p-12 shadow-2xl w-full max-w-sm text-center">
-            <h1 class="text-2xl font-bold mb-6 text-gray-800">Yayıncı Girişi</h1>
-            <p class="text-gray-600 mb-4">Duyuru yayınlamak için şifreyi girin.</p>
-            <input id="password-input" type="password" class="w-full p-3 bg-gray-100 border border-gray-400 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-4" placeholder="••••••••">
-            <button id="login-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 text-lg transition duration-300">
-                Giriş Yap
-            </button>
-            <p id="password-hint" class="text-gray-500 text-sm mt-4">İpucu: şifre 1234</p>
-            <p id="password-error" class="text-red-500 text-sm mt-2 hidden">Hatalı şifre!</p>
-            <button id="back-to-roles" class="text-gray-500 hover:text-gray-800 text-sm mt-6">Geri</button>
+    <!-- 2. Şifre Ekranı (Yayıncı için) -->
+    <div id="password-screen" class="publisher-body hidden">
+        <div class="window-frame max-w-sm">
+            <div class="title-bar">
+                <span>Güvenlik Doğrulaması</span>
+            </div>
+            <div class="window-content">
+                <label for="password-input" class="block text-sm font-medium text-gray-800 mb-2">Yayıncı Şifresi:</label>
+                <input id="password-input" type="password" class="win-input mb-3" placeholder="••••••••">
+                <button id="login-button" class="win-button w-full bg-blue-500 text-white hover:bg-blue-600">Giriş Yap</button>
+                <p id="password-hint" class="text-gray-600 text-xs mt-3">İpucu: şifre 1234</p>
+                <p id="password-error" class="text-red-600 text-sm mt-2 hidden">Hatalı şifre!</p>
+                <button id="back-to-roles" class="text-gray-600 hover:text-blue-600 text-sm mt-4">&laquo; Geri</button>
+            </div>
         </div>
     </div>
 
-    <!-- Yayıncı (Windows) Arayüzü -->
-    <div id="publisher-screen" class="hidden flex items-center justify-center min-h-screen p-4 md:p-8">
-        <div id="publisher-ui" class="w-full max-w-4xl">
-            <!-- Başlık Çubuğu -->
-            <div class="window-title-bar">
-                <span>Duyuru Yayınlama Paneli (Darıca Uğur Okulu)</span>
-                <span id="publisher-clock" class="font-normal text-sm"></span>
+    <!-- 3. Yayıncı Ana Uygulama Ekranı (Kontrol Merkezi) -->
+    <div id="publisher-screen" class="publisher-body hidden">
+        <div class="window-frame max-w-3xl">
+            <div class="title-bar">
+                <span>👨‍💻 Kontrol Merkezi (Darıca Uğur Okulu)</span>
+                <span id="publisher-clock">--:--:--</span>
             </div>
             
-            <div class="p-4 md:p-6 flex flex-col md:flex-row gap-6">
-                <!-- Sol Panel: Formlar -->
-                <div class="flex-1 space-y-4">
-                    <!-- Normal Duyuru Formu -->
-                    <div class="form-group">
-                        <h2 class="text-xl font-semibold mb-3 text-gray-800">1. Normal Duyuru Gönder</h2>
-                        <div class="space-y-3">
-                            <div>
-                                <label for="title-input" class="block text-sm font-medium text-gray-700 mb-1">Duyuru Başlığı:</label>
-                                <input id="title-input" type="text" class="w-full p-2 bg-white border border-gray-400 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Örn: Acil Toplantı">
-                            </div>
-                            <div>
-                                <label for="urgency-select" class="block text-sm font-medium text-gray-700 mb-1">Önem Derecesi:</label>
-                                <select id="urgency-select" class="w-full p-2 bg-white border border-gray-400 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                                    <option value="normal">Normal</option>
-                                    <option value="onemli">Önemli</option>
-                                    <option value="acil">🚨 ACİL 🚨</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="audience-select" class="block text-sm font-medium text-gray-700 mb-1">Kime:</label>
-                                <select id="audience-select" class="w-full p-2 bg-white border border-gray-400 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                                    <option value="Tüm Okul">Tüm Okul</option>
-                                    <option value="Öğrenciler">Öğrenciler</option>
-                                    <option value="Öğretmenler">Öğretmenler</option>
-                                    <option value="Veliler">Veliler</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="announcement-input" class="block text-sm font-medium text-gray-700 mb-1">Duyuru Detayı:</label>
-                                <textarea id="announcement-input" rows="4" class="w-full p-2 bg-white border border-gray-400 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Duyuru ile ilgili detayları buraya yazın..."></textarea>
-                            </div>
-                            <button id="publish-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 transition duration:300 disabled:opacity-50">
-                                Duyuruyu Yayınla 🚀
-                            </button>
+            <!-- ACİL DURUM BUTONU -->
+            <div id="emergency-button" class="emergency-button">
+                🚨 ACİL DURUM DUYURUSU YAYINLA 🚨
+            </div>
+
+            <!-- Ana İçerik Alanı -->
+            <div class="window-content" style="max-height: 80vh; overflow-y: auto;">
+                <div class="flex flex-col md:flex-row gap-6">
+                    
+                    <!-- Sol Sütun: Formlar -->
+                    <div class="flex-1 space-y-4">
+                        
+                        <!-- Manuel Duyuru Formu -->
+                        <div class="form-group">
+                            <h2 class="font-bold text-lg mb-2 text-blue-700">1. Manuel Duyuru Gönder</h2>
+                            <label class="block text-sm font-medium text-gray-800">Başlık:</label>
+                            <input id="title-input" type="text" class="win-input mb-2" placeholder="Örn: Veli Toplantısı">
+                            
+                            <label class="block text-sm font-medium text-gray-800">Önem Derecesi:</label>
+                            <select id="urgency-select" class="win-select mb-2">
+                                <option value="normal">Normal</option>
+                                <option value="onemli">Önemli</option>
+                                <option value="acil">🚨 ACİL</option>
+                            </select>
+                            
+                            <label class="block text-sm font-medium text-gray-800">Kime:</label>
+                            <select id="audience-select" class="win-select mb-2">
+                                <option value="tum-okul">Tüm Okul</option>
+                                <option value="ogrenciler">Öğrenciler</option>
+                                <option value="ogretmenler">Öğretmenler</option>
+                                <option value="veliler">Veliler</option>
+                            </select>
+
+                            <label class="block text-sm font-medium text-gray-800">Detay:</label>
+                            <textarea id="announcement-input" rows="4" class="win-input mb-2" placeholder="Duyuru ile ilgili detaylar..."></textarea>
+                            
+                            <button id="publish-button" class="win-button w-full bg-green-600 text-white hover:bg-green-700" disabled>Yayınla 🚀</button>
                         </div>
-                    </div>
-                     <!-- Kantin Hızlı Şablonları (Toolbar) -->
-                    <div class="form-group">
-                         <h2 class="text-xl font-semibold mb-3 text-gray-800">Kantin Hızlı Şablonları</h2>
-                         <div class="toolbar">
-                            <button data-template="menu" class="template-btn toolbar-btn">🍽️ Menü</button>
-                            <button data-template="tost" class="template-btn toolbar-btn">🎉 Tost Günü</button>
-                            <button data-template="muzik" class="template-btn toolbar-btn">🎶 Müzik İsteği</button>
-                            <button data-template="kapanis" class="template-btn toolbar-btn">🔔 Kapanış</button>
-                         </div>
-                    </div>
-                </div>
-                
-                <!-- Sağ Panel: Anlık İçerik ve Düzen Kontrolü -->
-                <div class="flex-1 space-y-4">
-                    <!-- Anlık İçerik Oluşturucular -->
-                    <div class="form-group">
-                        <h2 class="text-xl font-semibold mb-3 text-gray-800">2. Anlık İçerik Gönder</h2>
-                        <p class="text-sm text-gray-600 mb-3">(Bu içerik "Günün Bilgisi" penceresinde yayınlanır)</p>
-                        <div class="space-y-3">
-                            <!-- Hava Durumu butonu kaldırıldı -->
-                            <button id="publish-fun-fact" class="w-full toolbar-btn text-left">🧠 Eğlenceli Bilgi Ver</button>
-                            <button id="publish-quote" class="w-full toolbar-btn text-left">💡 Günün Sözünü Ver</button>
-                            <button id="publish-word" class="w-full toolbar-btn text-left">🇬🇧 Günün İngilizce Kelimesini Ver</button>
-                            <p id="ai-loading-indicator" class="text-sm text-gray-600 hidden">AI içerik üretiyor, lütfen bekleyin...</p>
+
+                        <!-- Sınav Takvimi Formu -->
+                        <div class="form-group">
+                            <h2 class="font-bold text-lg mb-2 text-blue-700">2. Sınav Takvimi Gönder</h2>
+                            <label class="block text-sm font-medium text-gray-800">Sınıf (Örn: 9-A):</label>
+                            <input id="exam-class" type="text" class="win-input mb-2">
+                            <label class="block text-sm font-medium text-gray-800">Ders:</label>
+                            <input id="exam-subject" type="text" class="win-input mb-2" placeholder="Örn: Matematik">
+                            <label class="block text-sm font-medium text-gray-800">Tarih ve Saat:</label>
+                            <input id="exam-date" type="text" class="win-input mb-2" placeholder="Örn: 15 Kasım Cuma, 10:00">
+                            <button id="publish-exam-button" class="win-button w-full">Sınav Duyurusu Yayınla 📅</button>
                         </div>
+
                     </div>
 
-                    <!-- Ekran Düzeni Kontrolü (GÜNCELLENDİ) -->
-                    <div class="form-group">
-                        <h2 class="text-xl font-semibold mb-3 text-gray-800">3. TV Ekran Düzeni Kontrolü</h2>
-                        <div class="space-y-3">
-                            <button data-layout="default" class="layout-btn w-full toolbar-btn text-left">Sol/Sağ (Duyuru / Bilgi)</button>
-                            <button data-layout="full-announcement" class="layout-btn w-full toolbar-btn text-left">Tam Ekran (Sadece Duyuru)</button>
-                            <button data-layout="full-info" class="layout-btn w-full toolbar-btn text-left">Tam Ekran (Sadece Bilgi)</button>
-                            <button data-layout="top-bottom" class="layout-btn w-full toolbar-btn text-left">Üst/Alt (Duyuru / Bilgi)</button>
+                    <!-- Sağ Sütun: Hızlı Araçlar -->
+                    <div class="flex-1 space-y-4">
+
+                        <!-- Ekran Düzeni Kontrolü -->
+                        <div class="form-group">
+                            <h2 class="font-bold text-lg mb-2 text-blue-700">🖥️ TV Ekran Düzeni</h2>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button class="layout-btn win-button" data-layout="left-right">Sol/Sağ</button>
+                                <button class="layout-btn win-button" data-layout="full-announcement">Tam Ekran (Duyuru)</button>
+                                <button class="layout-btn win-button" data-layout="full-info">Tam Ekran (Bilgi)</button>
+                                <button class="layout-btn win-button" data-layout="top-bottom">Üst/Alt</button>
+                            </div>
                         </div>
+                        
+                        <!-- Anlık İçerik -->
+                        <div class="form-group">
+                            <h2 class="font-bold text-lg mb-2 text-blue-700">💡 Anlık İçerik Gönder</h2>
+                            <div class="space-y-2">
+                                <button id="gen-fun-fact" class="win-button w-full">🧠 Eğlenceli Bilgi Ver</button>
+                                <button id="gen-quote" class="win-button w-full">💡 Günün Sözü</button>
+                                <button id="gen-word" class="win-button w-full">🇬🇧 Günün İng. Kelimesi</button>
+                                <button id="send-bell-times" class="win-button w-full">🔔 Zil Saatlerini Gönder</button>
+                            </div>
+                        </div>
+
+                        <!-- Nöbetçi Bilgisi Formu -->
+                        <div class="form-group">
+                            <h2 class="font-bold text-lg mb-2 text-blue-700">👨‍🏫 Nöbetçi Bilgisi</h2>
+                            <label class="block text-sm font-medium text-gray-800">Nöbetçi Öğretmen:</label>
+                            <input id="teacher-duty" type="text" class="win-input mb-2" placeholder="Örn: Ahmet Yılmaz">
+                            <label class="block text-sm font-medium text-gray-800">Nöbetçi Öğrenci:</label>
+                            <input id="student-duty" type="text" class="win-input mb-2" placeholder="Örn: Zeynep Kaya (11-B)">
+                            <button id="publish-duty-button" class="win-button w-full">Nöbetçi Bilgisi Yayınla</button>
+                        </div>
+
+                        <!-- Hızlı Şablonlar -->
+                        <div class="form-group">
+                             <h2 class="font-bold text-lg mb-2 text-blue-700">⚡ Hızlı Şablonlar</h2>
+                             <div class="toolbar">
+                                <button data-template="menu" class="template-btn win-button">🍽️ Menü</button>
+                                <button data-template="tost" class="template-btn win-button">🎉 Tost</button>
+                                <button data-template="lost" class="template-btn win-button">🎒 Kayıp Eşya</button>
+                                <button data-template="club" class="template-btn win-button">🎭 Kulüp/Etkinlik</button>
+                             </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
-            
-            <!-- Durum Çubuğu -->
             <div class="status-bar">
-                <span id="publisher-status" class="text-sm text-gray-700">Firebase bağlantısı bekleniyor...</span>
+                <span>Durum: Firebase'e bağlı.</span>
             </div>
         </div>
     </div>
 
-
-    <!-- Alıcı (TV) Ekranı / Masaüstü -->
-    <div id="receiver-desktop" class="hidden">
-
-        <!-- Duyuru Penceresi -->
-        <div id="announcement-window" class="draggable-window" style="top: 20px; left: 20px; width: 55%; height: calc(100vh - 40px);">
-            <div class="window-header">
-                <h2 class="text-xl font-bold text-gray-800">📢 Duyuru Panosu</h2>
-            </div>
-            <div id="announcement-content" class="window-content">
-                <p id="loading-text" class="text-gray-600 italic text-xl">Duyurular bekleniyor...</p>
-                <!-- Kayan içerik buraya gelecek -->
-            </div>
-        </div>
-
-        <!-- Hava Durumu Penceresi (KALDIRILDI) -->
-        
-        <!-- Bilgi Penceresi (Eğlenceli Bilgi, Söz, Kelime) -->
-        <div id="info-window" class="draggable-window" style="top: 20px; right: 20px; width: 40%; height: calc(100vh - 40px);">
-            <div class="window-header">
-                <h2 class="text-xl font-bold text-gray-800">💡 Günün Bilgisi</h2>
-            </div>
-            <div id="info-content" class="window-content">
-                <p class="text-gray-600 italic text-xl">Veri bekleniyor...</p>
-                <!-- Kayan içerik buraya gelecek -->
-            </div>
-        </div>
-
+    <!-- 4. Alıcı Ana Uygulama Ekranı (TV Masaüstü) -->
+    <div id="receiver-screen" class="receiver-desktop hidden">
+        <!-- Pencereler JavaScript tarafından buraya eklenecek -->
     </div>
 
-    <!-- Hata Mesajı Konteyneri -->
-    <div id="error-toast" class="hidden fixed bottom-5 right-5 bg-red-600 text-white p-4 rounded-lg shadow-lg z-50">
-        Hata: Bir sorun oluştu.
-    </div>
-
-    <!-- Firebase Scriptleri -->
+    <!-- TV PENCERE ŞABLONLARI -->
+    <template id="window-template">
+        <div class="draggable-window">
+            <div class="window-header"></div>
+            <div class="window-body">
+                <div class="scroll-container">
+                    <div class="scroll-content">
+                        <!-- İçerik buraya gelecek -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    
     <script type="module">
         // Firebase modüllerini import et
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- YENİ VE TAM FIREBASE YAPILANDIRMASI ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyBeQsh4Tp-YbLG8BcgoMDKXi5gJ0rBZ5pI",
-            authDomain: "emirokuldeneme.firebaseapp.com",
-            projectId: "emirokuldeneme",
-            storageBucket: "emirokuldeneme.firebasestorage.app",
-            messagingSenderId: "821824749207",
-            appId: "1:821824749207:web:164b0ea4c79bf9636f33d2"
-        };
-        // -------------------------------------------
-
-        // --- GEMINI API AYARLARI ---
-        const GEMINI_API_KEY = "AIzaSyBx84HfcrsNwfEjK5kd-yGqrFC4nr_uDjc";
-        // gemini-2.5-flash modelini kullanıyoruz
-        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-        // -------------------------------------------
-
-
-        // --- Firebase Başlatma (Hata düzeltmesi için en başa alındı) ---
-        let db, auth, userId;
-        const appId = firebaseConfig.projectId || 'genel-duyuru-odasi';
-        try {
-            const app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            auth = getAuth(app);
-            setLogLevel('Debug'); // Hata ayıklama loglarını aç
-        } catch (error) {
-            console.error("Kritik Firebase Başlatma Hatası:", error);
-            showErrorToast(`Kritik Firebase Hatası: ${error.message}`);
-        }
-        // ----------------------------------------------------------------
-
-        // --- Doküman Yolları (Hava durumu kaldırıldı) ---
-        const docPaths = {
-            announcement: doc(db, 'artifacts', appId, 'public/data', 'broadcast', 'latestAnnouncement'),
-            // weather: doc(...) // Kaldırıldı
-            info: doc(db, 'artifacts', appId, 'public/data', 'broadcast', 'latestInfo'),
-            layout: doc(db, 'artifacts', appId, 'public/data', 'broadcast', 'layoutConfig')
-        };
-        
-        // --- DOM YÜKLENDİĞİNDE BAŞLA (Tüm tuşların çalışması için düzeltme) ---
+        // === KODUN TAMAMI DOM YÜKLENDİKTEN SONRA ÇALIŞACAK ===
         document.addEventListener('DOMContentLoaded', () => {
             
+            // --- Firebase Yapılandırması (Kritik) ---
+            // Bu bilgileri kendi Firebase projenizden almalısınız.
+            const firebaseConfig = {
+                apiKey: "AIzaSyBeQsh4Tp-YbLG8BcgoMDKXi5gJ0rBZ5pI",
+                authDomain: "emirokuldeneme.firebaseapp.com",
+                projectId: "emirokuldeneme",
+                storageBucket: "emirokuldeneme.firebasestorage.app",
+                messagingSenderId: "821824749207",
+                appId: "1:821824749207:web:164b0ea4c79bf9636f33d2"
+            };
+            
+            // --- Gemini AI Yapılandırması ---
+            const GEMINI_API_KEY = "AIzaSyBx84HfcrsNwfEjK5kd-yGqrFC4nr_uDjc"; // Kullanıcının verdiği yeni anahtar
+            const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+            
+            // --- Firebase Değişkenleri ---
+            let db, auth, userId;
+            const appId = firebaseConfig.projectId || 'genel-duyuru-odasi';
+            
+            // Firebase Hizmetlerini Başlat
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                setLogLevel('Debug'); // Hata ayıklama için
+                console.log("Firebase başarıyla başlatıldı.");
+            } catch (error) {
+                console.error("Firebase başlatma hatası:", error);
+                alert("Kritik Hata: Firebase başlatılamadı. Lütfen konsolu kontrol edin.");
+                return; // Kodun geri kalanı çalışmasın
+            }
+
+            // --- Firestore Belge Yolları ---
+            // Artık 'db' tanımlı olduğu için bu yollar hata vermez.
+            const docPaths = {
+                announcement: doc(db, 'artifacts', appId, 'public/data', 'announcements', 'latest'),
+                info: doc(db, 'artifacts', appId, 'public/data', 'info', 'latest'),
+                layout: doc(db, 'artifacts', appId, 'public/data', 'layout', 'latest')
+            };
+
             // --- DOM Elementleri ---
+            const bodyContainer = document.getElementById('body-container');
+            // Ekranlar
             const roleScreen = document.getElementById('role-selection-screen');
+            const passwordScreen = document.getElementById('password-screen');
+            const publisherScreen = document.getElementById('publisher-screen');
+            const receiverScreen = document.getElementById('receiver-screen');
+            
+            // Rol Seçimi
             const selectPublisherBtn = document.getElementById('select-publisher');
             const selectReceiverBtn = document.getElementById('select-receiver');
             
-            const passwordScreen = document.getElementById('password-screen');
+            // Şifre Ekranı
             const passwordInput = document.getElementById('password-input');
             const loginButton = document.getElementById('login-button');
             const passwordError = document.getElementById('password-error');
             const backToRolesBtn = document.getElementById('back-to-roles');
-
-            const publisherScreen = document.getElementById('publisher-screen');
-            const publisherStatus = document.getElementById('publisher-status');
             const publisherClock = document.getElementById('publisher-clock');
+            
+            // Yayıncı Kontrolleri
             const titleInput = document.getElementById('title-input');
             const urgencySelect = document.getElementById('urgency-select');
             const audienceSelect = document.getElementById('audience-select');
             const inputArea = document.getElementById('announcement-input');
             const publishButton = document.getElementById('publish-button');
-            
-            const aiLoadingIndicator = document.getElementById('ai-loading-indicator');
-            // const publishWeatherBtn = document.getElementById('publish-weather'); // Kaldırıldı
-            const publishFunFactBtn = document.getElementById('publish-fun-fact');
-            const publishQuoteBtn = document.getElementById('publish-quote');
-            const publishWordBtn = document.getElementById('publish-word');
+            const genFunFactBtn = document.getElementById('gen-fun-fact');
+            const genQuoteBtn = document.getElementById('gen-quote');
+            const genWordBtn = document.getElementById('gen-word');
+            const emergencyButton = document.getElementById('emergency-button');
+            const teacherDutyInput = document.getElementById('teacher-duty');
+            const studentDutyInput = document.getElementById('student-duty');
+            const publishDutyButton = document.getElementById('publish-duty-button');
+            const sendBellTimesBtn = document.getElementById('send-bell-times');
+            const examClassInput = document.getElementById('exam-class');
+            const examSubjectInput = document.getElementById('exam-subject');
+            const examDateInput = document.getElementById('exam-date');
+            const publishExamButton = document.getElementById('publish-exam-button');
 
-            const receiverDesktop = document.getElementById('receiver-desktop');
-            const announcementWindow = document.getElementById('announcement-window');
-            const announcementContent = document.getElementById('announcement-content');
-            const loadingText = document.getElementById('loading-text');
-            // const weatherWindow = document.getElementById('weather-window'); // Kaldırıldı
-            const infoWindow = document.getElementById('info-window');
-            const infoContent = document.getElementById('info-content');
-            
-            const errorToast = document.getElementById('error-toast');
-            
-            // --- Hata Gösterme Fonksiyonu ---
-            function showErrorToast(message) {
-                console.error("Hata Gösterildi:", message);
-                errorToast.textContent = message;
-                errorToast.classList.remove('hidden');
-                setTimeout(() => {
-                    errorToast.classList.add('hidden');
-                }, 5000);
+
+            // --- Saat ---
+            function updateClock() {
+                if (publisherClock.offsetParent) { // Sadece görünürse
+                    publisherClock.textContent = new Date().toLocaleTimeString('tr-TR');
+                }
             }
+            setInterval(updateClock, 1000);
 
             // --- Rol Seçim Olayları ---
             if (selectPublisherBtn) {
@@ -429,451 +488,494 @@
             }
 
             // --- Şifre Kontrolü ---
-            if (loginButton) {
-                loginButton.addEventListener('click', handleLogin);
-                passwordInput.addEventListener('keyup', (e) => {
-                    if (e.key === 'Enter') handleLogin();
-                });
-            }
-
             function handleLogin() {
                 if (passwordInput.value === "1234") {
                     passwordScreen.classList.add('hidden');
                     passwordInput.value = "";
                     passwordError.classList.add('hidden');
-                    startAppAs('publisher');
+                    startAppAs('publisher'); // Şifre doğru
                 } else {
                     passwordError.classList.remove('hidden');
-                    passwordInput.classList.add('shake');
-                    setTimeout(() => {
-                        passwordInput.classList.remove('shake');
-                    }, 500);
+                    passwordScreen.classList.add('shake');
+                    setTimeout(() => passwordScreen.classList.remove('shake'), 500);
                 }
             }
+            if (loginButton) loginButton.addEventListener('click', handleLogin);
+            if (passwordInput) passwordInput.addEventListener('keyup', (e) => (e.key === 'Enter') && handleLogin());
 
-            // --- Uygulama Başlatma Fonksiyonu ---
+
+            // --- Uygulama Başlatma ---
             function startAppAs(role) {
                 roleScreen.classList.add('hidden');
                 
                 if (role === 'publisher') {
+                    bodyContainer.className = 'publisher-body';
                     publisherScreen.classList.remove('hidden');
-                    setupAuth(role); // Yayıncı için kimlik doğrulama ve buton ayarları
+                    setupAuth(role); // Yayıncı için kimlik doğrulama
                 } else {
-                    receiverDesktop.classList.remove('hidden');
-                    setupAuth(role); // Alıcı için kimlik doğrulama ve dinleyiciler
+                    bodyContainer.className = 'receiver-desktop'; // TV arkaplanı
+                    receiverScreen.classList.remove('hidden');
+                    setupAuth(role); // Alıcı için kimlik doğrulama
                 }
             }
-
+            
             // --- Firebase Kimlik Doğrulama ---
             async function setupAuth(role) {
                 try {
                     await signInAnonymously(auth);
+                    console.log("Kimlik doğrulandı (Anonim).");
+                    
                     onAuthStateChanged(auth, (user) => {
                         if (user) {
                             userId = user.uid;
-                            console.log("Kimlik doğrulandı (Anonim). Rol:", role);
-                            
+                            console.log("Kullanıcı ID:", userId);
+                            // Rol'e göre dinleyicileri veya kontrolleri kur
                             if (role === 'publisher') {
-                                publisherStatus.textContent = "Bağlandı (Hazır)";
                                 setupPublisherControls();
-                                // Yayıncı saatini başlat
-                                setInterval(() => {
-                                    publisherClock.textContent = new Date().toLocaleTimeString('tr-TR');
-                                }, 1000);
                             } else {
                                 setupReceiverListeners();
                             }
-                        } else {
-                            console.log("Kullanıcı oturumu kapattı.");
-                            if (role === 'publisher') publisherStatus.textContent = "Bağlantı kesildi.";
                         }
                     });
                 } catch (error) {
-                    console.error("Kimlik doğrulama hatası:", error);
-                    showErrorToast(`Kimlik doğrulama hatası: ${error.message}`);
-                    if (role === 'publisher') publisherStatus.textContent = "Kimlik doğrulama başarısız.";
+                    console.error("Anonim giriş hatası:", error);
+                    alert("Hata: Kimlik doğrulanamadı.");
                 }
             }
-            
-            // --- YAYINCI FONKSİYONLARI ---
+
+            // --- YAYINCI (PUBLISHER) BÖLÜMÜ ---
             function setupPublisherControls() {
                 publishButton.disabled = false;
                 publishButton.addEventListener('click', publishAnnouncement);
-                setupTemplateButtons(); // Kantin butonları
-                setupAiButtons(); // AI içerik butonları
-                setupLayoutButtons(); // Düzen butonları
+                
+                // Anlık İçerik Butonları
+                genFunFactBtn.addEventListener('click', () => generateGeminiContent('fun-fact'));
+                genQuoteBtn.addEventListener('click', () => generateGeminiContent('quote'));
+                genWordBtn.addEventListener('click', () => generateGeminiContent('word'));
+                
+                // Acil Durum Butonu
+                emergencyButton.addEventListener('click', handleEmergencyClick);
+                
+                // Nöbetçi Butonu
+                publishDutyButton.addEventListener('click', publishDutyInfo);
+
+                // Zil Saatleri
+                sendBellTimesBtn.addEventListener('click', publishBellTimes);
+
+                // Sınav Takvimi
+                publishExamButton.addEventListener('click', publishExamSchedule);
+
+                // Düzen Butonları
+                document.querySelectorAll('.layout-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => publishLayout(e.target.dataset.layout));
+                });
+                
+                // Şablon Butonları
+                setupTemplateButtons();
             }
             
-            // Kantin Şablonları
+            // Genel Yayın Fonksiyonu
+            async function publishToDoc(docRef, data, successMsg) {
+                try {
+                    await setDoc(docRef, data, { merge: true }); // merge:true önemli
+                    console.log(successMsg);
+                } catch (error) {
+                    console.error("Yayınlama hatası:", error);
+                    alert(`Hata: ${successMsg} gönderilemedi.`);
+                }
+            }
+
+            // 1. Manuel Duyuru Yayınla
+            function publishAnnouncement() {
+                const title = titleInput.value.trim();
+                const text = inputArea.value.trim();
+                if (!title || !text) return alert("Başlık ve Detay boş olamaz.");
+
+                publishToDoc(docPaths.announcement, {
+                    title: title,
+                    text: text,
+                    urgency: urgencySelect.value,
+                    audience: audienceSelect.value,
+                    timestamp: new Date().toISOString() // ISO formatı daha standart
+                }, "Manuel duyuru yayınlandı");
+                
+                // Formu temizle
+                titleInput.value = ""; inputArea.value = "";
+                urgencySelect.value = "normal"; audienceSelect.value = "tum-okul";
+            }
+            
+            // 2. Acil Durum Yönetimi
+            let emergencyClickCount = 0;
+            function handleEmergencyClick() {
+                emergencyClickCount++;
+                if (emergencyClickCount === 1) {
+                    emergencyButton.textContent = "EMİN MİSİN? TEYİT İÇİN TEKRAR TIKLA!";
+                    emergencyButton.classList.add('armed');
+                    setTimeout(() => {
+                        emergencyButton.textContent = "🚨 ACİL DURUM DUYURUSU YAYINLA 🚨";
+                        emergencyButton.classList.remove('armed');
+                        emergencyClickCount = 0;
+                    }, 3000); // 3 saniye içinde teyit etmezse sıfırla
+                } else if (emergencyClickCount === 2) {
+                    // Düzeni kilitle
+                    publishLayout('full-announcement');
+                    
+                    // Acil durum mesajı gönder
+                    publishToDoc(docPaths.announcement, {
+                        title: "🚨 ACİL DURUM 🚨",
+                        text: "Lütfen sakin olun ve öğretmenlerinizin yönlendirmelerine uyun.\nEn yakın çıkışa doğru sakince ilerleyin.",
+                        urgency: "acil",
+                        audience: "tum-okul",
+                        timestamp: new Date().toISOString()
+                    }, "ACİL DURUM MESAJI GÖNDERİLDİ");
+                    
+                    // Butonu sıfırla
+                    emergencyButton.textContent = "🚨 ACİL DURUM DUYURUSU YAYINLA 🚨";
+                    emergencyButton.classList.remove('armed');
+                    emergencyClickCount = 0;
+                }
+            }
+
+            // 3. Sınav Takvimi Yayınla
+            function publishExamSchedule() {
+                const sinif = examClassInput.value.trim();
+                const ders = examSubjectInput.value.trim();
+                const tarih = examDateInput.value.trim();
+                if (!sinif || !ders || !tarih) return alert("Sınav bilgileri eksik.");
+                
+                publishToDoc(docPaths.announcement, {
+                    title: `📅 SınAV DUYURUSU (${sinif})`,
+                    text: `Ders: ${ders}\nTarih: ${tarih}\n\nTüm öğrencilerimize başarılar dileriz.`,
+                    urgency: "onemli",
+                    audience: sinif,
+                    timestamp: new Date().toISOString()
+                }, "Sınav takvimi yayınlandı");
+
+                // Formu temizle
+                examClassInput.value = ""; examSubjectInput.value = ""; examDateInput.value = "";
+            }
+
+            // 4. Bilgi Penceresi İçerikleri (Nöbetçi, Zil, AI)
+            function publishInfo(title, content) {
+                publishToDoc(docPaths.info, {
+                    title: title,
+                    text: content,
+                    timestamp: new Date().toISOString()
+                }, `Bilgi yayınlandı: ${title}`);
+            }
+
+            function publishDutyInfo() {
+                const teacher = teacherDutyInput.value.trim();
+                const student = studentDutyInput.value.trim();
+                if (!teacher && !student) return alert("Nöbetçi bilgisi boş.");
+                
+                let content = "";
+                if (teacher) content += `Öğretmen: ${teacher}\n`;
+                if (student) content += `Öğrenci: ${student}`;
+                
+                publishInfo("👨‍🏫 Günün Nöbetçileri", content);
+            }
+
+            function publishBellTimes() {
+                const content = `09:00 - 09:40 | 1. Ders\n09:50 - 10:30 | 2. Ders\n10:40 - 11:20 | 3. Ders\n11:20 - 12:00 | ÖĞLE ARASI\n12:00 - 12:40 | 4. Ders\n12:50 - 13:30 | 5. Ders`;
+                publishInfo("🔔 Zil Saatleri", content);
+            }
+
+            // 5. Ekran Düzenini Yayınla
+            function publishLayout(layoutType) {
+                publishToDoc(docPaths.layout, {
+                    type: layoutType,
+                    timestamp: new Date().toISOString()
+                }, `Ekran düzeni "${layoutType}" olarak ayarlandı.`);
+            }
+
+            // 6. Gemini AI İçerik Üretimi
+            async function generateGeminiContent(type) {
+                let prompt, title;
+                switch (type) {
+                    case 'fun-fact':
+                        prompt = "Bana okul çağındaki çocuklar için şaşırtıcı ve eğlenceli bilimsel bir bilgi ver. (Kısa olsun)";
+                        title = "🧠 Eğlenceli Bilgi";
+                        break;
+                    case 'quote':
+                        prompt = "Bana öğrenciler için motivasyonel ve kısa bir günün sözü ver. (Kim söylediğini de belirt)";
+                        title = "💡 Günün Sözü";
+                        break;
+                    case 'word':
+                        prompt = "Bana öğrenciler için bir 'günün İngilizce kelimesi' ver. Kelime, Türkçe anlamı ve basit bir örnek cümle (İngilizce ve Türkçe) sağla. JSON formatında ver: {\"word\": \"\", \"meaning\": \"\", \"example_en\": \"\", \"example_tr\": \"\"}";
+                        title = "🇬🇧 Günün İng. Kelimesi";
+                        break;
+                }
+                
+                try {
+                    const response = await fetch(GEMINI_API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: prompt }] }],
+                            // JSON cevabı istemek (İngilizce kelime için)
+                            generationConfig: type === 'word' ? { responseMimeType: "application/json" } : {}
+                        })
+                    });
+                    
+                    if (!response.ok) throw new Error(`API hatası: ${response.statusText}`);
+                    
+                    const result = await response.json();
+                    const text = result.candidates[0].content.parts[0].text;
+                    
+                    let content;
+                    if (type === 'word') {
+                        // JSON formatını işle
+                        try {
+                            const json = JSON.parse(text);
+                            content = `Kelime: ${json.word}\nAnlamı: ${json.meaning}\n\nÖrnek:\n${json.example_en}\n(${json.example_tr})`;
+                        } catch (e) {
+                            console.error("Gemini JSON parse hatası:", e);
+                            content = "İngilizce kelime formatı alınamadı.";
+                        }
+                    } else {
+                        content = text;
+                    }
+                    
+                    publishInfo(title, content);
+                    
+                } catch (error) {
+                    console.error("Gemini AI hatası:", error);
+                    alert("Hata: AI içeriği üretilemedi.");
+                }
+            }
+            
+            // 7. Hızlı Şablonlar
             function setupTemplateButtons() {
                 document.querySelectorAll('.template-btn').forEach(button => {
                     button.addEventListener('click', (e) => {
-                        const template = e.currentTarget.dataset.template;
+                        const template = e.target.dataset.template;
+                        // Formu temizle
                         urgencySelect.value = 'normal';
-                        audienceSelect.value = 'Öğrenciler';
+                        audienceSelect.value = 'tum-okul';
                         
                         switch(template) {
                             case 'menu':
-                                titleInput.value = "Bugünün Menüsü 🍽️";
-                                inputArea.value = "Afiyet olsun! Bugünkü yemek listesi:\n1. ...\n2. ...\n3. ...";
+                                titleInput.value = "🍽️ Günün Menüsü";
+                                inputArea.value = "Afiyet olsun! Bugünün menüsü:\n1. ...\n2. ...\n3. ...";
+                                audienceSelect.value = 'ogrenciler';
                                 break;
                             case 'tost':
-                                titleInput.value = "🎉 Sürpriz Tost Günü! 🎉";
-                                inputArea.value = "Bugün kantinde sıcak ve lezzetli tostlar sizleri bekliyor!";
+                                titleInput.value = "🎉 Kantin Sürprizi!";
+                                inputArea.value = "Bugün kantinde özel tost günü! Kaçırmayın!";
                                 urgencySelect.value = 'onemli';
+                                audienceSelect.value = 'ogrenciler';
                                 break;
-                            case 'muzik':
-                                titleInput.value = "🎶 Müzik İsteği 🎶";
-                                inputArea.value = "Öğle arasında kantinde çalmasını istediğiniz şarkıları... (vb.)";
+                            case 'lost':
+                                titleInput.value = "🎒 Kayıp Eşya Bulundu";
+                                inputArea.value = "[Eşyanın adı] bulunmuştur.\nNerede Bulundu: ...\nNereden Alınabilir: Müdür Yardımcısı Odası";
                                 break;
-                            case 'kapanis':
-                                titleInput.value = "🔔 Kantin Kapanıyor 🔔";
-                                inputArea.value = "Kantinimiz 10 dakika içinde kapanacaktır.";
-                                urgencySelect.value = 'acil';
+                            case 'club':
+                                titleInput.value = "🎭 Kulüp/Etkinlik Duyurusu";
+                                inputArea.value = "Kulüp Adı: ...\nToplantı Yeri: ...\nToplantı Tarihi: ...\n\nHerkes davetlidir!";
+                                urgencySelect.value = 'onemli';
                                 break;
                         }
                         titleInput.focus();
                     });
                 });
             }
-            
-            // Anlık İçerik (AI) Butonları (Hava durumu kaldırıldı)
-            function setupAiButtons() {
-                // publishWeatherBtn.addEventListener('click', () => callGeminiAndPublish('weather')); // Kaldırıldı
-                publishFunFactBtn.addEventListener('click', () => callGeminiAndPublish('fun-fact'));
-                publishQuoteBtn.addEventListener('click', () => callGeminiAndPublish('quote'));
-                publishWordBtn.addEventListener('click', () => callGeminiAndPublish('word'));
-            }
-            
-            // Düzen Kontrol Butonları
-            function setupLayoutButtons() {
-                document.querySelectorAll('.layout-btn').forEach(button => {
-                    button.addEventListener('click', async (e) => {
-                        const layout = e.currentTarget.dataset.layout;
-                        try {
-                            await setDoc(docPaths.layout, {
-                                layout: layout,
-                                timestamp: new Date().toISOString()
-                            });
-                            console.log("Düzen değiştirildi:", layout);
-                        } catch (error) {
-                            console.error("Düzen değiştirme hatası:", error);
-                            showErrorToast(`Düzen değiştirilemedi: ${error.message}`);
-                        }
-                    });
+
+
+            // --- ALICI (RECEIVER) BÖLÜMÜ ---
+            let windows = {}; // Açık pencereleri (DOM elementlerini) saklar
+            let marqueeAnimations = []; // Kaydırma animasyonlarını yönetmek için
+
+            function setupReceiverListeners() {
+                // Başlangıçta 2 pencereyi oluştur
+                windows.announcement = createDraggableWindow('announcement', '📢 Duyuru Panosu');
+                windows.info = createDraggableWindow('info', '💡 Günün Bilgisi');
+                
+                // Pencereleri varsayılan düzene sok
+                applyLayout('left-right'); 
+                
+                // 3 dinleyiciyi de başlat
+                onSnapshot(docPaths.announcement, (doc) => updateWindow('announcement', doc, true));
+                onSnapshot(docPaths.info, (doc) => updateWindow('info', doc, true));
+                onSnapshot(docPaths.layout, (doc) => {
+                    if (doc.exists()) applyLayout(doc.data().type);
                 });
             }
 
-            // Normal Duyuru Yayınla
-            async function publishAnnouncement() {
-                const title = titleInput.value.trim();
-                const text = inputArea.value.trim();
-                if (!title || !text) {
-                    showErrorToast("Başlık ve Detay alanları boş bırakılamaz.");
+            // TV Ekranına Yeni Pencere Ekle
+            function createDraggableWindow(id, title) {
+                const template = document.getElementById('window-template');
+                const newWindow = template.content.cloneNode(true).firstElementChild;
+                newWindow.id = `window-${id}`;
+                newWindow.querySelector('.window-header').textContent = title;
+                receiverScreen.appendChild(newWindow);
+                
+                // Sürükleme özelliğini ekle
+                makeDraggable(newWindow);
+                return newWindow;
+            }
+
+            // Pencere İçeriğini Güncelle
+            function updateWindow(id, doc, pulseEffect = false) {
+                const win = windows[id];
+                if (!win || !doc.exists()) {
+                    console.warn(`Pencere "${id}" bulunamadı veya belge boş.`);
                     return;
                 }
                 
-                publishButton.disabled = true;
-                publishButton.textContent = "Yayınlanıyor...";
-
-                try {
-                    await setDoc(docPaths.announcement, {
-                        title: title,
-                        text: text,
-                        urgency: urgencySelect.value,
-                        audience: audienceSelect.value,
-                        timestamp: new Date().toLocaleString('tr-TR')
-                    });
-                    
-                    titleInput.value = "";
-                    inputArea.value = "";
-                } catch (error) {
-                    console.error("Duyuru yayınlama hatası:", error);
-                    showErrorToast(`Duyuru gönderilemedi: ${error.message}`);
-                } finally {
-                    publishButton.disabled = false;
-                    publishButton.textContent = "Duyuruyu Yayınla 🚀";
-                }
-            }
-            
-            // Gemini AI Fonksiyonu (Hava durumu kaldırıldı)
-            async function callGeminiAndPublish(type) {
-                let prompt = "";
-                let targetDoc = docPaths.info; // Varsayılan hedef "Günün Bilgisi" penceresi
-
-                switch(type) {
-                    // case 'weather': // Kaldırıldı
-                    case 'fun-fact':
-                        prompt = "İlkokul ve ortaokul öğrencileri için eğlenceli, şaşırtıcı ve kısa bir bilimsel bilgi ver (TV ekranı için).";
-                        break;
-                    case 'quote':
-                        prompt = "TV ekranında yayınlanmak üzere, öğrenciler için motive edici, kısa ve anlamlı bir söz söyle (ve kimin söylediğini yaz).";
-                        break;
-                    case 'word':
-                        prompt = "Return a JSON object with keys 'word', 'meaning', and 'example' for a common English word for Turkish middle school students. Format: {\"word\": \"...\", \"meaning\": \"...\", \"example\": \"...\"}";
-                        break;
-                }
-
-                aiLoadingIndicator.classList.remove('hidden');
-                setAiButtonsDisabled(true);
-
-                try {
-                    const payload = {
-                        contents: [{ parts: [{ text: prompt }] }],
-                        ...(type === 'word' && {
-                            generationConfig: {
-                                responseMimeType: "application/json",
-                            }
-                        })
-                    };
-
-                    const response = await fetch(GEMINI_API_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`Gemini API Hatası: ${response.statusText}`);
-                    }
-
-                    const result = await response.json();
-                    
-                    if (!result.candidates || !result.candidates[0].content || !result.candidates[0].content.parts[0]) {
-                        throw new Error("Gemini API'den geçersiz yanıt alındı.");
-                    }
-                    
-                    const aiText = result.candidates[0].content.parts[0].text;
-                    let contentToPublish;
-
-                    if (type === 'word') {
-                        try {
-                            const wordData = JSON.parse(aiText);
-                            contentToPublish = {
-                                type: 'word',
-                                title: `🇬🇧 Günün Kelimesi: ${wordData.word}`,
-                                text: `<strong>Anlamı:</strong> ${wordData.meaning}<br><strong>Örnek:</strong> "${wordData.example}"`
-                            };
-                        } catch (e) {
-                            console.error("JSON parse hatası:", e, "Alınan metin:", aiText);
-                            throw new Error("Günün kelimesi formatı anlaşılamadı.");
-                        }
-                    // } else if (type === 'weather') { // Kaldırıldı
-                    //    contentToPublish = { type: 'weather', text: aiText };
-                    } else if (type === 'fun-fact') {
-                        contentToPublish = { type: 'fun-fact', title: '🧠 Eğlenceli Bilgi', text: aiText };
-                    } else if (type === 'quote') {
-                        contentToPublish = { type: 'quote', title: '💡 Günün Sözü', text: aiText };
-                    }
-                    
-                    // Veritabanına yaz
-                    await setDoc(targetDoc, {
-                        ...contentToPublish,
-                        timestamp: new Date().toLocaleString('tr-TR')
-                    });
-
-                } catch (error) {
-                    console.error("AI İçerik Hatası:", error);
-                    showErrorToast(`AI Hatası: ${error.message}`);
-                } finally {
-                    aiLoadingIndicator.classList.add('hidden');
-                    setAiButtonsDisabled(false);
-                }
-            }
-            
-            function setAiButtonsDisabled(disabled) {
-                [publishFunFactBtn, publishQuoteBtn, publishWordBtn].forEach(btn => {
-                    if (btn) { // Butonun varlığını kontrol et (önemli)
-                        btn.disabled = disabled;
-                        btn.style.opacity = disabled ? 0.6 : 1;
-                    }
-                });
-            }
-            
-            // --- ALICI (TV EKRANI) FONKSİYONLARI ---
-            function setupReceiverListeners() {
-                if (loadingText) loadingText.remove(); // Yükleniyor yazısını kaldır
+                const data = doc.data();
+                const header = win.querySelector('.window-header');
+                const body = win.querySelector('.window-body');
+                const scrollContent = body.querySelector('.scroll-content');
                 
-                // 1. Duyuru Dinleyicisi
-                onSnapshot(docPaths.announcement, (doc) => {
-                    if (doc.exists()) {
-                        const data = doc.data();
-                        const urgencyClass = getUrgencyStyles(data.urgency);
-                        const urgencyLabel = getUrgencyLabel(data.urgency);
-                        
-                        const contentHTML = `
-                            <div class="p-1 rounded-lg ${urgencyClass} fade-in">
-                                <div class="flex justify-between items-center mb-4">
-                                    <span class="px-4 py-2 text-2xl font-semibold rounded ${urgencyClass === 'bg-red-200' ? 'bg-red-600 text-white' : (urgencyClass === 'bg-yellow-100' ? 'bg-yellow-500 text-black' : 'bg-gray-200 text-gray-800')}">
-                                        ${urgencyLabel}
-                                    </span>
-                                    <span class="text-2xl text-gray-700 font-medium">Kime: ${data.audience}</span>
-                                </div>
-                                <h3 class="text-4xl font-bold text-black mb-4">${data.title}</h3>
-                                <p class="text-3xl text-gray-800 whitespace-pre-wrap">${data.text}</p>
-                                <p class="text-xl text-gray-600 mt-6 text-right">${data.timestamp}</p>
-                            </div>
-                        `;
-                        // Yeni içerik için kaydırma fonksiyonunu çağır
-                        updateScrollingContent(announcementContent, contentHTML);
-                        
-                        // Pencereye parlama efekti ekle
-                        announcementWindow.classList.add('highlight-flash');
-                        setTimeout(() => announcementWindow.classList.remove('highlight-flash'), 1500);
-                    }
-                }, (error) => showErrorToast(`Duyuru dinleme hatası: ${error.message}`));
-                
-                // 2. Hava Durumu Dinleyicisi (KALDIRILDI)
-                
-                // 3. Bilgi (Söz, Kelime) Dinleyicisi
-                onSnapshot(docPaths.info, (doc) => {
-                    if (doc.exists()) {
-                        const data = doc.data();
-                        // Gelen 'type'a göre başlığı değiştir
-                        document.querySelector('#info-window .window-header h2').textContent = data.title || "💡 Günün Bilgisi";
-                        
-                        const contentHTML = `<p class="text-3xl text-gray-800 whitespace-pre-wrap">${data.text}</p><p class="text-xl text-gray-600 mt-6 text-right">${data.timestamp}</p>`;
-                        // Yeni içerik için kaydırma fonksiyonunu çağır
-                        updateScrollingContent(infoContent, contentHTML);
-                        
-                        infoWindow.classList.add('highlight-flash');
-                        setTimeout(() => infoWindow.classList.remove('highlight-flash'), 1500);
-                    }
-                }, (error) => showErrorToast(`Bilgi dinleme hatası: ${error.message}`));
-                
-                // 4. Düzen (Layout) Dinleyicisi
-                onSnapshot(docPaths.layout, (doc) => {
-                    if (doc.exists()) {
-                        const layout = doc.data().layout;
-                        console.log("Yeni düzen alınıyor:", layout);
-                        applyLayout(layout);
-                    }
-                }, (error) => showErrorToast(`Düzen dinleme hatası: ${error.message}`));
-
-                // Pencereleri Sürüklenebilir Yap
-                makeWindowsDraggable();
-            }
-
-            // --- YENİ: Otomatik Kaydırma Fonksiyonu ---
-            // Global değişken animasyon hızını (saniye) tutar
-            let scrollSpeedFactor = 20; // Varsayılan 20 saniye (Yavaş)
-
-            function updateScrollingContent(container, html) {
-                // 1. Mevcut animasyonu ve içeriği temizle
-                let oldScroller = container.querySelector('.scrolling-content');
-                if (oldScroller) {
-                    oldScroller.style.animation = 'none'; // Animasyonu durdur
-                    container.innerHTML = ''; // İçeriği temizle
+                // Başlığı güncelle (Bilgi penceresi için)
+                if (id === 'info' && data.title) {
+                    header.textContent = data.title;
                 }
-
-                // 2. Yeni içeriği ekle
-                const scroller = document.createElement('div');
-                scroller.className = 'scrolling-content';
-                scroller.innerHTML = html;
-                container.appendChild(scroller);
-
-                // 3. Gerekli olup olmadığını kontrol et
-                // (Kısa bir gecikme ile DOM'un güncellenmesini bekle)
-                setTimeout(() => {
-                    const containerHeight = container.clientHeight;
-                    const contentHeight = scroller.scrollHeight;
-                    
-                    if (contentHeight > containerHeight) {
-                        // 4. Evet, sığmıyor -> Animasyonu başlat
-                        const scrollAmount = containerHeight - contentHeight - 10; // 10px pay bırak
-                        // İçerik uzunluğuna göre hızı ayarla (örn: her 100px için 5 saniye)
-                        scrollSpeedFactor = Math.max(20, (contentHeight / 100) * 5); // Minimum 20 saniye
-                        
-                        scroller.style.setProperty('--scroll-amount', `${scrollAmount}px`);
-                        scroller.style.animation = `scroll-up-down ${scrollSpeedFactor}s linear infinite`;
-                        console.log(`Kaydırma aktif: Hız ${scrollSpeedFactor}s`);
+                // Başlığı güncelle (Duyuru penceresi için)
+                if (id === 'announcement') {
+                    header.textContent = data.title || '📢 Duyuru Panosu';
+                    // Acil ise pencereyi vurgula
+                    if (data.urgency === 'acil') {
+                        header.style.background = "rgba(220, 38, 38, 0.7)"; // Kırmızı
+                        header.style.color = "white";
+                    } else if (data.urgency === 'onemli') {
+                        header.style.background = "rgba(245, 158, 11, 0.7)"; // Sarı
+                        header.style.color = "black";
                     } else {
-                        // 5. Hayır, sığıyor -> Animasyona gerek yok
-                        scroller.style.animation = 'none';
-                        console.log("İçerik sığıyor, kaydırma durdu.");
+                        header.style.background = "rgba(255, 255, 255, 0.8)"; // Normal
+                        header.style.color = "#1a202c";
                     }
-                }, 100);
+                }
+                
+                // İçeriği güncelle (HTML'e çevir)
+                const formattedText = data.text.replace(/\n/g, '<br>');
+                scrollContent.innerHTML = `<p class="whitespace-pre-wrap">${formattedText}</p>`;
+                
+                // Yeni içerik için kaydırmayı ayarla
+                setupMarquee(body, scrollContent);
+
+                // Yeni içerik geldiyse parlama efekti
+                if (pulseEffect) {
+                    win.classList.remove('window-pulse');
+                    void win.offsetWidth; // Reflow
+                    win.classList.add('window-pulse');
+                }
             }
 
-            // Düzen Uygulama Fonksiyonu (GÜNCELLENDİ)
-            function applyLayout(layout) {
-                // Önce tüm pencereleri görünür yap
-                [announcementWindow, infoWindow].forEach(win => {
-                    if(win) win.style.display = 'flex';
-                });
-                // if (weatherWindow) weatherWindow.style.display = 'flex'; // Kaldırıldı
+            // Ekran Düzenini Uygula
+            function applyLayout(layoutType) {
+                const wAnnounce = windows.announcement;
+                const wInfo = windows.info;
+                if (!wAnnounce || !wInfo) return;
 
-                if (layout === 'default') {
-                    // Sol / Sağ Düzeni
-                    announcementWindow.style.cssText = 'top: 20px; left: 20px; width: 55%; height: calc(100vh - 40px);';
-                    infoWindow.style.cssText = 'top: 20px; right: 20px; width: 40%; height: calc(100vh - 40px);';
-                    // weatherWindow.style.display = 'none'; // Kaldırıldı
-                } else if (layout === 'full-announcement') {
-                    // Sadece Duyuru (Tam Ekran)
-                    announcementWindow.style.cssText = 'top: 20px; left: 20px; width: calc(100vw - 40px); height: calc(100vh - 40px); z-index: 20;';
-                    infoWindow.style.display = 'none';
-                    // weatherWindow.style.display = 'none'; // Kaldırıldı
-                } else if (layout === 'full-info') {
-                    // YENİ: Sadece Bilgi (Tam Ekran)
-                    infoWindow.style.cssText = 'top: 20px; left: 20px; width: calc(100vw - 40px); height: calc(100vh - 40px); z-index: 20;';
-                    announcementWindow.style.display = 'none';
-                    // weatherWindow.style.display = 'none'; // Kaldırıldı
-                } else if (layout === 'top-bottom') {
-                    // YENİ: Üst/Alt Düzeni
-                    announcementWindow.style.cssText = 'top: 20px; left: 20px; width: calc(100vw - 40px); height: 48%;';
-                    infoWindow.style.cssText = 'bottom: 20px; left: 20px; width: calc(100vw - 40px); height: 48%;';
-                    // weatherWindow.style.display = 'none'; // Kaldırıldı
+                // Tüm pencereleri görünür yap (gizlenmiş olabilirler)
+                wAnnounce.style.display = 'flex';
+                wInfo.style.display = 'flex';
+                
+                // Ekran boyutları (kenar boşlukları düşülmüş)
+                const pad = 20; // body padding
+                const W = receiverScreen.clientWidth;
+                const H = receiverScreen.clientHeight;
+                const gap = 20; // pencereler arası boşluk
+
+                switch (layoutType) {
+                    case 'left-right':
+                        wAnnounce.style.top = `${pad}px`;
+                        wAnnounce.style.left = `${pad}px`;
+                        wAnnounce.style.width = `${(W - gap) / 2}px`;
+                        wAnnounce.style.height = `${H}px`;
+                        
+                        wInfo.style.top = `${pad}px`;
+                        wInfo.style.left = `${(W + gap) / 2 + pad}px`;
+                        wInfo.style.width = `${(W - gap) / 2}px`;
+                        wInfo.style.height = `${H}px`;
+                        break;
+                    
+                    case 'full-announcement':
+                        wAnnounce.style.top = `${pad}px`;
+                        wAnnounce.style.left = `${pad}px`;
+                        wAnnounce.style.width = `${W}px`;
+                        wAnnounce.style.height = `${H}px`;
+                        wInfo.style.display = 'none'; // Bilgiyi gizle
+                        break;
+                        
+                    case 'full-info':
+                        wInfo.style.top = `${pad}px`;
+                        wInfo.style.left = `${pad}px`;
+                        wInfo.style.width = `${W}px`;
+                        wInfo.style.height = `${H}px`;
+                        wAnnounce.style.display = 'none'; // Duyuruyu gizle
+                        break;
+
+                    case 'top-bottom':
+                        wAnnounce.style.top = `${pad}px`;
+                        wAnnounce.style.left = `${pad}px`;
+                        wAnnounce.style.width = `${W}px`;
+                        wAnnounce.style.height = `${(H - gap) / 2}px`;
+                        
+                        wInfo.style.top = `${(H + gap) / 2 + pad}px`;
+                        wInfo.style.left = `${pad}px`;
+                        wInfo.style.width = `${W}px`;
+                        wInfo.style.height = `${(H - gap) / 2}px`;
+                        break;
                 }
-
-                // Düzen değişiminden sonra kaydırmayı yeniden hesapla
-                // (Küçük bir gecikme ile geçiş animasyonunun bitmesini bekle)
+                
+                // Düzen değişiminden sonra kaydırmayı yeniden ayarla
                 setTimeout(() => {
-                    if (announcementContent.innerHTML) updateScrollingContent(announcementContent, announcementContent.querySelector('.scrolling-content')?.innerHTML);
-                    if (infoContent.innerHTML) updateScrollingContent(infoContent, infoContent.querySelector('.scrolling-content')?.innerHTML);
-                }, 500); // 0.5s CSS geçiş süresi
+                    setupMarquee(wAnnounce.querySelector('.window-body'), wAnnounce.querySelector('.scroll-content'));
+                    setupMarquee(wInfo.querySelector('.window-body'), wInfo.querySelector('.scroll-content'));
+                }, 500); // Animasyonun bitmesini bekle
             }
 
-            // --- Yardımcı Fonksiyonlar ---
-            
-            // Önem Derecesine Göre Stil
-            function getUrgencyStyles(urgency) {
-                switch (urgency) {
-                    case 'acil': return 'bg-red-200 border-red-400';
-                    case 'onemli': return 'bg-yellow-100 border-yellow-300';
-                    default: return 'bg-white border-gray-300';
+            // Otomatik Kaydırma (Marquee) Fonksiyonu
+            function setupMarquee(container, content) {
+                // Eski animasyonu temizle (varsa)
+                const existingAnim = marqueeAnimations.find(a => a.target === content);
+                if (existingAnim) {
+                    existingAnim.animation.cancel();
+                    marqueeAnimations = marqueeAnimations.filter(a => a.target !== content);
                 }
-            }
-            function getUrgencyLabel(urgency) {
-                switch (urgency) {
-                    case 'acil': return '🚨 ACİL';
-                    case 'onemli': return 'ÖNEMLİ';
-                    default: return 'Normal';
-                }
-            }
+                
+                // İçerik sığıyor mu kontrol et
+                const containerHeight = container.clientHeight;
+                const contentHeight = content.scrollHeight;
+                
+                if (contentHeight > containerHeight) {
+                    // İçerik sığmıyor, kaydırma animasyonu başlat
+                    const distance = contentHeight - containerHeight;
+                    const duration = distance * 50; // Piksel başına 50ms (YAVAŞ)
 
-            // Sürükle-Bırak Fonksiyonları
-            function makeWindowsDraggable() {
-                document.querySelectorAll('.draggable-window').forEach(dragWindow);
-            }
-
-            function dragWindow(elmnt) {
-                let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-                const header = elmnt.querySelector(".window-header");
-
-                if (header) {
-                    header.onmousedown = dragMouseDown;
+                    const animation = content.animate([
+                        { transform: 'translateY(0px)' }, // Başlangıç
+                        { transform: `translateY(-${distance}px)` }, // Sona git
+                        { transform: `translateY(-${distance}px)`, offset: 0.7 }, // Sonda bekle
+                        { transform: 'translateY(0px)' }, // Başa dön
+                        { transform: 'translateY(0px)', offset: 1.0 } // Başta bekle
+                    ], {
+                        duration: duration + 3000, // 3 saniye bekleme payı
+                        iterations: Infinity,
+                        easing: 'linear'
+                    });
+                    
+                    // Animasyonu yönetmek için sakla
+                    marqueeAnimations.push({ target: content, animation: animation });
                 } else {
-                    elmnt.onmousedown = dragMouseDown;
+                    // İçerik sığıyor, animasyona gerek yok
+                    content.style.transform = 'translateY(0px)';
                 }
+            }
+
+
+            // Pencere Sürükleme Fonksiyonu
+            function makeDraggable(element) {
+                let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                const header = element.querySelector('.window-header');
+
+                header.onmousedown = dragMouseDown;
 
                 function dragMouseDown(e) {
-                    e = e || window.event;
                     e.preventDefault();
-                    // Tüm pencerelerin z-index'ini sıfırla
-                    document.querySelectorAll('.draggable-window').forEach(win => win.style.zIndex = 10);
-                    // Tıklananı en üste al
-                    elmnt.style.zIndex = 15;
-                    
                     pos3 = e.clientX;
                     pos4 = e.clientY;
                     document.onmouseup = closeDragElement;
@@ -881,29 +983,42 @@
                 }
 
                 function elementDrag(e) {
-                    e = e || window.event;
                     e.preventDefault();
                     pos1 = pos3 - e.clientX;
                     pos2 = pos4 - e.clientY;
                     pos3 = e.clientX;
                     pos4 = e.clientY;
                     
-                    // Ekran sınırları içinde kalmasını sağla
-                    let newTop = Math.max(0, Math.min(elmnt.offsetTop - pos2, window.innerHeight - elmnt.offsetHeight));
-                    let newLeft = Math.max(0, Math.min(elmnt.offsetLeft - pos1, window.innerWidth - elmnt.offsetWidth));
-
-                    elmnt.style.top = newTop + "px";
-                    elmnt.style.left = newLeft + "px";
+                    // Yeni pozisyonu ayarla
+                    element.style.top = (element.offsetTop - pos2) + "px";
+                    element.style.left = (element.offsetLeft - pos1) + "px";
+                    
+                    // Animasyonları geçici durdur (performans için)
+                    marqueeAnimations.forEach(a => a.animation.pause());
                 }
 
                 function closeDragElement() {
                     document.onmouseup = null;
                     document.onmousemove = null;
+                    
+                    // Sürükleme bitince kaydırmayı yeniden ayarla (yeni boyuta göre)
+                    setupMarquee(element.querySelector('.window-body'), element.querySelector('.scroll-content'));
+                    // Animasyonları devam ettir
+                    marqueeAnimations.forEach(a => a.animation.play());
                 }
             }
-
+            
+            // Pencere yeniden boyutlandığında düzeni yeniden uygula (deneysel)
+            window.onresize = () => {
+                if(receiverScreen.classList.contains('hidden') === false) {
+                    // Hangi düzenin aktif olduğunu Firebase'den okumak yerine
+                    // basitçe son bilinen düzeni (veya varsayılanı) uygula
+                    // Bu, canlı düzeni okumayı gerektirir (şimdilik basit tutalım)
+                    applyLayout('left-right'); // Varsayılana dön
+                }
+            };
+            
         }); // DOMContentLoaded sonu
-
     </script>
 </body>
 </html>
