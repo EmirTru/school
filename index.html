@@ -230,6 +230,64 @@
             100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2) rotate(0deg); }
         }
 
+        /* Video Oynatıcı (Tam Ekran) */
+        #fullscreen-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: 999;
+            background: #000;
+        }
+
+        /* Duyuru Pop-up (Sağ Alt, Yatay Oval) */
+        .announcement-popup {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            min-width: 300px;
+            max-width: 500px;
+            padding: 20px 30px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 50px; /* Yatay oval şekil */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1001;
+            transform: translateX(120%);
+            transition: transform 0.5s ease-out;
+            border: 2px solid rgba(0, 120, 215, 0.3);
+        }
+        .announcement-popup.show {
+            transform: translateX(0);
+        }
+        .announcement-popup-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+        .announcement-popup-text {
+            font-size: 0.95rem;
+            color: #4a5568;
+            line-height: 1.5;
+        }
+        .announcement-popup-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            line-height: 1;
+        }
+        .announcement-popup-close:hover {
+            color: #000;
+        }
+
     </style>
 </head>
 <body id="body-container">
@@ -424,6 +482,20 @@
                         <input id="lost-location" type="text" class="win-input mb-2" placeholder="Örn: Spor Salonu">
                         <button id="publish-lost-item" class="win-button w-full">Kayıp Eşya Yayınla</button>
                     </div>
+                    
+                    <!-- Video Kontrolü -->
+                    <div class="form-group">
+                        <h2 class="font-bold text-lg mb-2 text-blue-700">🎬 Video Kontrolü</h2>
+                        <label class="block text-sm font-medium text-gray-800 mb-2">Video: video/input.mp4</label>
+                        <div class="space-y-2">
+                            <button id="play-video-btn" class="win-button w-full bg-green-600 text-white hover:bg-green-700">▶️ Video Oynat</button>
+                            <button id="stop-video-btn" class="win-button w-full bg-red-600 text-white hover:bg-red-700">⏹️ Video Durdur</button>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" id="video-loop-checkbox" class="w-4 h-4">
+                                <span class="text-sm font-medium text-gray-800">Video Döngüsü (Loop)</span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -440,6 +512,19 @@
         
         <!-- YENİ: Zil Animasyon Alanı -->
         <div id="bell-animation-popup" class="hidden">🔔</div>
+        
+        <!-- Video Oynatıcı (Tam Ekran) -->
+        <video id="fullscreen-video" class="hidden" muted>
+            <source src="video/input.mp4" type="video/mp4">
+            Tarayıcınız video oynatmayı desteklemiyor.
+        </video>
+        
+        <!-- Duyuru Pop-up -->
+        <div id="announcement-popup" class="announcement-popup hidden">
+            <button class="announcement-popup-close" id="popup-close-btn">&times;</button>
+            <div class="announcement-popup-title" id="popup-title"></div>
+            <div class="announcement-popup-text" id="popup-text"></div>
+        </div>
         
         <!-- Pencereler JavaScript tarafından buraya eklenecek -->
     </div>
@@ -518,7 +603,9 @@
                 info: doc(db, 'artifacts', appId, 'public/data', 'info', 'latest'),
                 layout: doc(db, 'artifacts', appId, 'public/data', 'layout', 'latest'),
                 // YENİ: Zil animasyonu için ayrı bir yol
-                animation: doc(db, 'artifacts', appId, 'public/data', 'animation', 'trigger')
+                animation: doc(db, 'artifacts', appId, 'public/data', 'animation', 'trigger'),
+                // YENİ: Video kontrolü için
+                video: doc(db, 'artifacts', appId, 'public/data', 'video', 'control')
             };
 
             // --- DOM Elementleri ---
@@ -573,8 +660,18 @@
             // YENİ: Zil Animasyon Butonu
             const sendBellAnimationBtn = document.getElementById('send-bell-animation');
             
+            // Video Kontrolü
+            const playVideoBtn = document.getElementById('play-video-btn');
+            const stopVideoBtn = document.getElementById('stop-video-btn');
+            const videoLoopCheckbox = document.getElementById('video-loop-checkbox');
+            
             // Alıcı Ekranı
             const bellAnimationPopup = document.getElementById('bell-animation-popup');
+            const fullscreenVideo = document.getElementById('fullscreen-video');
+            const announcementPopup = document.getElementById('announcement-popup');
+            const popupTitle = document.getElementById('popup-title');
+            const popupText = document.getElementById('popup-text');
+            const popupCloseBtn = document.getElementById('popup-close-btn');
 
 
             // --- Saat ---
@@ -712,6 +809,11 @@
 
                 // YENİ: Zil Animasyonu Butonu
                 sendBellAnimationBtn.addEventListener('click', publishBellAnimation);
+                
+                // Video Kontrolü Butonları
+                playVideoBtn.addEventListener('click', () => publishVideoControl('play'));
+                stopVideoBtn.addEventListener('click', () => publishVideoControl('stop'));
+                videoLoopCheckbox.addEventListener('change', () => publishVideoControl('loop'));
             }
             
             // Genel Yayın Fonksiyonu
@@ -881,6 +983,23 @@
                 }, "Zil animasyonu tetiklendi");
             }
 
+            // YENİ: 12. Video Kontrolü Yayınla
+            function publishVideoControl(action) {
+                const data = {
+                    action: action,
+                    timestamp: new Date().toISOString()
+                };
+                
+                if (action === 'loop') {
+                    data.loop = videoLoopCheckbox.checked;
+                } else if (action === 'play') {
+                    // Play butonuna basıldığında mevcut loop durumunu da gönder
+                    data.loop = videoLoopCheckbox.checked;
+                }
+                
+                publishToDoc(docPaths.video, data, `Video kontrolü: ${action}`);
+            }
+
             // 12. Gemini AI İçerik Üretimi
             async function generateGeminiContent(type) {
                 let prompt, title;
@@ -1009,8 +1128,36 @@
                 // Başlangıç düzenini uygula
                 applyLayout('left-right'); 
                 
+                // Video oynatıcıyı hazırla
+                if (fullscreenVideo) {
+                    fullscreenVideo.addEventListener('ended', () => {
+                        // Video bittiğinde, loop açıksa tekrar başlat
+                        if (fullscreenVideo.loop) {
+                            fullscreenVideo.play();
+                        } else {
+                            fullscreenVideo.classList.add('hidden');
+                        }
+                    });
+                }
+                
+                // Pop-up kapatma butonu
+                if (popupCloseBtn) {
+                    popupCloseBtn.addEventListener('click', () => {
+                        announcementPopup.classList.remove('show');
+                        setTimeout(() => {
+                            announcementPopup.classList.add('hidden');
+                        }, 500);
+                    });
+                }
+                
                 // Dinleyicileri başlat
-                onSnapshot(docPaths.announcement, (doc) => updateWindow('announcement', doc, true));
+                onSnapshot(docPaths.announcement, (doc) => {
+                    updateWindow('announcement', doc, true);
+                    // YENİ: Duyuru geldiğinde pop-up göster
+                    if (doc.exists()) {
+                        showAnnouncementPopup(doc.data());
+                    }
+                });
                 onSnapshot(docPaths.info, (doc) => updateWindow('info', doc, true));
                 onSnapshot(docPaths.layout, (doc) => {
                     if (doc.exists()) applyLayout(doc.data().type);
@@ -1033,6 +1180,64 @@
                         }
                     }
                 });
+                // YENİ: Video Kontrolü Dinleyicisi
+                onSnapshot(docPaths.video, (doc) => {
+                    if (doc.exists() && fullscreenVideo) {
+                        const data = doc.data();
+                        handleVideoControl(data);
+                    }
+                });
+            }
+
+            // Video Kontrolü Fonksiyonu
+            let lastVideoTimestamp = 0;
+            function handleVideoControl(data) {
+                if (!fullscreenVideo) return;
+                
+                const newTimestamp = new Date(data.timestamp).getTime();
+                // Aynı timestamp'i tekrar işleme
+                if (newTimestamp <= lastVideoTimestamp) return;
+                lastVideoTimestamp = newTimestamp;
+                
+                switch(data.action) {
+                    case 'play':
+                        fullscreenVideo.loop = data.loop !== undefined ? data.loop : fullscreenVideo.loop;
+                        fullscreenVideo.classList.remove('hidden');
+                        fullscreenVideo.play().catch(err => {
+                            console.error("Video oynatma hatası:", err);
+                        });
+                        break;
+                    case 'stop':
+                        fullscreenVideo.pause();
+                        fullscreenVideo.currentTime = 0;
+                        fullscreenVideo.classList.add('hidden');
+                        break;
+                    case 'loop':
+                        fullscreenVideo.loop = data.loop || false;
+                        break;
+                }
+            }
+
+            // Duyuru Pop-up Göster
+            function showAnnouncementPopup(data) {
+                if (!announcementPopup || !popupTitle || !popupText) return;
+                
+                popupTitle.textContent = data.title || '📢 Yeni Duyuru';
+                popupText.textContent = data.text || '';
+                
+                announcementPopup.classList.remove('hidden');
+                // Kısa bir gecikme ile animasyonu tetikle
+                setTimeout(() => {
+                    announcementPopup.classList.add('show');
+                }, 10);
+                
+                // 5 saniye sonra otomatik kapat
+                setTimeout(() => {
+                    announcementPopup.classList.remove('show');
+                    setTimeout(() => {
+                        announcementPopup.classList.add('hidden');
+                    }, 500);
+                }, 5000);
             }
 
             function createDraggableWindow(id, title) {
