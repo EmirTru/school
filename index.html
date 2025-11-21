@@ -1166,10 +1166,8 @@
             let lastAnimationTimestamp = 0; // Animasyon tekrarını engelle
             let videoPlayer = null; // Video.js player instance
             
-            // GitHub Video URL'sini oluştur
+            // GitHub Video URL'sini oluştur (birden fazla yöntem dene)
             function getGitHubVideoUrl() {
-                // GitHub kullanıcı adı ve repo adını otomatik tespit et
-                // Eğer GitHub Pages kullanılıyorsa URL'den çıkar
                 const currentUrl = window.location.href;
                 let githubUser = 'EmirTru'; // Varsayılan kullanıcı adı
                 let githubRepo = 'school'; // Varsayılan repo adı
@@ -1181,6 +1179,13 @@
                     githubUser = githubPagesMatch[1];
                     githubRepo = githubPagesMatch[2];
                 } else {
+                    // GitHub Pages (tek repo)
+                    const singleRepoMatch = currentUrl.match(/github\.io\/([^\/]+)/);
+                    if (singleRepoMatch) {
+                        githubUser = singleRepoMatch[1];
+                        githubRepo = githubUser + '.github.io';
+                    }
+                    
                     // GitHub raw URL formatından çıkarmaya çalış
                     const rawMatch = currentUrl.match(/raw\.githubusercontent\.com\/([^\/]+)\/([^\/]+)\/([^\/]+)/);
                     if (rawMatch) {
@@ -1188,12 +1193,57 @@
                         githubRepo = rawMatch[2];
                         branch = rawMatch[3];
                     }
+                    
+                    // GitHub.com URL'sinden çıkarmaya çalış
+                    const githubMatch = currentUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
+                    if (githubMatch) {
+                        githubUser = githubMatch[1];
+                        githubRepo = githubMatch[2];
+                    }
                 }
                 
-                // GitHub raw URL oluştur
-                const videoUrl = `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/${branch}/input.mp4`;
-                console.log("GitHub video URL:", videoUrl);
-                return videoUrl;
+                // Önce GitHub Pages URL'sini dene (daha güvenilir)
+                const pagesUrl = `https://${githubUser}.github.io/${githubRepo}/input.mp4`;
+                // Sonra raw URL'yi dene
+                const rawUrl = `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/${branch}/input.mp4`;
+                
+                console.log("GitHub kullanıcı:", githubUser);
+                console.log("GitHub repo:", githubRepo);
+                console.log("Branch:", branch);
+                console.log("GitHub Pages URL:", pagesUrl);
+                console.log("GitHub Raw URL:", rawUrl);
+                
+                // Önce Pages URL'sini döndür, çalışmazsa raw URL kullanılacak
+                return pagesUrl;
+            }
+            
+            // Alternatif URL'leri dene
+            function getAlternativeVideoUrls() {
+                const baseUrl = getGitHubVideoUrl();
+                const currentUrl = window.location.href;
+                let githubUser = 'EmirTru';
+                let githubRepo = 'school';
+                let branch = 'main';
+                
+                const githubPagesMatch = currentUrl.match(/github\.io\/([^\/]+)\/([^\/]+)/);
+                if (githubPagesMatch) {
+                    githubUser = githubPagesMatch[1];
+                    githubRepo = githubPagesMatch[2];
+                } else {
+                    const githubMatch = currentUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
+                    if (githubMatch) {
+                        githubUser = githubMatch[1];
+                        githubRepo = githubMatch[2];
+                    }
+                }
+                
+                return [
+                    baseUrl, // GitHub Pages
+                    `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/${branch}/input.mp4`, // Raw
+                    `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/main/input.mp4`, // Main branch
+                    `./input.mp4`, // Local fallback
+                    `input.mp4` // Direct fallback
+                ];
             }
 
             function setupReceiverListeners() {
@@ -1216,70 +1266,104 @@
                 // Başlangıç düzenini uygula
                 applyLayout('left-right'); 
                 
-                // Video.js Player'ı başlat
+                // Video.js Player'ı başlat (birden fazla URL dene)
                 if (fullscreenVideo && typeof videojs !== 'undefined') {
                     try {
-                        // GitHub'dan video URL'sini al
-                        const videoUrl = getGitHubVideoUrl();
+                        const videoUrls = getAlternativeVideoUrls();
+                        console.log("Denenecek video URL'leri:", videoUrls);
                         
-                        // Video source'unu GitHub URL'si ile ayarla
-                        const source = fullscreenVideo.querySelector('source');
-                        if (source) {
-                            source.src = videoUrl;
-                        } else {
-                            // Source yoksa oluştur
-                            const newSource = document.createElement('source');
-                            newSource.src = videoUrl;
-                            newSource.type = 'video/mp4';
-                            fullscreenVideo.appendChild(newSource);
-                        }
-                        
-                        videoPlayer = videojs('fullscreen-video', {
-                            controls: false,
-                            autoplay: false,
-                            preload: 'auto',
-                            muted: true,
-                            fluid: false,
-                            responsive: false,
-                            width: '100vw',
-                            height: '100vh',
-                            techOrder: ['html5'],
-                            html5: {
-                                vhs: {
-                                    overrideNative: true
-                                },
-                                nativeVideoTracks: false,
-                                nativeAudioTracks: false,
-                                nativeTextTracks: false
+                        // İlk URL'yi kullan
+                        let currentUrlIndex = 0;
+                        const tryNextUrl = () => {
+                            if (currentUrlIndex >= videoUrls.length) {
+                                console.error("Tüm video URL'leri başarısız oldu!");
+                                alert("Video yüklenemedi. Lütfen input.mp4 dosyasının GitHub repo'da olduğundan emin olun.");
+                                return;
                             }
-                        });
-                        
-                        console.log("Video.js player başarıyla başlatıldı, video URL:", videoUrl);
-                        
-                        // Video hata dinleyicisi
-                        videoPlayer.on('error', (e) => {
-                            console.error("Video.js hata:", e);
-                            const error = videoPlayer.error();
-                            if (error) {
-                                console.error("Hata kodu:", error.code);
-                                console.error("Hata mesajı:", error.message);
-                            }
-                        });
-                        
-                        // Video bittiğinde
-                        videoPlayer.on('ended', () => {
-                            console.log("Video bitti");
-                            if (videoPlayer.loop()) {
-                                videoPlayer.play();
+                            
+                            const videoUrl = videoUrls[currentUrlIndex];
+                            console.log(`Video URL deneniyor (${currentUrlIndex + 1}/${videoUrls.length}):`, videoUrl);
+                            
+                            // Video source'unu ayarla
+                            const source = fullscreenVideo.querySelector('source');
+                            if (source) {
+                                source.src = videoUrl;
                             } else {
-                                fullscreenVideo.classList.add('hidden');
+                                const newSource = document.createElement('source');
+                                newSource.src = videoUrl;
+                                newSource.type = 'video/mp4';
+                                fullscreenVideo.appendChild(newSource);
                             }
-                        });
+                            
+                            // Video.js player'ı başlat veya güncelle
+                            if (!videoPlayer) {
+                                videoPlayer = videojs('fullscreen-video', {
+                                    controls: false,
+                                    autoplay: false,
+                                    preload: 'auto',
+                                    muted: true,
+                                    fluid: false,
+                                    responsive: false,
+                                    width: '100vw',
+                                    height: '100vh',
+                                    techOrder: ['html5'],
+                                    html5: {
+                                        vhs: {
+                                            overrideNative: true
+                                        },
+                                        nativeVideoTracks: false,
+                                        nativeAudioTracks: false,
+                                        nativeTextTracks: false
+                                    }
+                                });
+                                
+                                // Video hata dinleyicisi
+                                videoPlayer.on('error', (e) => {
+                                    console.error("Video.js hata:", e);
+                                    const error = videoPlayer.error();
+                                    if (error) {
+                                        console.error("Hata kodu:", error.code);
+                                        console.error("Hata mesajı:", error.message);
+                                        
+                                        // Bir sonraki URL'yi dene
+                                        if (error.code === 4) { // MEDIA_ERR_SRC_NOT_SUPPORTED veya yükleme hatası
+                                            console.log("Bu URL çalışmadı, bir sonrakini deniyor...");
+                                            currentUrlIndex++;
+                                            setTimeout(tryNextUrl, 500);
+                                        }
+                                    }
+                                });
+                                
+                                // Video bittiğinde
+                                videoPlayer.on('ended', () => {
+                                    console.log("Video bitti");
+                                    if (videoPlayer.loop()) {
+                                        videoPlayer.play();
+                                    } else {
+                                        fullscreenVideo.classList.add('hidden');
+                                    }
+                                });
+                                
+                                // Video hazır olduğunda
+                                videoPlayer.ready(() => {
+                                    console.log("Video.js player hazır, video URL:", videoUrl);
+                                });
+                                
+                                // Video yüklendiğinde
+                                videoPlayer.on('loadeddata', () => {
+                                    console.log("Video başarıyla yüklendi:", videoUrl);
+                                });
+                            } else {
+                                // Player zaten var, sadece source'u güncelle
+                                videoPlayer.src({ type: 'video/mp4', src: videoUrl });
+                            }
+                            
+                            // Video yüklemeyi dene
+                            videoPlayer.load();
+                        };
                         
-                        // Video hazır olduğunda
-                        videoPlayer.ready(() => {
-                            console.log("Video.js player hazır");
-                        });
+                        // İlk URL'yi dene
+                        tryNextUrl();
                         
                     } catch (error) {
                         console.error("Video.js başlatma hatası:", error);
