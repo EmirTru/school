@@ -1166,81 +1166,40 @@
             let lastAnimationTimestamp = 0; // Animasyon tekrarını engelle
             let videoPlayer = null; // Video.js player instance
             
-            // GitHub Video URL'sini oluştur (birden fazla yöntem dene)
+            // GitHub Video URL'sini oluştur (doğru repo: EmirTru/school)
             function getGitHubVideoUrl() {
-                const currentUrl = window.location.href;
-                let githubUser = 'EmirTru'; // Varsayılan kullanıcı adı
-                let githubRepo = 'school'; // Varsayılan repo adı
-                let branch = 'main'; // Varsayılan branch
-                
-                // GitHub Pages URL'sinden bilgi çıkarmaya çalış
-                const githubPagesMatch = currentUrl.match(/github\.io\/([^\/]+)\/([^\/]+)/);
-                if (githubPagesMatch) {
-                    githubUser = githubPagesMatch[1];
-                    githubRepo = githubPagesMatch[2];
-                } else {
-                    // GitHub Pages (tek repo)
-                    const singleRepoMatch = currentUrl.match(/github\.io\/([^\/]+)/);
-                    if (singleRepoMatch) {
-                        githubUser = singleRepoMatch[1];
-                        githubRepo = githubUser + '.github.io';
-                    }
-                    
-                    // GitHub raw URL formatından çıkarmaya çalış
-                    const rawMatch = currentUrl.match(/raw\.githubusercontent\.com\/([^\/]+)\/([^\/]+)\/([^\/]+)/);
-                    if (rawMatch) {
-                        githubUser = rawMatch[1];
-                        githubRepo = rawMatch[2];
-                        branch = rawMatch[3];
-                    }
-                    
-                    // GitHub.com URL'sinden çıkarmaya çalış
-                    const githubMatch = currentUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
-                    if (githubMatch) {
-                        githubUser = githubMatch[1];
-                        githubRepo = githubMatch[2];
-                    }
-                }
-                
-                // Önce GitHub Pages URL'sini dene (daha güvenilir)
-                const pagesUrl = `https://${githubUser}.github.io/${githubRepo}/input.mp4`;
-                // Sonra raw URL'yi dene
-                const rawUrl = `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/${branch}/input.mp4`;
+                // Sabit repo bilgileri
+                const githubUser = 'EmirTru';
+                const githubRepo = 'school';
+                const branch = 'main';
                 
                 console.log("GitHub kullanıcı:", githubUser);
                 console.log("GitHub repo:", githubRepo);
                 console.log("Branch:", branch);
+                
+                // GitHub Pages URL (eğer GitHub Pages aktifse)
+                const pagesUrl = `https://${githubUser}.github.io/${githubRepo}/input.mp4`;
+                // GitHub Raw URL (her zaman çalışır)
+                const rawUrl = `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/${branch}/input.mp4`;
+                
                 console.log("GitHub Pages URL:", pagesUrl);
                 console.log("GitHub Raw URL:", rawUrl);
                 
-                // Önce Pages URL'sini döndür, çalışmazsa raw URL kullanılacak
-                return pagesUrl;
+                // Raw URL'yi döndür (daha güvenilir)
+                return rawUrl;
             }
             
-            // Alternatif URL'leri dene
+            // Alternatif URL'leri dene (doğru repo ile)
             function getAlternativeVideoUrls() {
-                const baseUrl = getGitHubVideoUrl();
-                const currentUrl = window.location.href;
-                let githubUser = 'EmirTru';
-                let githubRepo = 'school';
-                let branch = 'main';
-                
-                const githubPagesMatch = currentUrl.match(/github\.io\/([^\/]+)\/([^\/]+)/);
-                if (githubPagesMatch) {
-                    githubUser = githubPagesMatch[1];
-                    githubRepo = githubPagesMatch[2];
-                } else {
-                    const githubMatch = currentUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
-                    if (githubMatch) {
-                        githubUser = githubMatch[1];
-                        githubRepo = githubMatch[2];
-                    }
-                }
+                const githubUser = 'EmirTru';
+                const githubRepo = 'school';
+                const branch = 'main';
                 
                 return [
-                    baseUrl, // GitHub Pages
-                    `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/${branch}/input.mp4`, // Raw
-                    `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/main/input.mp4`, // Main branch
+                    `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/${branch}/input.mp4`, // Raw URL (en güvenilir)
+                    `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/main/input.mp4`, // Main branch (alternatif)
+                    `https://${githubUser}.github.io/${githubRepo}/input.mp4`, // GitHub Pages
+                    `https://github.com/${githubUser}/${githubRepo}/raw/${branch}/input.mp4`, // GitHub blob URL
                     `./input.mp4`, // Local fallback
                     `input.mp4` // Direct fallback
                 ];
