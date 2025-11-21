@@ -514,7 +514,7 @@
         <div id="bell-animation-popup" class="hidden">🔔</div>
         
         <!-- Video Oynatıcı (Tam Ekran) -->
-        <video id="fullscreen-video" class="hidden" muted>
+        <video id="fullscreen-video" class="hidden" muted preload="auto" playsinline webkit-playsinline>
             <source src="input.mp4" type="video/mp4">
             Tarayıcınız video oynatmayı desteklemiyor.
         </video>
@@ -1130,6 +1130,17 @@
                 
                 // Video oynatıcıyı hazırla
                 if (fullscreenVideo) {
+                    // Video yükleme hatalarını dinle
+                    fullscreenVideo.addEventListener('error', (e) => {
+                        console.error("Video yükleme hatası:", e);
+                        console.error("Video hatası detayları:", fullscreenVideo.error);
+                        if (fullscreenVideo.error) {
+                            console.error("Hata kodu:", fullscreenVideo.error.code);
+                            console.error("Hata mesajı:", fullscreenVideo.error.message);
+                        }
+                    });
+                    
+                    // Video bittiğinde, loop açıksa tekrar başlat
                     fullscreenVideo.addEventListener('ended', () => {
                         // Video bittiğinde, loop açıksa tekrar başlat
                         if (fullscreenVideo.loop) {
@@ -1138,6 +1149,16 @@
                             fullscreenVideo.classList.add('hidden');
                         }
                     });
+                    
+                    // Video yüklendiğinde log
+                    fullscreenVideo.addEventListener('loadeddata', () => {
+                        console.log("Video yüklendi, süre:", fullscreenVideo.duration);
+                    });
+                    
+                    // Video başlangıçta yükle (preload)
+                    fullscreenVideo.load();
+                } else {
+                    console.error("Video elementi bulunamadı!");
                 }
                 
                 // Pop-up kapatma butonu
@@ -1192,28 +1213,56 @@
             // Video Kontrolü Fonksiyonu
             let lastVideoTimestamp = 0;
             function handleVideoControl(data) {
-                if (!fullscreenVideo) return;
+                if (!fullscreenVideo) {
+                    console.error("Video elementi bulunamadı!");
+                    return;
+                }
                 
                 const newTimestamp = new Date(data.timestamp).getTime();
                 // Aynı timestamp'i tekrar işleme
                 if (newTimestamp <= lastVideoTimestamp) return;
                 lastVideoTimestamp = newTimestamp;
                 
+                console.log("Video kontrol komutu alındı:", data);
+                
                 switch(data.action) {
                     case 'play':
-                        fullscreenVideo.loop = data.loop !== undefined ? data.loop : fullscreenVideo.loop;
+                        // Loop durumunu ayarla
+                        if (data.loop !== undefined) {
+                            fullscreenVideo.loop = data.loop;
+                        }
+                        console.log("Video oynatılıyor, loop:", fullscreenVideo.loop);
+                        
+                        // Video element'ini göster
                         fullscreenVideo.classList.remove('hidden');
-                        fullscreenVideo.play().catch(err => {
-                            console.error("Video oynatma hatası:", err);
-                        });
+                        
+                        // Video'yu oynat
+                        const playPromise = fullscreenVideo.play();
+                        
+                        if (playPromise !== undefined) {
+                            playPromise.then(() => {
+                                console.log("Video başarıyla oynatıldı");
+                            }).catch(err => {
+                                console.error("Video oynatma hatası:", err);
+                                // Tarayıcı autoplay politikası nedeniyle hata olabilir
+                                // Bu durumda kullanıcıya bilgi ver
+                                if (err.name === 'NotAllowedError') {
+                                    console.warn("Video oynatma izni reddedildi. Video muted olmalı.");
+                                } else {
+                                    console.error("Video oynatma hatası detayı:", err);
+                                }
+                            });
+                        }
                         break;
                     case 'stop':
+                        console.log("Video durduruluyor");
                         fullscreenVideo.pause();
                         fullscreenVideo.currentTime = 0;
                         fullscreenVideo.classList.add('hidden');
                         break;
                     case 'loop':
                         fullscreenVideo.loop = data.loop || false;
+                        console.log("Video loop durumu:", fullscreenVideo.loop);
                         break;
                 }
             }
