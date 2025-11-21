@@ -498,7 +498,7 @@
                     <!-- Video Kontrolü -->
                     <div class="form-group">
                         <h2 class="font-bold text-lg mb-2 text-blue-700">🎬 Video Kontrolü</h2>
-                        <label class="block text-sm font-medium text-gray-800 mb-2">Video: input.mp4</label>
+                        <label class="block text-sm font-medium text-gray-800 mb-2">Video: GitHub'dan yükleniyor (input.mp4)</label>
                         <div class="space-y-2">
                             <button id="play-video-btn" class="win-button w-full bg-green-600 text-white hover:bg-green-700">▶️ Video Oynat</button>
                             <button id="stop-video-btn" class="win-button w-full bg-red-600 text-white hover:bg-red-700">⏹️ Video Durdur</button>
@@ -527,7 +527,7 @@
         
         <!-- Video Oynatıcı (Tam Ekran) - Video.js -->
         <video id="fullscreen-video" class="video-js vjs-default-skin hidden" muted preload="auto" playsinline webkit-playsinline data-setup="{}">
-            <source src="input.mp4" type="video/mp4">
+            <!-- Video kaynağı JavaScript ile GitHub'dan yüklenecek -->
             <p class="vjs-no-js">
                 Video oynatmak için <a href="https://videojs.com/html5-video-support/" target="_blank">JavaScript etkinleştirilmiş</a> bir tarayıcı gereklidir.
             </p>
@@ -1165,6 +1165,36 @@
             let marqueeAnimations = []; 
             let lastAnimationTimestamp = 0; // Animasyon tekrarını engelle
             let videoPlayer = null; // Video.js player instance
+            
+            // GitHub Video URL'sini oluştur
+            function getGitHubVideoUrl() {
+                // GitHub kullanıcı adı ve repo adını otomatik tespit et
+                // Eğer GitHub Pages kullanılıyorsa URL'den çıkar
+                const currentUrl = window.location.href;
+                let githubUser = 'EmirTru'; // Varsayılan kullanıcı adı
+                let githubRepo = 'school'; // Varsayılan repo adı
+                let branch = 'main'; // Varsayılan branch
+                
+                // GitHub Pages URL'sinden bilgi çıkarmaya çalış
+                const githubPagesMatch = currentUrl.match(/github\.io\/([^\/]+)\/([^\/]+)/);
+                if (githubPagesMatch) {
+                    githubUser = githubPagesMatch[1];
+                    githubRepo = githubPagesMatch[2];
+                } else {
+                    // GitHub raw URL formatından çıkarmaya çalış
+                    const rawMatch = currentUrl.match(/raw\.githubusercontent\.com\/([^\/]+)\/([^\/]+)\/([^\/]+)/);
+                    if (rawMatch) {
+                        githubUser = rawMatch[1];
+                        githubRepo = rawMatch[2];
+                        branch = rawMatch[3];
+                    }
+                }
+                
+                // GitHub raw URL oluştur
+                const videoUrl = `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/${branch}/input.mp4`;
+                console.log("GitHub video URL:", videoUrl);
+                return videoUrl;
+            }
 
             function setupReceiverListeners() {
                 console.log("Alıcı dinleyicileri kuruluyor...");
@@ -1173,7 +1203,9 @@
                 if (!fullscreenVideo) {
                     console.error("Video elementi bulunamadı! DOM'da var mı kontrol edin.");
                 } else {
-                    console.log("Video elementi bulundu, src:", fullscreenVideo.querySelector('source')?.src);
+                    const videoUrl = getGitHubVideoUrl();
+                    console.log("Video elementi bulundu");
+                    console.log("GitHub video URL:", videoUrl);
                     console.log("Video.js kütüphanesi yüklendi:", typeof videojs !== 'undefined');
                 }
                 
@@ -1187,6 +1219,21 @@
                 // Video.js Player'ı başlat
                 if (fullscreenVideo && typeof videojs !== 'undefined') {
                     try {
+                        // GitHub'dan video URL'sini al
+                        const videoUrl = getGitHubVideoUrl();
+                        
+                        // Video source'unu GitHub URL'si ile ayarla
+                        const source = fullscreenVideo.querySelector('source');
+                        if (source) {
+                            source.src = videoUrl;
+                        } else {
+                            // Source yoksa oluştur
+                            const newSource = document.createElement('source');
+                            newSource.src = videoUrl;
+                            newSource.type = 'video/mp4';
+                            fullscreenVideo.appendChild(newSource);
+                        }
+                        
                         videoPlayer = videojs('fullscreen-video', {
                             controls: false,
                             autoplay: false,
@@ -1207,7 +1254,7 @@
                             }
                         });
                         
-                        console.log("Video.js player başarıyla başlatıldı");
+                        console.log("Video.js player başarıyla başlatıldı, video URL:", videoUrl);
                         
                         // Video hata dinleyicisi
                         videoPlayer.on('error', (e) => {
