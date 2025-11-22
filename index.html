@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,26 +12,33 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             overflow-x: hidden;
             /* TV Ekranı Arka Planı (JavaScript ile ayarlanacak) */
-            background-color: #f0f2f5; 
+            background-color: #f0f2f5;
         }
-        
+
         /* Yayıncı Paneli (Windows Stili) */
         .publisher-body {
-            background-color: #E0E0E0; /* Klasik Windows Gri */
-            min-height: 100vh; /* Kaydırma olmaması için min-height */
+            background-color: #E0E0E0;
+            /* Klasik Windows Gri */
+            min-height: 100vh;
+            /* Kaydırma olmaması için min-height */
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px 0; /* Üstten ve alttan boşluk */
+            padding: 20px 0;
+            /* Üstten ve alttan boşluk */
         }
+
         .window-frame {
             border: 1px solid #606060;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-            background-color: #F0F0F0; /* Pencere içi gri */
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            background-color: #F0F0F0;
+            /* Pencere içi gri */
             width: 100%;
         }
+
         .title-bar {
-            background: linear-gradient(to right, #0058D0, #0078D7); /* Windows mavi gradient */
+            background: linear-gradient(to right, #0058D0, #0078D7);
+            /* Windows mavi gradient */
             color: white;
             padding: 4px 10px;
             font-weight: bold;
@@ -39,62 +47,79 @@
             align-items: center;
             font-size: 0.9rem;
         }
+
         /* Uğur Logosu Stili */
         .title-bar-logo {
-            height: 20px; /* Başlık çubuğu için logo boyutu */
+            height: 20px;
+            /* Başlık çubuğu için logo boyutu */
             margin-right: 8px;
-            filter: brightness(0) invert(1); /* Logoyu beyaz yap */
+            filter: brightness(0) invert(1);
+            /* Logoyu beyaz yap */
         }
+
         .window-content {
             padding: 16px;
         }
+
         .form-group {
             border: 1px solid #B0B0B0;
             padding: 12px;
-            background: #FFFFFF; /* Form alanları beyaz */
-            height: 100%; /* Sütunların eşit boyda olmasını sağlar */
+            background: #FFFFFF;
+            /* Form alanları beyaz */
+            height: 100%;
+            /* Sütunların eşit boyda olmasını sağlar */
         }
+
         .toolbar {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
         }
+
         .win-button {
             background: #E1E1E1;
             border: 1px solid #B0B0B0;
             padding: 6px 12px;
-            box-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
             transition: background 0.2s;
             font-size: 0.9rem;
             cursor: pointer;
         }
+
         .win-button:hover {
             background: #E5F1FB;
             border-color: #0078D7;
         }
+
         .win-button:active {
             background: #CCE4F7;
             border-color: #005A9E;
         }
-        .win-input, .win-select {
+
+        .win-input,
+        .win-select {
             border: 1px solid #707070;
             padding: 6px;
             background: #FFFFFF;
             width: 100%;
         }
-        .win-input:focus, .win-select:focus {
+
+        .win-input:focus,
+        .win-select:focus {
             outline: 1px solid #0078D7;
             border-color: #0078D7;
         }
+
         .status-bar {
             border-top: 1px solid #B0B0B0;
             padding: 4px 8px;
             background: #F5F5F5;
             font-size: 0.8rem;
             color: #404040;
-            margin-top: 16px; /* İçerikten sonra */
+            margin-top: 16px;
+            /* İçerikten sonra */
         }
-        
+
         /* ACİL DURUM BUTONU */
         .emergency-button {
             background: #D9534F;
@@ -107,11 +132,14 @@
             transition: all 0.2s;
             margin-bottom: 16px;
         }
+
         .emergency-button:hover {
             background: #C9302C;
         }
+
         .emergency-button.armed {
-            background: #F0AD4E; /* Sarı - Teyit bekleniyor */
+            background: #F0AD4E;
+            /* Sarı - Teyit bekleniyor */
             color: #333;
         }
 
@@ -123,88 +151,137 @@
             background-size: cover;
             background-position: center;
             position: relative;
-            overflow: hidden; /* Kaydırmayı engelle */
+            overflow: hidden;
+            /* Kaydırmayı engelle */
             padding: 20px;
-            display: flex; /* Flexbox düzeni için */
-            gap: 20px; /* Pencereler arası boşluk */
-            transition: background-image 1s ease-in-out; /* Yumuşak arka plan geçişi */
+            display: flex;
+            /* Flexbox düzeni için */
+            gap: 20px;
+            /* Pencereler arası boşluk */
+            transition: background-image 1s ease-in-out;
+            /* Yumuşak arka plan geçişi */
         }
+
         .draggable-window {
             min-width: 350px;
             min-height: 200px;
-            position: absolute; /* Sürükleme için */
+            position: absolute;
+            /* Sürükleme için */
             display: flex;
             flex-direction: column;
-            border-radius: 8px; /* Resmi ama modern */
+            border-radius: 8px;
+            /* Resmi ama modern */
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             overflow: hidden;
             /* Cam Efekti */
-            background: rgba(255, 255, 255, 0.7); /* Yarı saydam beyaz */
+            background: rgba(255, 255, 255, 0.7);
+            /* Yarı saydam beyaz */
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.8);
-            transition: all 0.5s ease; /* Pozisyon değişimi için animasyon */
+            transition: all 0.5s ease;
+            /* Pozisyon değişimi için animasyon */
         }
+
         .window-header {
             padding: 10px 16px;
-            cursor: move; /* Sürükleme imleci */
+            cursor: move;
+            /* Sürükleme imleci */
             font-weight: bold;
             background: rgba(255, 255, 255, 0.8);
             border-bottom: 1px solid rgba(200, 200, 200, 0.5);
             /* DEV YAZI */
-            font-size: 2.2rem; /* 36px */
-            color: #1a202c; /* Koyu renk */
+            font-size: 2.2rem;
+            /* 36px */
+            color: #1a202c;
+            /* Koyu renk */
         }
+
         .window-body {
             padding: 16px;
-            flex-grow: 1; /* Esne, alanı doldur */
-            overflow: hidden; /* Kaydırma için */
+            flex-grow: 1;
+            /* Esne, alanı doldur */
+            overflow: hidden;
+            /* Kaydırma için */
             /* DEV YAZI */
-            font-size: 2rem; /* 32px */
+            font-size: 2rem;
+            /* 32px */
             line-height: 1.6;
-            color: #2d3748; /* Biraz daha açık */
+            color: #2d3748;
+            /* Biraz daha açık */
         }
-        
+
         /* Otomatik Kaydırma (Marquee) Efekti */
         .scroll-container {
             overflow: hidden;
             height: 100%;
             position: relative;
         }
+
         .scroll-content {
             position: absolute;
             width: 100%;
             /* Animasyon JS'de tanımlanacak */
         }
-        
+
         /* Yeni duyuru geldiğinde hafif parlama */
         .window-pulse {
             animation: pulse-yellow 1.5s 1;
         }
+
         @keyframes pulse-yellow {
-            0% { box-shadow: 0 0 0 0px rgba(236, 201, 75, 0.7); }
-            70% { box-shadow: 0 0 0 20px rgba(236, 201, 75, 0); }
-            100% { box-shadow: 0 0 0 0px rgba(236, 201, 75, 0); }
+            0% {
+                box-shadow: 0 0 0 0px rgba(236, 201, 75, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 20px rgba(236, 201, 75, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0px rgba(236, 201, 75, 0);
+            }
         }
 
         /* Hata (Shake) Animasyonu */
         .shake {
-            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+            animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
         }
+
         @keyframes shake {
-            10%, 90% { transform: translateX(-1px); }
-            20%, 80% { transform: translateX(2px); }
-            30%, 50%, 70% { transform: translateX(-4px); }
-            40%, 60% { transform: translateX(4px); }
+
+            10%,
+            90% {
+                transform: translateX(-1px);
+            }
+
+            20%,
+            80% {
+                transform: translateX(2px);
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translateX(-4px);
+            }
+
+            40%,
+            60% {
+                transform: translateX(4px);
+            }
         }
-        
+
         /* TV Ekranı Uğur Logosu (Filigran) */
         .watermark-logo {
             position: absolute;
             bottom: 20px;
             right: 20px;
-            height: 60px; /* Filigran boyutu */
-            opacity: 0.5; /* Yarı saydam */
-            pointer-events: none; /* Tıklanamaz */
+            height: 60px;
+            /* Filigran boyutu */
+            opacity: 0.5;
+            /* Yarı saydam */
+            pointer-events: none;
+            /* Tıklanamaz */
         }
 
         /* YENİ: Zil Animasyonu (Popup) */
@@ -213,21 +290,50 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 15rem; /* Kocaman zil */
+            font-size: 15rem;
+            /* Kocaman zil */
             z-index: 1000;
             opacity: 0;
-            pointer-events: none; /* Tıklanamaz */
+            pointer-events: none;
+            /* Tıklanamaz */
             animation: bell-ring-pop 1.5s 1 ease-out;
         }
+
         @keyframes bell-ring-pop {
-            0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5) rotate(0deg); }
-            15% { transform: translate(-50%, -50%) scale(1) rotate(15deg); }
-            30% { transform: translate(-50%, -50%) scale(1) rotate(-15deg); }
-            45% { transform: translate(-50%, -50%) scale(1) rotate(10deg); }
-            60% { transform: translate(-50%, -50%) scale(1) rotate(-10deg); }
-            75% { transform: translate(-50%, -50%) scale(1) rotate(5deg); }
-            90% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
-            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2) rotate(0deg); }
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(0.5) rotate(0deg);
+            }
+
+            15% {
+                transform: translate(-50%, -50%) scale(1) rotate(15deg);
+            }
+
+            30% {
+                transform: translate(-50%, -50%) scale(1) rotate(-15deg);
+            }
+
+            45% {
+                transform: translate(-50%, -50%) scale(1) rotate(10deg);
+            }
+
+            60% {
+                transform: translate(-50%, -50%) scale(1) rotate(-10deg);
+            }
+
+            75% {
+                transform: translate(-50%, -50%) scale(1) rotate(5deg);
+            }
+
+            90% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1.2) rotate(0deg);
+            }
         }
 
         /* Video Oynatıcı (Tam Ekran) - HTML5 Video */
@@ -252,27 +358,32 @@
             padding: 20px 30px;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            border-radius: 50px; /* Yatay oval şekil */
+            border-radius: 50px;
+            /* Yatay oval şekil */
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             z-index: 1001;
             transform: translateX(120%);
             transition: transform 0.5s ease-out;
             border: 2px solid rgba(0, 120, 215, 0.3);
         }
+
         .announcement-popup.show {
             transform: translateX(0);
         }
+
         .announcement-popup-title {
             font-size: 1.2rem;
             font-weight: bold;
             color: #1a202c;
             margin-bottom: 8px;
         }
+
         .announcement-popup-text {
             font-size: 0.95rem;
             color: #4a5568;
             line-height: 1.5;
         }
+
         .announcement-popup-close {
             position: absolute;
             top: 10px;
@@ -284,12 +395,13 @@
             color: #666;
             line-height: 1;
         }
+
         .announcement-popup-close:hover {
             color: #000;
         }
-
     </style>
 </head>
+
 <body id="body-container">
 
     <!-- 1. Rol Seçim Ekranı -->
@@ -320,9 +432,11 @@
                 <span>Güvenlik Doğrulaması</span>
             </div>
             <div class="window-content">
-                <label for="password-input" class="block text-sm font-medium text-gray-800 mb-2">Yayıncı Şifresi:</label>
+                <label for="password-input" class="block text-sm font-medium text-gray-800 mb-2">Yayıncı
+                    Şifresi:</label>
                 <input id="password-input" type="password" class="win-input mb-3" placeholder="••••••••">
-                <button id="login-button" class="win-button w-full bg-blue-500 text-white hover:bg-blue-600">Giriş Yap</button>
+                <button id="login-button" class="win-button w-full bg-blue-500 text-white hover:bg-blue-600">Giriş
+                    Yap</button>
                 <p id="password-hint" class="text-gray-600 text-xs mt-3">İpucu: şifre 1234</p>
                 <p id="password-error" class="text-red-600 text-sm mt-2 hidden">Hatalı şifre!</p>
                 <button id="back-to-roles" class="text-gray-600 hover:text-blue-600 text-sm mt-4">&laquo; Geri</button>
@@ -337,12 +451,13 @@
             <div class="title-bar">
                 <!-- UĞUR OKULLARI LOGOSU (BAŞLIK ÇUBUĞU) -->
                 <div class="flex items-center">
-                    <img src="https://www.ugurokullari.k12.tr/assets/images/logo.svg" alt="Uğur Okulları Logosu" class="title-bar-logo">
+                    <img src="https://www.ugurokullari.k12.tr/assets/images/logo.svg" alt="Uğur Okulları Logosu"
+                        class="title-bar-logo">
                     <span>👨‍💻 Komuta Merkezi (Darıca Uğur Okulu)</span>
                 </div>
                 <span id="publisher-clock">--:--:--</span>
             </div>
-            
+
             <!-- ACİL DURUM BUTONU -->
             <div id="emergency-button" class="emergency-button">
                 🚨 ACİL DURUM DUYURUSU YAYINLA 🚨
@@ -350,7 +465,7 @@
 
             <!-- Ana İçerik Alanı (3 SÜTUNLU GRİD) -->
             <div class="window-content grid grid-cols-1 md:grid-cols-3 gap-4">
-                
+
                 <!-- SÜTUN 1: Ana Formlar -->
                 <div class="flex flex-col space-y-4">
                     <!-- Manuel Duyuru Formu -->
@@ -358,14 +473,14 @@
                         <h2 class="font-bold text-lg mb-2 text-blue-700">1. Manuel Duyuru Gönder</h2>
                         <label class="block text-sm font-medium text-gray-800">Başlık:</label>
                         <input id="title-input" type="text" class="win-input mb-2" placeholder="Örn: Veli Toplantısı">
-                        
+
                         <label class="block text-sm font-medium text-gray-800">Önem Derecesi:</label>
                         <select id="urgency-select" class="win-select mb-2">
                             <option value="normal">Normal</option>
                             <option value="onemli">Önemli</option>
                             <option value="acil">🚨 ACİL</option>
                         </select>
-                        
+
                         <label class="block text-sm font-medium text-gray-800">Kime:</label>
                         <select id="audience-select" class="win-select mb-2">
                             <option value="tum-okul">Tüm Okul</option>
@@ -375,11 +490,13 @@
                         </select>
 
                         <label class="block text-sm font-medium text-gray-800">Detay:</label>
-                        <textarea id="announcement-input" rows="5" class="win-input mb-2" placeholder="Duyuru ile ilgili detaylar..."></textarea>
-                        
-                        <button id="publish-button" class="win-button w-full bg-green-600 text-white hover:bg-green-700" disabled>Yayınla 🚀</button>
+                        <textarea id="announcement-input" rows="5" class="win-input mb-2"
+                            placeholder="Duyuru ile ilgili detaylar..."></textarea>
+
+                        <button id="publish-button" class="win-button w-full bg-green-600 text-white hover:bg-green-700"
+                            disabled>Yayınla 🚀</button>
                     </div>
-                    
+
                     <!-- Sınav Takvimi Formu -->
                     <div class="form-group">
                         <h2 class="font-bold text-lg mb-2 text-blue-700">2. Sınav Takvimi Gönder</h2>
@@ -388,7 +505,8 @@
                         <label class="block text-sm font-medium text-gray-800">Ders:</label>
                         <input id="exam-subject" type="text" class="win-input mb-2" placeholder="Örn: Matematik">
                         <label class="block text-sm font-medium text-gray-800">Tarih ve Saat:</label>
-                        <input id="exam-date" type="text" class="win-input mb-2" placeholder="Örn: 15 Kasım Cuma, 10:00">
+                        <input id="exam-date" type="text" class="win-input mb-2"
+                            placeholder="Örn: 15 Kasım Cuma, 10:00">
                         <button id="publish-exam-button" class="win-button w-full">Sınav Duyurusu Yayınla 📅</button>
                     </div>
                 </div>
@@ -400,12 +518,13 @@
                         <h2 class="font-bold text-lg mb-2 text-blue-700">🖥️ TV Ekran Düzeni</h2>
                         <div class="grid grid-cols-2 gap-2">
                             <button class="layout-btn win-button" data-layout="left-right">Sol/Sağ (Varsayılan)</button>
-                            <button class="layout-btn win-button" data-layout="full-announcement">Tam Ekran (Duyuru)</button>
+                            <button class="layout-btn win-button" data-layout="full-announcement">Tam Ekran
+                                (Duyuru)</button>
                             <button class="layout-btn win-button" data-layout="full-info">Tam Ekran (Bilgi)</button>
                             <button class="layout-btn win-button" data-layout="top-bottom">Üst/Alt</button>
                         </div>
                     </div>
-                    
+
                     <!-- Anlık İçerik -->
                     <div class="form-group">
                         <h2 class="font-bold text-lg mb-2 text-blue-700">💡 Anlık İçerik Gönder</h2>
@@ -415,21 +534,22 @@
                             <button id="gen-word" class="win-button w-full">🇬🇧 Günün İng. Kelimesi</button>
                             <button id="gen-today-history" class="win-button w-full">📜 Tarihte Bugün</button>
                             <!-- YENİ: Zil Animasyonu Butonu -->
-                            <button id="send-bell-animation" class="win-button w-full bg-yellow-300">🔔 Zil Animasyonu Gönder</button>
+                            <button id="send-bell-animation" class="win-button w-full bg-yellow-300">🔔 Zil Animasyonu
+                                Gönder</button>
                         </div>
                     </div>
 
                     <!-- Hızlı Şablonlar -->
                     <div class="form-group">
-                         <h2 class="font-bold text-lg mb-2 text-blue-700">⚡ Hızlı Şablonlar</h2>
-                         <div class="toolbar">
+                        <h2 class="font-bold text-lg mb-2 text-blue-700">⚡ Hızlı Şablonlar</h2>
+                        <div class="toolbar">
                             <button data-template="menu" class="template-btn win-button">🍽️ Menü</button>
                             <button data-template="tost" class="template-btn win-button">🎉 Tost</button>
                             <button data-template="club" class="template-btn win-button">🎭 Kulüp</button>
                             <button data-template="poll" class="template-btn win-button">📊 Anket</button>
                             <button data-template="book" class="template-btn win-button">📚 Kitap Öner</button>
                             <button data-template="stock" class="template-btn win-button">🥪 Stok Bitti</button>
-                         </div>
+                        </div>
                     </div>
                 </div>
 
@@ -441,7 +561,8 @@
                         <label class="block text-sm font-medium text-gray-800">Nöbetçi Öğretmen:</label>
                         <input id="teacher-duty" type="text" class="win-input mb-2" placeholder="Örn: Ahmet Yılmaz">
                         <label class="block text-sm font-medium text-gray-800">Nöbetçi Öğrenci:</label>
-                        <input id="student-duty" type="text" class="win-input mb-2" placeholder="Örn: Zeynep Kaya (11-B)">
+                        <input id="student-duty" type="text" class="win-input mb-2"
+                            placeholder="Örn: Zeynep Kaya (11-B)">
                         <button id="publish-duty-button" class="win-button w-full">Nöbetçi Bilgisi Yayınla</button>
                     </div>
 
@@ -449,12 +570,14 @@
                     <div class="form-group">
                         <h2 class="font-bold text-lg mb-2 text-blue-700">🏆 Haftanın Öğrencisi Gönder</h2>
                         <label class="block text-sm font-medium text-gray-800">Öğrenci Adı ve Sınıfı:</label>
-                        <input id="star-student-name" type="text" class="win-input mb-2" placeholder="Örn: Zeynep Yılmaz (5-B)">
+                        <input id="star-student-name" type="text" class="win-input mb-2"
+                            placeholder="Örn: Zeynep Yılmaz (5-B)">
                         <label class="block text-sm font-medium text-gray-800">Neden (Kısa):</label>
-                        <input id="star-student-reason" type="text" class="win-input mb-2" placeholder="Örn: Bilim fuarındaki başarısı">
+                        <input id="star-student-reason" type="text" class="win-input mb-2"
+                            placeholder="Örn: Bilim fuarındaki başarısı">
                         <button id="publish-star-student" class="win-button w-full">Haftanın Öğrencisi Yayınla</button>
                     </div>
-                    
+
                     <!-- Doğum Günü Formu -->
                     <div class="form-group">
                         <h2 class="font-bold text-lg mb-2 text-blue-700">🎂 Doğum Günü Kutla</h2>
@@ -462,17 +585,19 @@
                         <input id="birthday-name" type="text" class="win-input mb-2" placeholder="Örn: Elif Kaya (2-A)">
                         <button id="publish-birthday" class="win-button w-full">Doğum Günü Yayınla 🎉</button>
                     </div>
-                    
+
                     <!-- Servis Bilgisi Formu -->
                     <div class="form-group">
                         <h2 class="font-bold text-lg mb-2 text-blue-700">🚌 Servis Bilgisi Gönder</h2>
                         <label class="block text-sm font-medium text-gray-800">Servis No / Güzergah:</label>
-                        <input id="service-route" type="text" class="win-input mb-2" placeholder="Örn: 34 ABC 123 / Gebze">
+                        <input id="service-route" type="text" class="win-input mb-2"
+                            placeholder="Örn: 34 ABC 123 / Gebze">
                         <label class="block text-sm font-medium text-gray-800">Mesaj:</label>
-                        <input id="service-message" type="text" class="win-input mb-2" placeholder="Örn: 10 dakika gecikecektir.">
+                        <input id="service-message" type="text" class="win-input mb-2"
+                            placeholder="Örn: 10 dakika gecikecektir.">
                         <button id="publish-service" class="win-button w-full">Servis Bilgisi Yayınla</button>
                     </div>
-                    
+
                     <!-- Kayıp Eşya Formu -->
                     <div class="form-group">
                         <h2 class="font-bold text-lg mb-2 text-blue-700">🎒 Kayıp Eşya Bildir</h2>
@@ -482,14 +607,19 @@
                         <input id="lost-location" type="text" class="win-input mb-2" placeholder="Örn: Spor Salonu">
                         <button id="publish-lost-item" class="win-button w-full">Kayıp Eşya Yayınla</button>
                     </div>
-                    
+
                     <!-- Video Kontrolü -->
                     <div class="form-group">
                         <h2 class="font-bold text-lg mb-2 text-blue-700">🎬 Video Kontrolü</h2>
-                        <label class="block text-sm font-medium text-gray-800 mb-2">Video: GitHub'dan yükleniyor (input.mp4)</label>
+                        <label class="block text-sm font-medium text-gray-800 mb-2">Video: GitHub'dan yükleniyor
+                            (input.mp4)</label>
                         <div class="space-y-2">
-                            <button id="play-video-btn" class="win-button w-full bg-green-600 text-white hover:bg-green-700">▶️ Video Oynat</button>
-                            <button id="stop-video-btn" class="win-button w-full bg-red-600 text-white hover:bg-red-700">⏹️ Video Durdur</button>
+                            <button id="play-video-btn"
+                                class="win-button w-full bg-green-600 text-white hover:bg-green-700">▶️ Video
+                                Oynat</button>
+                            <button id="stop-video-btn"
+                                class="win-button w-full bg-red-600 text-white hover:bg-red-700">⏹️ Video
+                                Durdur</button>
                             <label class="flex items-center gap-2 cursor-pointer">
                                 <input type="checkbox" id="video-loop-checkbox" class="w-4 h-4">
                                 <span class="text-sm font-medium text-gray-800">Video Döngüsü (Loop)</span>
@@ -508,25 +638,26 @@
     <!-- 4. Alıcı Ana Uygulama Ekranı (TV Masaüstü) -->
     <div id="receiver-screen" class="receiver-desktop hidden">
         <!-- UĞUR OKULLARI LOGOSU (FİLİGRAN) -->
-        <img src="https://www.ugurokullari.k12.tr/assets/images/logo.svg" alt="Uğur Okulları Logosu" class="watermark-logo">
-        
+        <img src="https://www.ugurokullari.k12.tr/assets/images/logo.svg" alt="Uğur Okulları Logosu"
+            class="watermark-logo">
+
         <!-- YENİ: Zil Animasyon Alanı -->
         <div id="bell-animation-popup" class="hidden">🔔</div>
-        
+
         <!-- Video Oynatıcı (Tam Ekran) - HTML5 Video -->
         <video id="fullscreen-video" class="hidden" muted preload="auto" playsinline webkit-playsinline>
             <!-- Video kaynağı JavaScript ile GitHub'dan yüklenecek -->
             <source id="video-source" src="" type="video/mp4">
             Tarayıcınız video oynatmayı desteklemiyor.
         </video>
-        
+
         <!-- Duyuru Pop-up -->
         <div id="announcement-popup" class="announcement-popup hidden">
             <button class="announcement-popup-close" id="popup-close-btn">&times;</button>
             <div class="announcement-popup-title" id="popup-title"></div>
             <div class="announcement-popup-text" id="popup-text"></div>
         </div>
-        
+
         <!-- Pencereler JavaScript tarafından buraya eklenecek -->
     </div>
 
@@ -543,7 +674,7 @@
             </div>
         </div>
     </template>
-    
+
     <script type="module">
         // Firebase modüllerini import et
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -552,7 +683,7 @@
 
         // === KODUN TAMAMI DOM YÜKLENDİKTEN SONRA ÇALIŞACAK ===
         document.addEventListener('DOMContentLoaded', () => {
-            
+
             // --- Firebase Yapılandırması (Kritik) ---
             const firebaseConfig = {
                 apiKey: "AIzaSyBeQsh4Tp-YbLG8BcgoMDKXi5gJ0rBZ5pI",
@@ -562,11 +693,11 @@
                 messagingSenderId: "821824749207",
                 appId: "1:821824749207:web:164b0ea4c79bf9636f33d2"
             };
-            
+
             // --- Gemini AI Yapılandırması ---
             const GEMINI_API_KEY = "AIzaSyBx84HfcrsNwfEjK5kd-yGqrFC4nr_uDjc"; // Kullanıcının verdiği anahtar
-            const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-            
+            const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
+
             // --- TV Arka Plan Fotoğrafları ---
             const backgroundImages = [
                 'https://images.unsplash.com/photo-1509062522246-3755977927d7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNjUyOXwwfDF8c2VhcmNofDR8fGNsYXNzcm9vbXxlbnwwfHx8fDE3MzEwMDQ0MDV8MA&ixlib=rb-4.0.3&q=80&w=1080', // Sınıf sırası
@@ -584,7 +715,7 @@
             // --- Firebase Değişkenleri ---
             let db, auth, userId;
             const appId = firebaseConfig.projectId || 'genel-duyuru-odasi';
-            
+
             // Firebase Hizmetlerini Başlat
             try {
                 const app = initializeApp(firebaseConfig);
@@ -616,18 +747,18 @@
             const passwordScreen = document.getElementById('password-screen');
             const publisherScreen = document.getElementById('publisher-screen');
             const receiverScreen = document.getElementById('receiver-screen');
-            
+
             // Rol Seçimi
             const selectPublisherBtn = document.getElementById('select-publisher');
             const selectReceiverBtn = document.getElementById('select-receiver');
-            
+
             // Şifre Ekranı
             const passwordInput = document.getElementById('password-input');
             const loginButton = document.getElementById('login-button');
             const passwordError = document.getElementById('password-error');
             const backToRolesBtn = document.getElementById('back-to-roles');
             const publisherClock = document.getElementById('publisher-clock');
-            
+
             // Yayıncı Kontrolleri (Tümü)
             const titleInput = document.getElementById('title-input');
             const urgencySelect = document.getElementById('urgency-select');
@@ -660,12 +791,12 @@
             const publishLostItemBtn = document.getElementById('publish-lost-item');
             // YENİ: Zil Animasyon Butonu
             const sendBellAnimationBtn = document.getElementById('send-bell-animation');
-            
+
             // Video Kontrolü
             const playVideoBtn = document.getElementById('play-video-btn');
             const stopVideoBtn = document.getElementById('stop-video-btn');
             const videoLoopCheckbox = document.getElementById('video-loop-checkbox');
-            
+
             // Alıcı Ekranı
             const bellAnimationPopup = document.getElementById('bell-animation-popup');
             const fullscreenVideo = document.getElementById('fullscreen-video');
@@ -727,7 +858,7 @@
             // --- Uygulama Başlatma ---
             function startAppAs(role) {
                 roleScreen.classList.add('hidden');
-                
+
                 if (role === 'publisher') {
                     bodyContainer.className = 'publisher-body';
                     publisherScreen.classList.remove('hidden');
@@ -736,19 +867,19 @@
                     // YENİ: Rastgele arka plan seç
                     const randomBg = backgroundImages[Math.floor(Math.random() * backgroundImages.length)];
                     receiverScreen.style.backgroundImage = `url('${randomBg}')`;
-                    
+
                     bodyContainer.className = 'receiver-desktop'; // TV arkaplanı
                     receiverScreen.classList.remove('hidden');
                     setupAuth(role); // Alıcı için kimlik doğrulama
                 }
             }
-            
+
             // --- Firebase Kimlik Doğrulama ---
             async function setupAuth(role) {
                 try {
                     await signInAnonymously(auth);
                     console.log("Kimlik doğrulandı (Anonim).");
-                    
+
                     onAuthStateChanged(auth, (user) => {
                         if (user) {
                             userId = user.uid;
@@ -771,16 +902,16 @@
             function setupPublisherControls() {
                 publishButton.disabled = false;
                 publishButton.addEventListener('click', publishAnnouncement);
-                
+
                 // Anlık İçerik Butonları
                 genFunFactBtn.addEventListener('click', () => generateGeminiContent('fun-fact'));
                 genQuoteBtn.addEventListener('click', () => generateGeminiContent('quote'));
                 genWordBtn.addEventListener('click', () => generateGeminiContent('word'));
                 genTodayHistoryBtn.addEventListener('click', () => generateGeminiContent('today-in-history'));
-                
+
                 // Acil Durum Butonu
                 emergencyButton.addEventListener('click', handleEmergencyClick);
-                
+
                 // Nöbetçi Butonu
                 publishDutyButton.addEventListener('click', publishDutyInfo);
 
@@ -789,13 +920,13 @@
 
                 // Sınav Takvimi
                 publishExamButton.addEventListener('click', publishExamSchedule);
-                
+
                 // Haftanın Öğrencisi
                 publishStarStudentBtn.addEventListener('click', publishStarStudent);
-                
+
                 // Doğum Günü
                 publishBirthdayBtn.addEventListener('click', publishBirthday);
-                
+
                 // Servis ve Kayıp Eşya
                 publishServiceBtn.addEventListener('click', publishServiceInfo);
                 publishLostItemBtn.addEventListener('click', publishLostItemInfo);
@@ -804,13 +935,13 @@
                 document.querySelectorAll('.layout-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => publishLayout(e.target.dataset.layout));
                 });
-                
+
                 // Şablon Butonları
                 setupTemplateButtons();
 
                 // YENİ: Zil Animasyonu Butonu
                 sendBellAnimationBtn.addEventListener('click', publishBellAnimation);
-                
+
                 // Video Kontrolü Butonları
                 if (playVideoBtn) {
                     playVideoBtn.addEventListener('click', () => {
@@ -820,7 +951,7 @@
                 } else {
                     console.error("Video Oynat butonu bulunamadı!");
                 }
-                
+
                 if (stopVideoBtn) {
                     stopVideoBtn.addEventListener('click', () => {
                         console.log("Video Durdur butonuna tıklandı");
@@ -829,7 +960,7 @@
                 } else {
                     console.error("Video Durdur butonu bulunamadı!");
                 }
-                
+
                 if (videoLoopCheckbox) {
                     videoLoopCheckbox.addEventListener('change', () => {
                         console.log("Video Loop checkbox değişti:", videoLoopCheckbox.checked);
@@ -839,11 +970,11 @@
                     console.error("Video Loop checkbox bulunamadı!");
                 }
             }
-            
+
             // Genel Yayın Fonksiyonu
             async function publishToDoc(docRef, data, successMsg) {
                 try {
-                    await setDoc(docRef, data); 
+                    await setDoc(docRef, data);
                     console.log(successMsg);
                 } catch (error) {
                     console.error("Yayınlama hatası:", error);
@@ -864,12 +995,12 @@
                     audience: audienceSelect.value,
                     timestamp: new Date().toISOString()
                 }, "Manuel duyuru yayınlandı");
-                
+
                 // Formu temizle
                 titleInput.value = ""; inputArea.value = "";
                 urgencySelect.value = "normal"; audienceSelect.value = "tum-okul";
             }
-            
+
             // 2. Acil Durum Yönetimi
             let emergencyClickCount = 0;
             function handleEmergencyClick() {
@@ -881,7 +1012,7 @@
                         emergencyButton.textContent = "🚨 ACİL DURUM DUYURUSU YAYINLA 🚨";
                         emergencyButton.classList.remove('armed');
                         emergencyClickCount = 0;
-                    }, 3000); 
+                    }, 3000);
                 } else if (emergencyClickCount === 2) {
                     publishLayout('full-announcement');
                     publishToDoc(docPaths.announcement, {
@@ -891,7 +1022,7 @@
                         audience: "tum-okul",
                         timestamp: new Date().toISOString()
                     }, "ACİL DURUM MESAJI GÖNDERİLDİ");
-                    
+
                     emergencyButton.textContent = "🚨 ACİL DURUM DUYURUSU YAYINLA 🚨";
                     emergencyButton.classList.remove('armed');
                     emergencyClickCount = 0;
@@ -904,23 +1035,23 @@
                 const ders = examSubjectInput.value.trim();
                 const tarih = examDateInput.value.trim();
                 if (!sinif || !ders || !tarih) return alert("Sınav bilgileri eksik.");
-                
+
                 publishToDoc(docPaths.announcement, {
                     title: `📅 Sınav Duyurusu (${sinif})`,
                     text: `Ders: ${ders}\nTarih: ${tarih}\n\nTüm öğrencilerimize başarılar dileriz.`,
                     urgency: "onemli",
-                    audience: sinif, 
+                    audience: sinif,
                     timestamp: new Date().toISOString()
                 }, "Sınav takvimi yayınlandı");
                 examClassInput.value = ""; examSubjectInput.value = ""; examDateInput.value = "";
             }
-            
+
             // 4. Servis Bilgisi Yayınla
             function publishServiceInfo() {
                 const route = serviceRouteInput.value.trim();
                 const message = serviceMessageInput.value.trim();
                 if (!route || !message) return alert("Servis bilgileri eksik.");
-                
+
                 publishToDoc(docPaths.announcement, {
                     title: `🚌 Servis Bilgisi (${route})`,
                     text: message,
@@ -945,10 +1076,10 @@
                 const item = lostItemInput.value.trim();
                 const location = lostLocationInput.value.trim();
                 if (!item || !location) return alert("Kayıp eşya bilgileri eksik.");
-                
+
                 const content = `Bulunan Eşya: ${item}\nBulunduğu Yer: ${location}\n\nİlgili kişilerin Müdür Yardımcısı ile iletişime geçmesi rica olunur.`;
                 publishInfo("🎒 Kayıp Eşya", content);
-                
+
                 lostItemInput.value = ""; lostLocationInput.value = "";
             }
 
@@ -966,10 +1097,10 @@
                 const name = starStudentNameInput.value.trim();
                 const reason = starStudentReasonInput.value.trim();
                 if (!name || !reason) return alert("Haftanın öğrencisi bilgileri eksik.");
-                
+
                 const content = `Öğrenci: ${name}\nSebep: ${reason}\n\nTebrik ederiz! 👏`;
                 publishInfo("🏆 Haftanın Öğrencisi", content);
-                
+
                 starStudentNameInput.value = "";
                 starStudentReasonInput.value = "";
             }
@@ -979,11 +1110,11 @@
                 const teacher = teacherDutyInput.value.trim();
                 const student = studentDutyInput.value.trim();
                 if (!teacher && !student) return alert("Nöbetçi bilgisi boş.");
-                
+
                 let content = "";
                 if (teacher) content += `Öğretmen: ${teacher}\n`;
                 if (student) content += `Öğrenci: ${student}`;
-                
+
                 publishInfo("👨‍🏫 Günün Nöbetçileri", content);
                 teacherDutyInput.value = "";
                 studentDutyInput.value = "";
@@ -996,38 +1127,38 @@
                     timestamp: new Date().toISOString()
                 }, `Ekran düzeni "${layoutType}" olarak ayarlandı.`);
             }
-            
+
             // YENİ: 11. Zil Animasyonu Yayınla
             function publishBellAnimation() {
                 // `timestamp` değeri, Firestore'un aynı veriyi tekrar göndermesini engellemek için
                 // her seferinde farklı bir değerle (güncel zaman) güncellenir.
                 publishToDoc(docPaths.animation, {
                     trigger: 'bell',
-                    timestamp: new Date().toISOString() 
+                    timestamp: new Date().toISOString()
                 }, "Zil animasyonu tetiklendi");
             }
 
             // YENİ: 12. Video Kontrolü Yayınla
             function publishVideoControl(action) {
                 console.log("publishVideoControl çağrıldı, action:", action);
-                
+
                 if (!docPaths.video) {
                     console.error("Video doc path tanımlı değil!");
                     return;
                 }
-                
+
                 const data = {
                     action: action,
                     timestamp: new Date().toISOString()
                 };
-                
+
                 if (action === 'loop') {
                     data.loop = videoLoopCheckbox ? videoLoopCheckbox.checked : false;
                 } else if (action === 'play') {
                     // Play butonuna basıldığında mevcut loop durumunu da gönder
                     data.loop = videoLoopCheckbox ? videoLoopCheckbox.checked : false;
                 }
-                
+
                 console.log("Firebase'e gönderilecek video kontrol verisi:", data);
                 publishToDoc(docPaths.video, data, `Video kontrolü: ${action}`);
             }
@@ -1054,8 +1185,8 @@
                         title = "📜 Tarihte Bugün";
                         break;
                 }
-                
-                const btn = document.getElementById(`gen-${type.replace('_','-')}`);
+
+                const btn = document.getElementById(`gen-${type.replace('_', '-')}`);
                 try {
                     if (btn) btn.disabled = true;
 
@@ -1067,15 +1198,15 @@
                             generationConfig: type === 'word' ? { responseMimeType: "application/json" } : {}
                         })
                     });
-                    
+
                     if (!response.ok) throw new Error(`API hatası: ${response.statusText}`);
-                    
+
                     const result = await response.json();
                     if (!result.candidates || !result.candidates[0].content.parts[0].text) {
                         throw new Error("API'den geçerli bir yanıt alınamadı.");
                     }
                     const text = result.candidates[0].content.parts[0].text;
-                    
+
                     let content;
                     if (type === 'word') {
                         try {
@@ -1088,9 +1219,9 @@
                     } else {
                         content = text;
                     }
-                    
+
                     publishInfo(title, content);
-                    
+
                 } catch (error) {
                     console.error("Gemini AI hatası:", error);
                     alert("Hata: AI içeriği üretilemedi. API anahtarını veya bağlantıyı kontrol edin.");
@@ -1098,7 +1229,7 @@
                     if (btn) btn.disabled = false;
                 }
             }
-            
+
             // 13. Hızlı Şablonlar
             function setupTemplateButtons() {
                 document.querySelectorAll('.template-btn').forEach(button => {
@@ -1106,8 +1237,8 @@
                         const template = e.target.dataset.template;
                         urgencySelect.value = 'normal';
                         audienceSelect.value = 'tum-okul';
-                        
-                        switch(template) {
+
+                        switch (template) {
                             case 'menu':
                                 titleInput.value = "🍽️ Günün Menüsü";
                                 inputArea.value = "Afiyet olsun! Bugünün menüsü:\n1. ...\n2. ...\n3. ...";
@@ -1148,39 +1279,39 @@
 
 
             // --- ALICI (RECEIVER) BÖLÜMÜ ---
-            let windows = {}; 
-            let marqueeAnimations = []; 
+            let windows = {};
+            let marqueeAnimations = [];
             let lastAnimationTimestamp = 0; // Animasyon tekrarını engelle
-            
+
             // GitHub Video URL'sini oluştur (doğru repo: EmirTru/school)
             function getGitHubVideoUrl() {
                 // Sabit repo bilgileri
                 const githubUser = 'EmirTru';
                 const githubRepo = 'school';
                 const branch = 'main';
-                
+
                 console.log("GitHub kullanıcı:", githubUser);
                 console.log("GitHub repo:", githubRepo);
                 console.log("Branch:", branch);
-                
+
                 // GitHub Pages URL (eğer GitHub Pages aktifse)
                 const pagesUrl = `https://${githubUser}.github.io/${githubRepo}/input.mp4`;
                 // GitHub Raw URL (her zaman çalışır)
                 const rawUrl = `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/${branch}/input.mp4`;
-                
+
                 console.log("GitHub Pages URL:", pagesUrl);
                 console.log("GitHub Raw URL:", rawUrl);
-                
+
                 // Raw URL'yi döndür (daha güvenilir)
                 return rawUrl;
             }
-            
+
             // Alternatif URL'leri dene (doğru repo ile)
             function getAlternativeVideoUrls() {
                 const githubUser = 'EmirTru';
                 const githubRepo = 'school';
                 const branch = 'main';
-                
+
                 return [
                     `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/${branch}/input.mp4`, // Raw URL (en güvenilir)
                     `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/main/input.mp4`, // Main branch (alternatif)
@@ -1193,7 +1324,7 @@
 
             function setupReceiverListeners() {
                 console.log("Alıcı dinleyicileri kuruluyor...");
-                
+
                 // Video element'ini kontrol et
                 if (!fullscreenVideo) {
                     console.error("Video elementi bulunamadı! DOM'da var mı kontrol edin.");
@@ -1202,24 +1333,24 @@
                     console.log("✅ Video elementi bulundu");
                     console.log("GitHub video URL:", videoUrl);
                 }
-                
+
                 // Pencereleri oluştur
                 windows.announcement = createDraggableWindow('announcement', '📢 Duyuru Panosu');
                 windows.info = createDraggableWindow('info', '💡 Günün Bilgisi');
-                
+
                 // Başlangıç düzenini uygula
-                applyLayout('left-right'); 
-                
+                applyLayout('left-right');
+
                 // Video'yu yükle (birden fazla URL dene)
                 if (fullscreenVideo) {
                     const videoUrls = getAlternativeVideoUrls();
                     console.log("Denenecek video URL'leri:", videoUrls);
-                    
+
                     const videoSource = document.getElementById('video-source');
                     if (!videoSource) {
                         console.error("Video source elementi bulunamadı!");
                     }
-                    
+
                     // İlk URL'yi kullan
                     let currentUrlIndex = 0;
                     const tryNextUrl = () => {
@@ -1228,16 +1359,16 @@
                             alert("Video yüklenemedi. Lütfen input.mp4 dosyasının GitHub repo'da olduğundan emin olun.\n\nDenenen URL'ler:\n" + videoUrls.join('\n'));
                             return;
                         }
-                        
+
                         const videoUrl = videoUrls[currentUrlIndex];
                         console.log(`Video URL deneniyor (${currentUrlIndex + 1}/${videoUrls.length}):`, videoUrl);
-                        
+
                         // Video source'unu ayarla
                         if (videoSource) {
                             videoSource.src = videoUrl;
                         }
                         fullscreenVideo.src = videoUrl;
-                        
+
                         // Video yükleme hatalarını dinle
                         fullscreenVideo.addEventListener('error', (e) => {
                             console.error("Video yükleme hatası:", e);
@@ -1245,19 +1376,19 @@
                             if (error) {
                                 console.error("Hata kodu:", error.code);
                                 console.error("Hata mesajı:", error.message);
-                                
+
                                 // Bir sonraki URL'yi dene
                                 console.log("Bu URL çalışmadı, bir sonrakini deniyor...");
                                 currentUrlIndex++;
                                 setTimeout(tryNextUrl, 1000);
                             }
                         }, { once: true });
-                        
+
                         // Video yüklendiğinde
                         fullscreenVideo.addEventListener('loadeddata', () => {
                             console.log("✅ Video başarıyla yüklendi:", videoUrl);
                         }, { once: true });
-                        
+
                         // Video bittiğinde
                         fullscreenVideo.addEventListener('ended', () => {
                             console.log("Video bitti");
@@ -1267,17 +1398,17 @@
                                 fullscreenVideo.classList.add('hidden');
                             }
                         });
-                        
+
                         // Video yüklemeyi dene
                         fullscreenVideo.load();
                     };
-                    
+
                     // İlk URL'yi dene
                     tryNextUrl();
                 } else {
                     console.error("Video elementi bulunamadı!");
                 }
-                
+
                 // Pop-up kapatma butonu
                 if (popupCloseBtn) {
                     popupCloseBtn.addEventListener('click', () => {
@@ -1287,7 +1418,7 @@
                         }, 500);
                     });
                 }
-                
+
                 // Dinleyicileri başlat
                 onSnapshot(docPaths.announcement, (doc) => {
                     updateWindow('announcement', doc, true);
@@ -1342,12 +1473,12 @@
                     console.error("Video elementi bulunamadı! Alıcı ekranı yüklendi mi?");
                     return;
                 }
-                
+
                 if (!data || !data.action) {
                     console.error("Geçersiz video kontrol verisi:", data);
                     return;
                 }
-                
+
                 const newTimestamp = data.timestamp ? new Date(data.timestamp).getTime() : Date.now();
                 // Aynı timestamp'i tekrar işleme (sadece timestamp varsa)
                 if (data.timestamp && newTimestamp <= lastVideoTimestamp) {
@@ -1355,20 +1486,20 @@
                     return;
                 }
                 lastVideoTimestamp = newTimestamp;
-                
+
                 console.log("Video kontrol komutu işleniyor:", data);
-                
-                switch(data.action) {
+
+                switch (data.action) {
                     case 'play':
                         // Loop durumunu ayarla
                         if (data.loop !== undefined) {
                             fullscreenVideo.loop = data.loop;
                         }
                         console.log("Video oynatılıyor, loop:", fullscreenVideo.loop);
-                        
+
                         // Video element'ini göster
                         fullscreenVideo.classList.remove('hidden');
-                        
+
                         // Video'yu oynat
                         const playPromise = fullscreenVideo.play();
                         if (playPromise !== undefined) {
@@ -1400,16 +1531,16 @@
             // Duyuru Pop-up Göster
             function showAnnouncementPopup(data) {
                 if (!announcementPopup || !popupTitle || !popupText) return;
-                
+
                 popupTitle.textContent = data.title || '📢 Yeni Duyuru';
                 popupText.textContent = data.text || '';
-                
+
                 announcementPopup.classList.remove('hidden');
                 // Kısa bir gecikme ile animasyonu tetikle
                 setTimeout(() => {
                     announcementPopup.classList.add('show');
                 }, 10);
-                
+
                 // 5 saniye sonra otomatik kapat
                 setTimeout(() => {
                     announcementPopup.classList.remove('show');
@@ -1429,7 +1560,7 @@
                 newWindow.id = `window-${id}`;
                 newWindow.querySelector('.window-header').textContent = title;
                 receiverScreen.appendChild(newWindow);
-                
+
                 makeDraggable(newWindow);
                 return newWindow;
             }
@@ -1437,46 +1568,46 @@
             function updateWindow(id, doc, pulseEffect = false) {
                 const win = windows[id];
                 if (!win) return;
-                
+
                 const header = win.querySelector('.window-header');
                 const body = win.querySelector('.window-body');
                 const scrollContent = body.querySelector('.scroll-content');
                 if (!header || !body || !scrollContent) return;
-                
+
                 if (!doc.exists()) {
                     scrollContent.innerHTML = `<p class="whitespace-pre-wrap">Veri bekleniyor...</p>`;
                     setupMarquee(body, scrollContent);
                     return;
                 }
-                
+
                 const data = doc.data();
-                
+
                 if (id === 'info' && data.title) {
                     header.textContent = data.title;
                 }
-                
+
                 if (id === 'announcement') {
                     header.textContent = data.title || '📢 Duyuru Panosu';
                     if (data.urgency === 'acil') {
-                        header.style.background = "rgba(220, 38, 38, 0.7)"; 
+                        header.style.background = "rgba(220, 38, 38, 0.7)";
                         header.style.color = "white";
                     } else if (data.urgency === 'onemli') {
-                        header.style.background = "rgba(245, 158, 11, 0.7)"; 
+                        header.style.background = "rgba(245, 158, 11, 0.7)";
                         header.style.color = "black";
                     } else {
-                        header.style.background = "rgba(255, 255, 255, 0.8)"; 
+                        header.style.background = "rgba(255, 255, 255, 0.8)";
                         header.style.color = "#1a202c";
                     }
                 }
-                
+
                 const formattedText = (data.text || "").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, '<br>');
                 scrollContent.innerHTML = `<p class="whitespace-pre-wrap">${formattedText}</p>`;
-                
+
                 setupMarquee(body, scrollContent);
 
                 if (pulseEffect) {
                     win.classList.remove('window-pulse');
-                    void win.offsetWidth; 
+                    void win.offsetWidth;
                     win.classList.add('window-pulse');
                 }
             }
@@ -1488,8 +1619,8 @@
 
                 wAnnounce.style.display = 'flex';
                 wInfo.style.display = 'flex';
-                
-                const pad = 20; 
+
+                const pad = 20;
                 const W = receiverScreen.clientWidth - (pad * 2);
                 const H = receiverScreen.clientHeight - (pad * 2);
                 const gap = 20;
@@ -1500,13 +1631,13 @@
                         wAnnounce.style.left = `${pad}px`;
                         wAnnounce.style.width = `${(W - gap) / 2}px`;
                         wAnnounce.style.height = `${H}px`;
-                        
+
                         wInfo.style.top = `${pad}px`;
                         wInfo.style.left = `${(W + gap) / 2 + pad}px`;
                         wInfo.style.width = `${(W - gap) / 2}px`;
                         wInfo.style.height = `${H}px`;
                         break;
-                    
+
                     case 'full-announcement':
                         wAnnounce.style.top = `${pad}px`;
                         wAnnounce.style.left = `${pad}px`;
@@ -1514,7 +1645,7 @@
                         wAnnounce.style.height = `${H}px`;
                         wInfo.style.display = 'none';
                         break;
-                        
+
                     case 'full-info':
                         wInfo.style.top = `${pad}px`;
                         wInfo.style.left = `${pad}px`;
@@ -1528,14 +1659,14 @@
                         wAnnounce.style.left = `${pad}px`;
                         wAnnounce.style.width = `${W}px`;
                         wAnnounce.style.height = `${(H - gap) / 2}px`;
-                        
+
                         wInfo.style.top = `${(H + gap) / 2 + pad}px`;
                         wInfo.style.left = `${pad}px`;
                         wInfo.style.width = `${W}px`;
                         wInfo.style.height = `${(H - gap) / 2}px`;
                         break;
                 }
-                
+
                 setTimeout(() => {
                     if (wAnnounce.style.display !== 'none') {
                         const annBody = wAnnounce.querySelector('.window-body');
@@ -1547,7 +1678,7 @@
                         const infoContent = wInfo.querySelector('.scroll-content');
                         if (infoBody && infoContent) setupMarquee(infoBody, infoContent);
                     }
-                }, 500); 
+                }, 500);
             }
 
             function setupMarquee(container, content) {
@@ -1556,33 +1687,33 @@
                     existingAnim.animation.cancel();
                     marqueeAnimations = marqueeAnimations.filter(a => a.target !== content);
                 }
-                
+
                 content.style.transform = 'translateY(0px)';
 
                 setTimeout(() => {
                     if (!container || !content) return;
                     const containerHeight = container.clientHeight;
                     const contentHeight = content.scrollHeight;
-                    
+
                     if (contentHeight > containerHeight) {
                         const distance = contentHeight - containerHeight;
-                        const duration = (distance / 40) * 1000; 
-                        const totalDuration = duration + 6000; 
+                        const duration = (distance / 40) * 1000;
+                        const totalDuration = duration + 6000;
                         const scrollStart = 3000 / totalDuration;
                         const scrollEnd = (duration + 3000) / totalDuration;
 
                         const animation = content.animate([
-                            { transform: 'translateY(0px)' }, 
+                            { transform: 'translateY(0px)' },
                             { transform: 'translateY(0px)', offset: scrollStart },
                             { transform: `translateY(-${distance}px)`, offset: scrollEnd },
-                            { transform: `translateY(-${distance}px)`},
+                            { transform: `translateY(-${distance}px)` },
                             { transform: 'translateY(0px)', offset: 1.0 }
                         ], {
-                            duration: totalDuration, 
+                            duration: totalDuration,
                             iterations: Infinity,
                             easing: 'linear'
                         });
-                        
+
                         marqueeAnimations.push({ target: content, animation: animation });
                     }
                 }, 100);
@@ -1608,11 +1739,11 @@
                     pos2 = pos4 - e.clientY;
                     pos3 = e.clientX;
                     pos4 = e.clientY;
-                    
+
                     const parent = receiverScreen;
                     let newTop = element.offsetTop - pos2;
                     let newLeft = element.offsetLeft - pos1;
-                    
+
                     if (newTop < 0) newTop = 0;
                     if (newLeft < 0) newLeft = 0;
                     if (newTop + element.clientHeight > parent.clientHeight) newTop = parent.clientHeight - element.clientHeight;
@@ -1620,7 +1751,7 @@
 
                     element.style.top = newTop + "px";
                     element.style.left = newLeft + "px";
-                    
+
                     marqueeAnimations.forEach(a => {
                         if (a.animation.playState === 'running') a.animation.pause();
                     });
@@ -1629,24 +1760,25 @@
                 function closeDragElement() {
                     document.onmouseup = null;
                     document.onmousemove = null;
-                    
+
                     const body = element.querySelector('.window-body');
                     const content = element.querySelector('.scroll-content');
                     if (body && content) setupMarquee(body, content);
-                    
+
                     marqueeAnimations.forEach(a => {
                         if (a.animation.playState === 'paused') a.animation.play();
                     });
                 }
             }
-            
+
             window.onresize = () => {
-                if(receiverScreen.classList.contains('hidden') === false) {
-                    applyLayout('left-right'); 
+                if (receiverScreen.classList.contains('hidden') === false) {
+                    applyLayout('left-right');
                 }
             };
-            
+
         }); // DOMContentLoaded sonu
     </script>
 </body>
+
 </html>
