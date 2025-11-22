@@ -5,10 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Darıca Uğur Okulu - Gerçek Zamanlı Duyuru 📢</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Video.js CSS -->
-    <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet" />
-    <!-- Video.js JavaScript -->
-    <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
     <style>
         /* Standart Windows Arayüz Stilleri */
         body {
@@ -234,24 +230,16 @@
             100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2) rotate(0deg); }
         }
 
-        /* Video Oynatıcı (Tam Ekran) - Video.js */
+        /* Video Oynatıcı (Tam Ekran) - HTML5 Video */
         #fullscreen-video {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw !important;
-            height: 100vh !important;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
             z-index: 999;
             background: #000;
-        }
-        #fullscreen-video.video-js {
-            width: 100vw !important;
-            height: 100vh !important;
-        }
-        #fullscreen-video .vjs-tech {
-            width: 100% !important;
-            height: 100% !important;
-            object-fit: cover;
         }
 
         /* Duyuru Pop-up (Sağ Alt, Yatay Oval) */
@@ -525,12 +513,11 @@
         <!-- YENİ: Zil Animasyon Alanı -->
         <div id="bell-animation-popup" class="hidden">🔔</div>
         
-        <!-- Video Oynatıcı (Tam Ekran) - Video.js -->
-        <video id="fullscreen-video" class="video-js vjs-default-skin hidden" muted preload="auto" playsinline webkit-playsinline data-setup="{}">
+        <!-- Video Oynatıcı (Tam Ekran) - HTML5 Video -->
+        <video id="fullscreen-video" class="hidden" muted preload="auto" playsinline webkit-playsinline>
             <!-- Video kaynağı JavaScript ile GitHub'dan yüklenecek -->
-            <p class="vjs-no-js">
-                Video oynatmak için <a href="https://videojs.com/html5-video-support/" target="_blank">JavaScript etkinleştirilmiş</a> bir tarayıcı gereklidir.
-            </p>
+            <source id="video-source" src="" type="video/mp4">
+            Tarayıcınız video oynatmayı desteklemiyor.
         </video>
         
         <!-- Duyuru Pop-up -->
@@ -1164,7 +1151,6 @@
             let windows = {}; 
             let marqueeAnimations = []; 
             let lastAnimationTimestamp = 0; // Animasyon tekrarını engelle
-            let videoPlayer = null; // Video.js player instance
             
             // GitHub Video URL'sini oluştur (doğru repo: EmirTru/school)
             function getGitHubVideoUrl() {
@@ -1213,9 +1199,8 @@
                     console.error("Video elementi bulunamadı! DOM'da var mı kontrol edin.");
                 } else {
                     const videoUrl = getGitHubVideoUrl();
-                    console.log("Video elementi bulundu");
+                    console.log("✅ Video elementi bulundu");
                     console.log("GitHub video URL:", videoUrl);
-                    console.log("Video.js kütüphanesi yüklendi:", typeof videojs !== 'undefined');
                 }
                 
                 // Pencereleri oluştur
@@ -1225,110 +1210,72 @@
                 // Başlangıç düzenini uygula
                 applyLayout('left-right'); 
                 
-                // Video.js Player'ı başlat (birden fazla URL dene)
-                if (fullscreenVideo && typeof videojs !== 'undefined') {
-                    try {
-                        const videoUrls = getAlternativeVideoUrls();
-                        console.log("Denenecek video URL'leri:", videoUrls);
-                        
-                        // İlk URL'yi kullan
-                        let currentUrlIndex = 0;
-                        const tryNextUrl = () => {
-                            if (currentUrlIndex >= videoUrls.length) {
-                                console.error("Tüm video URL'leri başarısız oldu!");
-                                alert("Video yüklenemedi. Lütfen input.mp4 dosyasının GitHub repo'da olduğundan emin olun.");
-                                return;
-                            }
-                            
-                            const videoUrl = videoUrls[currentUrlIndex];
-                            console.log(`Video URL deneniyor (${currentUrlIndex + 1}/${videoUrls.length}):`, videoUrl);
-                            
-                            // Video source'unu ayarla
-                            const source = fullscreenVideo.querySelector('source');
-                            if (source) {
-                                source.src = videoUrl;
-                            } else {
-                                const newSource = document.createElement('source');
-                                newSource.src = videoUrl;
-                                newSource.type = 'video/mp4';
-                                fullscreenVideo.appendChild(newSource);
-                            }
-                            
-                            // Video.js player'ı başlat veya güncelle
-                            if (!videoPlayer) {
-                                videoPlayer = videojs('fullscreen-video', {
-                                    controls: false,
-                                    autoplay: false,
-                                    preload: 'auto',
-                                    muted: true,
-                                    fluid: false,
-                                    responsive: false,
-                                    width: '100vw',
-                                    height: '100vh',
-                                    techOrder: ['html5'],
-                                    html5: {
-                                        vhs: {
-                                            overrideNative: true
-                                        },
-                                        nativeVideoTracks: false,
-                                        nativeAudioTracks: false,
-                                        nativeTextTracks: false
-                                    }
-                                });
-                                
-                                // Video hata dinleyicisi
-                                videoPlayer.on('error', (e) => {
-                                    console.error("Video.js hata:", e);
-                                    const error = videoPlayer.error();
-                                    if (error) {
-                                        console.error("Hata kodu:", error.code);
-                                        console.error("Hata mesajı:", error.message);
-                                        
-                                        // Bir sonraki URL'yi dene
-                                        if (error.code === 4) { // MEDIA_ERR_SRC_NOT_SUPPORTED veya yükleme hatası
-                                            console.log("Bu URL çalışmadı, bir sonrakini deniyor...");
-                                            currentUrlIndex++;
-                                            setTimeout(tryNextUrl, 500);
-                                        }
-                                    }
-                                });
-                                
-                                // Video bittiğinde
-                                videoPlayer.on('ended', () => {
-                                    console.log("Video bitti");
-                                    if (videoPlayer.loop()) {
-                                        videoPlayer.play();
-                                    } else {
-                                        fullscreenVideo.classList.add('hidden');
-                                    }
-                                });
-                                
-                                // Video hazır olduğunda
-                                videoPlayer.ready(() => {
-                                    console.log("Video.js player hazır, video URL:", videoUrl);
-                                });
-                                
-                                // Video yüklendiğinde
-                                videoPlayer.on('loadeddata', () => {
-                                    console.log("Video başarıyla yüklendi:", videoUrl);
-                                });
-                            } else {
-                                // Player zaten var, sadece source'u güncelle
-                                videoPlayer.src({ type: 'video/mp4', src: videoUrl });
-                            }
-                            
-                            // Video yüklemeyi dene
-                            videoPlayer.load();
-                        };
-                        
-                        // İlk URL'yi dene
-                        tryNextUrl();
-                        
-                    } catch (error) {
-                        console.error("Video.js başlatma hatası:", error);
+                // Video'yu yükle (birden fazla URL dene)
+                if (fullscreenVideo) {
+                    const videoUrls = getAlternativeVideoUrls();
+                    console.log("Denenecek video URL'leri:", videoUrls);
+                    
+                    const videoSource = document.getElementById('video-source');
+                    if (!videoSource) {
+                        console.error("Video source elementi bulunamadı!");
                     }
+                    
+                    // İlk URL'yi kullan
+                    let currentUrlIndex = 0;
+                    const tryNextUrl = () => {
+                        if (currentUrlIndex >= videoUrls.length) {
+                            console.error("Tüm video URL'leri başarısız oldu!");
+                            alert("Video yüklenemedi. Lütfen input.mp4 dosyasının GitHub repo'da olduğundan emin olun.\n\nDenenen URL'ler:\n" + videoUrls.join('\n'));
+                            return;
+                        }
+                        
+                        const videoUrl = videoUrls[currentUrlIndex];
+                        console.log(`Video URL deneniyor (${currentUrlIndex + 1}/${videoUrls.length}):`, videoUrl);
+                        
+                        // Video source'unu ayarla
+                        if (videoSource) {
+                            videoSource.src = videoUrl;
+                        }
+                        fullscreenVideo.src = videoUrl;
+                        
+                        // Video yükleme hatalarını dinle
+                        fullscreenVideo.addEventListener('error', (e) => {
+                            console.error("Video yükleme hatası:", e);
+                            const error = fullscreenVideo.error;
+                            if (error) {
+                                console.error("Hata kodu:", error.code);
+                                console.error("Hata mesajı:", error.message);
+                                
+                                // Bir sonraki URL'yi dene
+                                console.log("Bu URL çalışmadı, bir sonrakini deniyor...");
+                                currentUrlIndex++;
+                                setTimeout(tryNextUrl, 1000);
+                            }
+                        }, { once: true });
+                        
+                        // Video yüklendiğinde
+                        fullscreenVideo.addEventListener('loadeddata', () => {
+                            console.log("✅ Video başarıyla yüklendi:", videoUrl);
+                        }, { once: true });
+                        
+                        // Video bittiğinde
+                        fullscreenVideo.addEventListener('ended', () => {
+                            console.log("Video bitti");
+                            if (fullscreenVideo.loop) {
+                                fullscreenVideo.play();
+                            } else {
+                                fullscreenVideo.classList.add('hidden');
+                            }
+                        });
+                        
+                        // Video yüklemeyi dene
+                        fullscreenVideo.load();
+                    };
+                    
+                    // İlk URL'yi dene
+                    tryNextUrl();
                 } else {
-                    console.error("Video elementi veya Video.js bulunamadı!");
+                    console.error("Video elementi bulunamadı!");
                 }
                 
                 // Pop-up kapatma butonu
@@ -1377,10 +1324,10 @@
                     if (doc.exists()) {
                         const data = doc.data();
                         console.log("Video kontrol verisi:", data);
-                        if (videoPlayer) {
+                        if (fullscreenVideo) {
                             handleVideoControl(data);
                         } else {
-                            console.error("Video.js player bulunamadı! Alıcı ekranı yüklendi mi?");
+                            console.error("Video elementi bulunamadı! Alıcı ekranı yüklendi mi?");
                         }
                     }
                 }, (error) => {
@@ -1388,11 +1335,11 @@
                 });
             }
 
-            // Video Kontrolü Fonksiyonu (Video.js)
+            // Video Kontrolü Fonksiyonu (HTML5 Video)
             let lastVideoTimestamp = 0;
             function handleVideoControl(data) {
-                if (!videoPlayer) {
-                    console.error("Video.js player bulunamadı! Alıcı ekranı yüklendi mi?");
+                if (!fullscreenVideo) {
+                    console.error("Video elementi bulunamadı! Alıcı ekranı yüklendi mi?");
                     return;
                 }
                 
@@ -1409,44 +1356,43 @@
                 }
                 lastVideoTimestamp = newTimestamp;
                 
-                console.log("Video kontrol komutu işleniyor (Video.js):", data);
+                console.log("Video kontrol komutu işleniyor:", data);
                 
                 switch(data.action) {
                     case 'play':
                         // Loop durumunu ayarla
                         if (data.loop !== undefined) {
-                            videoPlayer.loop(data.loop);
+                            fullscreenVideo.loop = data.loop;
                         }
-                        console.log("Video oynatılıyor, loop:", videoPlayer.loop());
+                        console.log("Video oynatılıyor, loop:", fullscreenVideo.loop);
                         
                         // Video element'ini göster
-                        if (fullscreenVideo) {
-                            fullscreenVideo.classList.remove('hidden');
-                        }
+                        fullscreenVideo.classList.remove('hidden');
                         
                         // Video'yu oynat
-                        videoPlayer.play().then(() => {
-                            console.log("Video.js ile video başarıyla oynatıldı");
-                        }).catch(err => {
-                            console.error("Video.js oynatma hatası:", err);
-                            if (err.name === 'NotAllowedError') {
-                                console.warn("Video oynatma izni reddedildi. Video muted olmalı.");
-                            } else {
-                                console.error("Video oynatma hatası detayı:", err);
-                            }
-                        });
+                        const playPromise = fullscreenVideo.play();
+                        if (playPromise !== undefined) {
+                            playPromise.then(() => {
+                                console.log("✅ Video başarıyla oynatıldı");
+                            }).catch(err => {
+                                console.error("Video oynatma hatası:", err);
+                                if (err.name === 'NotAllowedError') {
+                                    console.warn("Video oynatma izni reddedildi. Video muted olmalı.");
+                                } else {
+                                    console.error("Video oynatma hatası detayı:", err);
+                                }
+                            });
+                        }
                         break;
                     case 'stop':
                         console.log("Video durduruluyor");
-                        videoPlayer.pause();
-                        videoPlayer.currentTime(0);
-                        if (fullscreenVideo) {
-                            fullscreenVideo.classList.add('hidden');
-                        }
+                        fullscreenVideo.pause();
+                        fullscreenVideo.currentTime = 0;
+                        fullscreenVideo.classList.add('hidden');
                         break;
                     case 'loop':
-                        videoPlayer.loop(data.loop || false);
-                        console.log("Video loop durumu:", videoPlayer.loop());
+                        fullscreenVideo.loop = data.loop || false;
+                        console.log("Video loop durumu:", fullscreenVideo.loop);
                         break;
                 }
             }
